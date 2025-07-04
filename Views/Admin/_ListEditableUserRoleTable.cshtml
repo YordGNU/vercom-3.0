@@ -1,0 +1,11 @@
+﻿<input name='UserID' id='UserID' type="number" style="display:none" value="@Model.UserID" />
+<div class="form-group">
+    <label>AGREGAR ROL</label>
+    <div class="editor-field">
+        @Html.DropDownList("RoleId", null, string.Empty, new { @class = "form-control" })
+    </div>
+</div>
+<div>
+    <button class="btn btn-sm btn-outline-primary float-right m-t-n-xs" id="AddRole"><strong>AGREGAR ROL</strong></button>
+</div>
+

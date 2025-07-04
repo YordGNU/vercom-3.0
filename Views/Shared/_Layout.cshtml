@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>VERCOM | @ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Inspinia is the #1 best-selling admin dashboard template on Wrapmarket. Perfect for building CRM, CMS, project management tools, and custom web apps with clean UI, responsive design, and powerful features.">
+    <meta name="keywords" content="Inspinia, admin dashboard, Wrapmarket, Wrapbootstrap, HTML template, Bootstrap admin, CRM template, CMS template, responsive admin, web app UI, admin theme, best admin template">
+    <meta name="author" content="WebAppLayers">
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="~/Content/images/favicon.ico">
+
+    <!-- Theme Config Js -->
+    <script src="~/Scripts/config.js"></script>
+
+    <!-- Vendor css -->
+    <link href="~/Content/vendors.min.css" rel="stylesheet" />
+
+    <!-- App css -->
+    <link href="~/Content/app.min.css" rel="stylesheet" />
+    @if (IsSectionDefined("Styles"))
+    {@RenderSection("Styles", required: false)}
+
+</head>
+<body>
+    <!-- Begin page -->
+    <div class="wrapper">
+        <!-- Sidenav Menu Start -->
+        @Html.Partial("_SideNav")
+        <!-- Sidenav Menu End -->
+        <!-- Topbar Start -->
+        @Html.Partial("_TopBar")
+        <!-- Topbar End -->
+        <!-- ============================================================== -->
+        <!-- Start Main Content -->
+        <!-- ============================================================== -->
+        <div class="content-page">
+            <div class="container-fluid">
+                @RenderBody()
+            </div> <!-- container -->
+            <!-- Footer Start -->
+            @Html.Partial("_Footer")
+            <!-- end  -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End of Main Content -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- END wrapper -->
+    <!-- Theme Settings -->
+    @Html.Partial("_Theme")
+    <!-- Vendor js -->
+    <script src="~/Scripts/vendors.min.js"></script>
+    <!-- App js -->
+    <script src="~/Scripts/app.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,83 @@
+﻿@model vercom.Models.Permissions
+@{
+    ViewBag.Title = "Agregar PERMISO";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>PANEL DE ADMINISTRACÓN</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Admin")">Administrar</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>Agregar permiso</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Agregar permiso</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="fullscreen-link">
+                            <i class="fa fa-expand"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-4 b-r">
+                            <form role="form" method="post" action="@Url.Action("PermissionCreate", "Admin")">
+                                @Html.AntiForgeryToken()
+                                <div class="form-group">
+                                    <label>NOMBRE DEL PERMISO</label>
+                                    <div class="editor-field">
+                                        <input type="text" class="form-control" name="PermissionName" id="PermissionName" required="">
+                                        @Html.ValidationMessageFor(model => model.PermissionName)
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>DESCRIPCIÓN</label>
+                                    <textarea type="text" class="form-control" id="PermissionDescription" name="PermissionDescription" required style="height:100px"></textarea>
+                                    @Html.ValidationMessageFor(model => model.PermissionDescription)
+                                </div>                              
+                                <div>
+                                    <button type="submit" class="btn btn-outline-primary block full-width m-b">AGREGAR</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/sweetAlertStyles")
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/sweetAlert")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(":input[type='submit']").button();
+            $(":input[type='button']").button();
+        })
+    </script>
+}
+
+

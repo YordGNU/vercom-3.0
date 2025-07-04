@@ -1,0 +1,12 @@
+﻿@model  vercom.Models.Permissions
+@Html.HiddenFor(model => model.PermissionID)
+<div class="form-group">
+    <label>AGREGAR PERMISO AL ROL</label>
+    <div class="editor-field">
+        @Html.DropDownList("RoleId", null, string.Empty, new { @class = "form-control" })
+    </div>
+</div>
+<div class="btn-group float-e-margins float-lg-right">
+    <input class="btn btn-sm btn-outline-success" type="button" id="AddPermission" value="AGREGAR ROL" />
+</div>
+

@@ -1,0 +1,372 @@
+﻿@model vercom.Models.operacion
+@{
+    ViewBag.Title = "AGREGAR OPERACIÓN";
+}
+<div class="page-title-head d-flex align-items-center">
+    <div class="flex-grow-1">
+        <h4 class="fs-sm text-uppercase fw-bold m-0">OPERACIONES</h4>
+    </div>
+    <div class="text-end">
+        <ol class="breadcrumb m-0 py-0">
+            <li class="breadcrumb-item">
+                <a href="javascript: void(0);">VERCOM</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="javascript: void(0);">OPERACIONES</a>
+            </li>
+            <li class="breadcrumb-item active">AGREGAR</li>
+        </ol>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">AGREGAR OPERACIÓN</h4>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-sm-3 border-end border-dashed">
+                        <div class="p-4">
+                            <form role="form" method="post" action="@Url.Action("Create", "Operacion")">
+                                <div class="row">
+                                    @Html.AntiForgeryToken()
+                                    <!-- Fecha -->
+                                    <div class="mb-3" id="data_1">
+                                        <label class="font-normal">FECHA</label>
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="fecha" id="fecha" class="form-control"
+                                                value="@DateTime.Now.ToString("d")">
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.fecha)
+                                    </div>
+                                    <!-- Tipo de Operación -->
+                                    <div class="mb-3">
+                                        <label>TIPO DE OPERACIÓN</label>
+                                        <select class="form-control" name="tipo_operacionid" id="tipo_operacionid"
+                                            required>
+                                            <option value="0">Tipo de operación...</option>
+                                            @Html.Action("_listoperaciontipo", "Parcial")
+                                        </select>
+                                        @Html.ValidationMessageFor(model => model.tipo_operacionid)
+                                    </div>
+                                    <!-- Punto de Venta -->
+                                    <div class="mb-3">
+                                        <label>PUNTO DE VENTA</label>
+                                        <select class="form-control" name="punto_ventaid" id="punto_ventaid" required>
+                                            <option value="0">Punto de venta...</option>
+                                            @Html.Action("_listapuntos", "Parcial")
+                                        </select>
+                                        @Html.ValidationMessageFor(model => model.punto_ventaid)
+                                    </div>
+                                    <!-- Categoria -->
+                                    <div class="mb-3">
+                                        <label>CATEGORIA</label>
+                                        <select class="form-control" name="categoria_id" id="categoria_id" required>
+                                            @Html.Action("_listcategorias", "Parcial")
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-xxl-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="col-lg-7">
+                                    <select class="form-control" id="productoid" name="productoid" data-choices="">
+                                    </select>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <input type="number" id="cantidad" class="form-control" placeholder="CANTIDAD"
+                                        step="0.01">
+                                </div>
+                                <div class="d-flex gap-1">
+                                    <button type="button" id="agregarProducto" class="btn btn-primary ms-1">
+                                        <i data-lucide="plus" class="fs-sm me-2"></i> AGREGAR
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table id="tablaProductos" class="table table-striped dt-responsive align-middle mb-0">
+                                    <thead class="thead-sm text-uppercase fs-xxs">
+                                        <tr class="text-uppercase fs-xxs">
+                                            <th>PRODUCTO</th>
+                                            <th>SALDO</th>
+                                            <th>CANT.</th>
+                                            <th>REST.</th>
+                                            <th>PRECIO</th>
+                                            <th style="width:17%">IMPORTE</th>
+                                            <th>T.PAGO</th>
+                                            <th>ACCIONES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th>IMPORTE TOTAL: <input type="number" step="0.001" name="importe"
+                                                    id="importe" class="form-control" readonly required></th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card-->
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="d-flex flex-wrap justify-content-between">
+                            <a href="@Url.Action("Index")" class="btn btn-default float-left m-t-n-xs"><i
+                                    class="fa fa-arrow-left"></i> REGRESAR</a>
+                            <button class="btn btn-primary" type="submit"><strong>AGREGAR</strong></button>
+                        </div>
+                    </div>
+                </div> <!-- end row-->
+            </div> <!-- end card-body-->
+        </div> <!-- end card-->
+    </div> <!-- end col -->
+</div>
+@section Styles {
+    <link href="~/Content/plugins/datatables/responsive.bootstrap5.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/datapicker/datepicker3.css" rel="stylesheet" />
+    <link href="~/Content/plugins/toastr/toastr.min.css" rel="stylesheet" />
+}
+
+
+@section Scripts {
+    <!-- Datatables js -->
+    <script src="~/Scripts/plugins/datatables/dataTables.min.js"></script>
+    <script src="~/Scripts/plugins/datatables/dataTables.bootstrap5.min.js"></script>
+    <script src="~/Scripts/plugins/datatables/dataTables.responsive.min.js"></script>
+    <script src="~/Scripts/plugins/datatables/responsive.bootstrap5.min.js"></script>
+    <script src="~/Scripts/plugins/toastr/toastr.min.js"></script>
+    <script src="~/Scripts/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/plugins/choices/choices.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var index = 0;
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1800",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+            var tabla = $("#tablaProductos").DataTable(tabla, {
+                language: {
+                    paginate: {
+                        first: '<i class="ti ti-chevrons-left"></i>',
+                        previous: '<i class="ti ti-chevron-left"></i>',
+                        next: '<i class="ti ti-chevron-right"></i>',
+                        last: '<i class="ti ti-chevrons-right"></i>',
+                    },
+                    lengthMenu: "_MENU_ Companies per page",
+                    info: 'Showing <span class="fw-semibold">_START_</span> to <span class="fw-semibold">_END_</span> of <span class="fw-semibold">_TOTAL_</span> Companies',
+                },
+            });
+
+            const selectProductos = document.getElementById('productoid');
+            const choicesProductos = new Choices(selectProductos, {
+                removeItemButton: true,
+                searchEnabled: true,
+                placeholderValue: 'Seleccione un producto',
+            });
+
+            $('#fecha').on('change', function () {
+                $("#punto_ventaid").val("0");
+                $("#tipo_operacionid").val("0");
+                $("#importe").val("");
+                tabla.clear().draw();
+
+                // Limpiar opciones del select
+                choicesProductos.clearChoices();
+                choicesProductos.clearStore();
+
+            });
+
+            $('#tipo_operacionid').on('change', function () {
+                $("#punto_ventaid").val("0");
+                $("#importe").val("");
+                tabla.clear().draw();
+
+                // Limpiar opciones del select
+                choicesProductos.clearChoices();
+                choicesProductos.clearStore();
+            });
+
+            $('#punto_ventaid').on('change', function () {
+                const url = '@Url.Action("_productosXpuntoFilCategoria", "Parcial")';
+                const fecha = document.getElementById("fecha").value;
+                const categoria = document.getElementById("categoria_id").value;
+                const operTipo = $("#tipo_operacionid").val();
+                const option = $("#punto_ventaid").val();
+                // Limpiar el select y el estado de Choices
+                choicesProductos.clearChoices();
+                choicesProductos.clearStore();
+                $.getJSON(url, { id: option, tipo: operTipo, fecha: fecha, categ: categoria }, function (data) {
+                    const opciones = data.map(item => ({
+                        value: item.id,
+                        label: `( ${item.cod} ) - ${item.nombre}`,
+                        customProperties: {
+                            precio: item.precio,
+                            cantidad: item.cant_saldo
+                        }
+                    }));
+                    choicesProductos.setChoices(opciones, 'value', 'label', true);
+                });
+            });
+
+            $('#categoria_id').on('change', function () {
+                var url = '@Url.Action("_productosXpuntoFilCategoria", "Parcial")';
+                var fecha = document.getElementById("fecha").value;
+                var categoria = document.getElementById("categoria_id").value;
+                var operTipo = $("#tipo_operacionid").val();
+                selectProductos.empty();
+                var option = $("#punto_ventaid").val();
+
+                $.getJSON(url, { id: option, tipo: operTipo, fecha: fecha, categ: categoria }, function (data) {
+                    // Preparar array de opciones para Choices
+                    const opciones = data.map(item => ({
+                        value: item.id,
+                        label: `( ${item.cod} ) - ${item.nombre}`,
+                        customProperties: {
+                            precio: item.precio,
+                            cantidad: item.cant_saldo
+                        }
+                    }));
+                    // Limpiar y actualizar el select
+                    choicesProductos.clearChoices();
+                    choicesProductos.setChoices(opciones, 'value', 'label', true);
+                });
+            });
+
+            $("#agregarProducto").click(function () {
+                const tipoOperacion = $("#tipo_operacionid").val();
+                const seleccion = choicesProductos.getValue();
+
+                if (seleccion.length > 0) {
+                    const { value, label, customProperties } = seleccion[0];
+                    console.log(value, label, customProperties.precio, customProperties.cantidad);
+                }
+
+
+                if (!seleccion || seleccion.length === 0 || !seleccion[0]) {
+                    alert("Seleccione un producto válido.");
+                    return;
+                }
+                const productoID = seleccion[0].value;
+                const productoNombre = seleccion[0].label;
+                const customProps = seleccion[0].customProperties || {};
+                const precioUnitario = parseFloat(customProps.precio) || 0;
+                const cantidadEnPuntoVenta = parseFloat(customProps.cantidad) || 0;
+                const cantidad = parseFloat($("#cantidad").val()) || 0;
+
+                let ESTADO = "disabled";
+                if (productoID === "0" || cantidad <= 0) {
+                    alert("Seleccione un producto y agregue una cantidad válida.");
+                    return;
+                }
+
+                if (tipoOperacion === "2") ESTADO = "";
+                const cantidadRestante = (tipoOperacion === "1" || tipoOperacion === "5") ? (cantidadEnPuntoVenta + cantidad).toFixed(2) : (cantidadEnPuntoVenta - cantidad).toFixed(2);
+
+                const importeTotal = (cantidad * precioUnitario).toFixed(2);
+
+                const fila = tabla.row.add([
+                    productoNombre + `<input type="hidden" name="productos[${index}].ProductoID" value="${productoID}" />`,
+                    cantidadEnPuntoVenta + `<input type="text" class="decimalVAL" name="productos[${index}].CantidadEnPuntoVenta" value="${cantidadEnPuntoVenta}" step="0.01" style="display:none" />`,
+                    `<input type="text" class="form-control decimalVAL cantidadProducto" name="productos[${index}].Cantidad" value="${cantidad}" step="0.01" required="">`,
+                    `<span class="cantidadRestante">${cantidadRestante}</span><input type="text" class="decimalVAL" name="productos[${index}].CantidadRestante" value="${cantidadRestante}" step="0.01" style="display:none" />`,
+                    precioUnitario + `<input type="text" class="decimalVAL" name="productos[${index}].PrecioUnitario" value="${precioUnitario}" step="0.01" style="display:none" />`,
+                    `<span class="importeProducto">${importeTotal}</span><input type="text" class="decimalVAL" name="productos[${index}].Importe" value="${importeTotal}" step="0.01" style="display:none" />`,
+                    `<select class="form-control tipoPagoSelect" name="productos[${index}].TipoPagoID" style="width:150px" ${ESTADO}> @Html.Action("_listtipopago", "Parcial") </select>`,
+                    `<div class="d-flex justify-content-center gap-1">
+                    <a href="#" class="btn btn-light btn-icon btn-sm rounded-circle eliminarProducto"> <i class="ti ti-trash fs-lg"></i></a>
+                    </div>`
+                ]).draw().node();
+
+                $(fila).find(".cantidadProducto").on("input", function () {
+                    actualizarImporte($(this));
+                });
+
+                index++;
+                calcularImporteTotal();
+                $("#cantidad").val("");
+            });
+
+            // ✅ Eliminar producto y recalcular importe total
+            $(document).on("click", ".eliminarProducto", function () {
+                tabla.row($(this).closest("tr")).remove().draw();
+                $("#tablaProductos tbody tr").each(function (i) {
+                    $(this).find("input[name^='productos']").each(function () {
+                        var name = $(this).attr("name");
+                        var newName = name.replace(/\[\d+\]/, "[" + i + "]");
+                        $(this).attr("name", newName);
+                    });
+                });
+                index = $("#tablaProductos tbody tr").length;
+                calcularImporteTotal();
+            });
+
+            function actualizarImporte(elemento) {
+                var tipoOperacion = $("#tipo_operacionid").val();
+                var fila = elemento.closest("tr");
+                var cantidad = parseFloat(elemento.val()) || 0;
+                var precioUnitario = parseFloat(fila.find("td:eq(4)").text()) || 0;
+                var cantidadEnPuntoVenta = parseFloat(fila.find("td:eq(1)").text()) || 0;
+                var cantidadRestante = 0;
+                if (tipoOperacion === "1" || tipoOperacion === "5") { cantidadRestante = (cantidadEnPuntoVenta + cantidad).toFixed(2) } else { cantidadRestante = (cantidadEnPuntoVenta - cantidad).toFixed(2) }
+                var importeTotal = (cantidad * precioUnitario).toFixed(2);
+
+                fila.find(".cantidadRestante").text(cantidadRestante);
+                fila.find("input[name*='.CantidadRestante']").val(cantidadRestante);
+                fila.find(".importeProducto").text(importeTotal);
+                fila.find("input[name*='.Importe']").val(importeTotal);
+
+                calcularImporteTotal(); // ✅ Recalcular el total cuando cambia la cantidad
+            }
+
+            function calcularImporteTotal() {
+                var total = 0;
+                $("#tablaProductos tbody tr").each(function () {
+                    total += parseFloat($(this).find(".importeProducto").text()) || 0;
+                });
+                $("#importe").val(total.toFixed(2)); // ✅ Se actualiza el importe total en el formulario
+            }
+
+            $("form").on("submit", function () {
+                $(".decimalVAL").each(function () {
+                    var valor = $(this).val().replace(".", ",");
+                    $(this).val(valor);
+                });
+            });
+
+            $('#data_1 .input-group.date').datepicker({
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                format: "dd/mm/yyyy",
+                forceParse: false,
+                calendarWeeks: true,
+                autoclose: true
+            });
+
+        });
+    </script>
+}

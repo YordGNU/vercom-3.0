@@ -1,0 +1,52 @@
+﻿@model vercom.Models.Users
+@{if (Model != null)
+    {
+        <dl class="row mb-0">
+            <div class="col-sm-12 text-sm-right">
+                <a class="btn-outline-success btn btn-xs" href="@Url.Action("UsersEdit", "Admin", new {id = Model.UserID})"><i class="fa fa-edit"></i> EDITAR</a>
+            </div>
+        </dl>
+        <dl class="row mb-0">
+            <div class="col-sm-4 text-sm-right">
+                <dt>NOMBRE DE USUARIO:</dt>
+            </div>
+            <div class="col-sm-8 text-sm-left">
+                <dd class="mb-1">@Model.UserName</dd>
+            </div>
+        </dl>
+        <dl class="row mb-0">
+            <div class="col-sm-4 text-sm-right">
+                <dt>CORREO:</dt>
+            </div>
+            <div class="col-sm-8 text-sm-left">
+                <dd class="mb-1">@Model.Email</dd>
+            </div>
+        </dl>
+
+        <dl class="row mb-0">
+            <div class="col-sm-4 text-sm-right">
+                <dt>FECHA DE CREACION:</dt>
+            </div>
+            <div class="col-sm-8 text-sm-left">
+                <dd class="mb-1"> @Model.CreationDate</dd>
+            </div>
+        </dl>
+        <dl class="row mb-0">
+            <div class="col-sm-4 text-sm-right">
+                <dt>INACTIVO:</dt>
+            </div>
+            <div class="col-sm-8 text-sm-left">
+                <dd class="mb-1"><a href="#" class="text-navy">@Model.Inactive</a></dd>
+            </div>
+        </dl>
+        <dl class="row mb-0">
+            <div class="col-sm-4 text-sm-right">
+                <dt>APROBADO:</dt>
+            </div>
+            <div class="col-sm-8 text-sm-left">
+                <dd class="mb-1"><a href="#" class="text-navy">@Model.IsApproved</a></dd>
+            </div>
+        </dl>
+
+    }
+}

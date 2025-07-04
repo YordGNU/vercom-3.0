@@ -1,0 +1,132 @@
+﻿@model vercom.Models.Permissions
+@{
+    ViewBag.Title = "Editar " + Model.PermissionName;
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>PANEL DE ADMINISTRACÓN</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Admin")">Administrar</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("PermissionIndex", "Admin")">Permisos</a>
+            </li>
+            <li class="active breadcrumb-item">
+                Editar permiso:
+                <strong>@Model.PermissionName</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Editar permiso <small class="m-l-sm">@Model.PermissionName</small></h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="fullscreen-link">
+                            <i class="fa fa-expand"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-4 b-r">
+                            <form role="form" method="post" action="@Url.Action("PermissionEdit", "Admin")">
+                                @Html.ValidationSummary(true)
+                                @Html.HiddenFor(model => model.PermissionID)
+                                <div class="form-group">
+                                    <label>NOMBRE</label>
+                                    <div class="editor-field">
+                                        @Html.EditorFor(model => model.PermissionName, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.PermissionName)
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>DESCRIPCIÓN</label>
+                                    <div class="editor-field">
+                                        @Html.EditorFor(model => model.PermissionDescription, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.PermissionDescription)
+                                    </div>
+                                </div>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-success float-right m-t-n-xs" type="submit"><strong>ACTUALIZAR</strong></button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-sm-8">
+                            <div id="RolesTable">
+                                @Html.Partial("_ListRolesTable4Permission", Model)
+                            </div>
+                            <div>
+                                @Html.Partial("_AddRole4Permission", Model)
+                            </div>
+                            <div class="btn-group">
+                                <a href="@Url.Action("RoleIndex")" class="btn btn-outline-danger float-left m-t-n-xs"><i class="fa fa-plus-square"></i> IR A ROLES</a>
+                                <a href="@Url.Action("PermissionIndex")" class="btn btn-outline-danger float-left m-t-n-xs"><i class="fa fa-address-book"></i> IR A PERMISOS</a>
+                                <a href="@Url.Action("Index")" class="btn btn-outline-info float-left  m-t-n-xs"><i class="fa fa-user"></i> IR A USUARIOS</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/sweetAlertStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //Unbind the original image 'href' set by the controller...
+            $('.deleteRole').attr('href', 'javascript://');
+            $('.deleteRole').click(function () {
+               
+            });       
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#AddPermission').click(function () {
+                var _roleId = $('#RoleId').val();
+                var _permissionId = $('#PermissionID').val();
+
+
+                if (_permissionId == '') {
+                    return false;
+                }
+
+                var _parameters = { permissionId: _permissionId, roleId: _roleId };
+                $.ajax({
+                    url: "@Url.Action("AddRole2PermissionReturnPartialView", "Admin")",
+                    type: "GET",
+                    data: _parameters,
+                    success: function (data, textStatus, jqXHR) {
+                        $('#RolesTable').html(data);
+                        $('#RoleId').val("");
+                    }
+                });
+            });
+        });
+    </script>
+}
+

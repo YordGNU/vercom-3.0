@@ -1,0 +1,260 @@
+﻿@{
+    ViewBag.Title = "Saldo";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>OPERACIONES</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Puntos de venta</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>Saldo</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Filtrar</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="fullscreen-link">
+                            <i class="fa fa-expand"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    @Html.Action("_filterOperacion", "Operacion")
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>
+                        Saldo
+                        <small class="m-l-sm">@DateTime.Today.Day/@DateTime.Now.Month/@DateTime.Now.Year</small>
+                    </h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="fullscreen-link">
+                            <i class="fa fa-expand"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="row" id="ajaxLoader" style="display: none">
+                        <div class="sk-spinner sk-spinner-cube-grid">
+                            <div class="sk-cube"></div>
+                            <div class="sk-cube"></div>
+                            <div class="sk-cube"></div>
+                            <div class="sk-cube"></div>
+                            <div class="sk-cube"></div>
+                            <div class="sk-cube"></div>
+                            <div class="sk-cube"></div>
+                            <div class="sk-cube"></div>
+                            <div class="sk-cube"></div>
+                        </div>
+                    </div>
+                    <div style="text-align: right">
+                        <a class="btn btn-outline-primary btn-rounded btn-block" style="width: 10%;" href="@Url.Action("Create", "Operacion")"><i class="fa fa-plus"> Agregar</i></a>
+                    </div>
+                    <hr class="hr-line-dashed" />
+                    <div id="renderTable"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles {
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/sweetAlertStyles")
+    <style>
+        div.dataTables_wrapper div.dataTables_filter input {
+            width: 500px;
+        }
+    </style>
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/sweetAlert")
+    <script>
+    $(document).ready(function () {
+        $(document).on('click', '.deleteButton', function () {
+            var url = '@Url.Action("Delete", "Operacion")';
+            var id = $(this).data('id');
+            swal({
+                title: "Estas seguro?",
+                text: "Esta acción es irrebercible!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Si, eliminar!",
+                cancelButtonText: "No, cancelar!",
+                closeOnConfirm: true,
+            },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            url: '@Url.Action("Delete", "Operacion")',
+                            type: 'GET',
+                            data: { id: id },
+                            success: function (response) {
+                                if (response.success) {
+                                    $('#row_' + id).remove();
+                                } else {
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                            }
+                        });
+                    }
+                });
+        });
+    });
+    </script>
+
+    <script>
+   $(document).ready(function () {
+       $("#productoid").chosen();
+
+       var myTable = $('#dataTables-example').DataTable({
+           pageLength: 100,
+           dom: '<"html5buttons"B>lTfgitp',
+           buttons: [
+               { extend: 'excel', title: 'Registros de operaciones' },
+               {
+                   extend: 'print',
+                   customize: function (win) {
+                       $(win.document.body).addClass('white-bg');
+                       $(win.document.body).css('font-size', '10px');
+                       $(win.document.body).find('table')
+                           .addClass('compact')
+                           .css('font-size', 'inherit');
+                   }
+               }
+           ], language: {
+               info: "Mostrando _START_ de _TOTAL_ registros",
+               infoFiltered: '(filtrado de _MAX_ registros totales)',
+               search: "Buscar:",
+               paginate: {
+                   first: "Primero",
+                   last: "Último",
+                   next: "Siguiente",
+                   previous: "Anterior",
+               },
+           }
+       });
+
+       $('#tipo_operacionid').on('change', function () {
+           var tipo = document.getElementById("tipo_operacionid").value;
+           if (tipo == 2) {
+               $('#tipPago').show();
+           } else {
+               document.getElementById("tipo_pagoid").value = null;
+               $('#tipPago').hide();
+           }
+       });
+
+       $('#filterOper').on('click', function () {
+
+             $('#dataTables-example').DataTable().clear().destroy();
+             var url = '@Url.Action("_listFilterOperacion", "Operacion")';
+             var fecha = document.getElementById("fecha").value;
+             var tperacion = document.getElementById("tipo_operacionid").value;
+             var tpago = document.getElementById("tipo_pagoid").value;
+             var pventa = document.getElementById("punto_ventaid").value;
+             var categ = document.getElementById("categoriaid").value;
+             var prod = document.getElementById("productoid").value;
+
+             $.ajax({
+                 url: '@Url.Action("_listFilterOperacion", "Operacion")',
+                 type: 'GET',
+                 data: { fecha: fecha, tperacion: tperacion, tpago: tpago, pventa: pventa, categ: categ, prod: prod },
+                 success: function (data) {
+
+                     $('#renderTable').html(data);
+
+                     var myTable = $('#dataTables-example').DataTable({
+                         pageLength: 100,
+                         dom: '<"html5buttons"B>lTfgitp',
+                         buttons: [
+                            {
+                                extend: 'print',
+                                text: 'Print',
+                                customize: function (win) {
+                                    $(win.document.body).addClass('white-bg');
+                                    $(win.document.body).css('font-size', '10px');
+                                    $(win.document.body).find('table').addClass('compact').css('font-size', 'inherit');
+                                }
+                             }
+                         ], language: {
+                             info: "Mostrando _START_ de _TOTAL_ registros",
+                             infoFiltered: '(filtrado de _MAX_ registros totales)',
+                             search: "Buscar:",
+                             paginate: {
+                                 first: "Primero",
+                                 last: "Último",
+                                 next: "Siguiente",
+                                 previous: "Anterior",
+                             },
+                         }
+                     });
+
+                 }, error: function () {
+                     alert('Error loading partial view');
+                 }
+             });
+      });
+
+   });
+   $(document).ajaxStart(function () {
+                $('#ajaxLoader').show();
+
+        });
+   $(document).ajaxComplete(function () { $('#ajaxLoader').hide();});
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#data_1 .input-group.date').datepicker({
+                todayBtn: "linked",
+                locale: 'es',
+                keyboardNavigation: false,
+                format: "dd/mm/yyyy",
+                forceParse: false,
+                calendarWeeks: true,
+                autoclose: true
+            });
+
+        });
+    </script>
+}

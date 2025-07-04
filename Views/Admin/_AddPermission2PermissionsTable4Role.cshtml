@@ -1,0 +1,13 @@
+﻿@model vercom.Models.Roles
+<input name='RoleID' id='RoleID' type="number" style="display:none" value="@Model.RoleID" />
+<div class="form-group">
+    <label>AGREGAR PERMISO AL ROL</label>
+    <div class="editor-field">
+        @Html.DropDownList("PermissionId", null, string.Empty, new { @class = "form-control" })
+    </div>
+</div>
+<div class="btn-group float-e-margins float-lg-right">
+    <input class="btn btn-sm btn-outline-success" type="button" id="AddPermission" value="AGREGAR PERMISO" />
+    <input class="btn btn-sm btn-outline-primary" type="button" id="AddAllPermissions" value="AGREGAR TODOS LOS PERMISOS" />
+</div>
+

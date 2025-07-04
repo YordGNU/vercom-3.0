@@ -1,0 +1,46 @@
+﻿@model IEnumerable<vercom.Models.Users>
+<table class="table table-striped table-hover dt-responsive display nowrap DataTable" width="100%" id="divUsers">
+    <thead>
+        <tr>
+            <th>ID.</th>
+            <th>NOMBRE</th>
+            <th>CORREO</th>
+            <th>INACTIVO</th>
+            <th>ACTIVO</th>
+            <th>FECHA DE REGISTRO</th>
+            <th>ULTIMA MODIFICACIÓN</th>
+            <th>OPCIONES</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="row_@item.UserID">
+                <td>@Html.DisplayFor(modelItem => item.UserID)</td>
+                <td>
+                    @Html.ActionLink(item.UserName, "UsersDetails", new { id = item.UserID })
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Inactive)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsApproved)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreationDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastModified)
+                </td>
+                <td class="text-right">
+                    <div class="btn-group">
+                        @Html.AntiForgeryToken()
+                        <a class="btn-outline-success btn btn-xs" href="@Url.Action("UserEdit", "Admin", new {id = item.UserID})"><i class="fa fa-edit"></i></a>
+                        <button data-id="@item.UserID" class="deleteButton btn-outline-danger btn btn-xs"><i class="fa fa-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

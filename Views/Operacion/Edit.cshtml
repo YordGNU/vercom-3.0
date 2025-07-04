@@ -1,0 +1,233 @@
+﻿@model vercom.Models.operacion
+@{
+    ViewBag.Title = "EDITAR OPEREACION";
+}
+<iv class="page-title-head d-flex align-items-center">
+    <div class="flex-grow-1">
+        <h4 class="fs-sm text-uppercase fw-bold m-0">OPERACION</h4>
+    </div>
+    <div class="text-end">
+        <ol class="breadcrumb m-0 py-0">
+            <li class="breadcrumb-item">
+                <a href="javascript: void(0);">VERCOM</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="javascript: void(0);">OPERACION</a>
+            </li>
+            <li class="breadcrumb-item active">EDITAR</li>
+        </ol>
+    </div>
+</iv>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">EDITAR OPERACION</h4>
+            </div>
+            <div class="card-body">
+                <div class="row g-4 align-items-center">
+                    <div class="col-sm-6 border-end border-dashed">
+                        <div class="p-4">
+                            <form role="form" method="post" action="@Url.Action("Edit", "Operacion")">
+                                <div class="mb-3">
+                                    <label for="tipo_operacionid" class="form-label">TIPO DE OPERACION <span class="text-danger">*</span></label>
+                                    <select class="form-control" name="tipo_operacionid" id="tipo_operacionid">
+                                        <option value="@Model.tipo_operacion.id">@Model.tipo_operacion.tipo</option>
+                                        @Html.Action("_listoperaciontipo", "Parcial")
+                                    </select>
+                                    @Html.ValidationMessageFor(model => model.tipo_operacionid)
+                                </div>
+                                <div class="mb-3" id="tipPago" style="display:none">
+                                    <label for="tipo_pagoid" class="form-label">TIPO DE PAGO <span class="text-danger">*</span></label>
+                                    <select class="form-control" name="tipo_pagoid" id="tipo_pagoid">
+                                        @if (Model.tipo_pago != null)
+                                        {
+                                            <option value="@Model.tipo_pago.id">@Model.tipo_pago.tipo</option>
+                                        }
+                                        @Html.Action("_listtipopago", "Parcial")
+                                    </select>
+                                    @Html.ValidationMessageFor(model => model.tipo_pagoid)
+                                </div>
+                                <div class="mb-3" id="data_1">
+                                    <label for="fecha" class="form-label">FECHA <span class="text-danger">*</span></label>
+                                    <div class="input-group date">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" name="fecha" id="fecha" class="form-control" value="@Model.fecha">
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.fecha)
+                                </div>
+                                <div class="mb-3">
+                                    <label for="punto_ventaid" class="form-label">PUNTO DE VENTA <span class="text-danger">*</span></label>
+                                    <select class="form-control" name="punto_ventaid" id="punto_ventaid" required="">
+                                        <option value="@Model.punto_venta.id">@Model.punto_venta.nombre</option>
+                                        @Html.Action("_listapuntos", "Parcial")
+                                    </select>
+                                    @Html.ValidationMessageFor(model => model.punto_ventaid)
+                                </div>
+                                <div class="mb-3">
+                                    <label for="productoid" class="form-label">PRODUCTO <span class="text-danger">*</span></label>
+                                    <select class="form-control" name="productoid" id="productoid" required="">
+                                        <option value="@Model.producto.id">@Model.producto.nombre - (@Model.producto.cod)</option>
+                                        @Html.Action("_listtproductos", "Parcial")
+                                    </select>
+                                    @Html.ValidationMessageFor(model => model.productoid)
+                                </div>
+                                <div class="mb-3">
+                                    <label for="cantidad" class="form-label">CANTIDAD <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="cantidad" name="cantidad" value="@Model.cantidad" required="">
+                                    @Html.ValidationMessageFor(model => model.cantidad)
+                                </div>
+                                <div class="mb-3">
+                                    <label for="cantidad" class="form-label">IMPORTE     </label>
+                                    <input type="number" step="0.000" value="@Model.importe" name="importe" id="importe" class="form-control" readonly required="" />
+                                </div>
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <a href="@Url.Action("Index")" class="btn btn-default float-left m-t-n-xs"><i class="fa fa-arrow-left"></i> REGRESAR</a>
+                                    <button class="btn btn-primary" type="submit"><strong>ACTUALIZAR</strong></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <label>CANTIDAD EN PUNTO</label>
+                            <input type="text" name="cantidadp" id="cantidadp" class="form-control" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label>CANTIDAD RESTANTE</label>
+                            <input type="text" name="cantrest" id="cantrest" class="form-control" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label>PRECIO</label>
+                            <input type="number" step="0.00" value="@Model.producto.precio" name="precio" id="precio" class="form-control" readonly required="" />
+                        </div>
+                    </div> <!-- end row-->
+                </div> <!-- end card-body-->
+            </div> <!-- end card-->
+        </div> <!-- end col -->
+    </div>
+    @section Styles {
+
+    }
+    @section Scripts {
+        <script>
+        $(document).ready(function () {
+
+            $("#productoid").chosen();
+
+            var url = '@Url.Action("_productosXprecio", "Parcial")';
+            var puntid = document.getElementById("punto_ventaid").value;
+            var prodid = document.getElementById("productoid").value;
+            var fecha = document.getElementById("fecha").value;
+
+            $.getJSON(url,
+                { id: puntid, idprod: prodid, fecha: fecha },
+                function (data) {
+                    $.each(data,
+                        function (i, item2) {
+                            document.getElementById("precio").value = item2.precio;
+                            document.getElementById("cantidadp").value = item2.costo;
+                        });
+                });
+
+            $(document).ajaxStart(function() {
+                $('#ajaxLoader').show();
+            });
+            $(document).ajaxComplete(function() {
+                $('#ajaxLoader').hide();
+                $('.chosen-select').chosen({ width: "100%" });
+            });
+
+            $('#tipo_operacionid').on('change', function () {
+                var tipo = document.getElementById("tipo_operacionid").value;
+                if (tipo == 2) {
+                    $('#tipPago').show();
+                } else {
+                    document.getElementById("tipo_pagoid").value = null;
+                    $('#tipPago').hide();
+                }
+            });
+
+     $('#punto_ventaid').on('change',
+     function () {
+         var url = '@Url.Action("_productosXpunto", "Parcial")';
+         var operTipo = $("#tipo_operacionid").val();
+         var option = $("#punto_ventaid").val();
+         $.getJSON(url,
+             { id: option, tipo: operTipo, fecha: fecha },
+             function (data) {
+                 $.each(data,
+                     function (i, item) {
+                         $("#productoid").append("<option value=" + item.id + ">" + item.nombre + '- (' + item.cod + ')' + "</option>");
+                     });
+                 $("#productoid").trigger("chosen:updated");
+             });
+     });
+
+ $('#productoid').on('change',
+     function () {
+         var url = '@Url.Action("_productosXprecio", "Parcial")';
+
+         var puntid = document.getElementById("punto_ventaid").value;
+         var prodid = document.getElementById("productoid").value;
+         var fecha = document.getElementById("fecha").value;
+
+         document.getElementById("cantrest").value = 0;
+         document.getElementById("precio").value = 0;
+         document.getElementById("cantidadp").value = 0;
+         document.getElementById("importe").value = 0;
+
+         $.getJSON(url,
+             { id: puntid, idprod: prodid, fecha: fecha },
+             function (data) {
+                 $.each(data,
+                     function (i, item2) {
+                         document.getElementById("precio").value = item2.precio;
+                         document.getElementById("cantidadp").value = item2.costo;
+                     });
+             });
+     });
+
+ $('#cantidad').change(function () {
+     let precio = document.getElementById("precio").value;
+     let cantidad = document.getElementById("cantidad").value;
+     let cantidadp = document.getElementById("cantidadp").value;
+     let operacion = document.getElementById("tipo_operacionid").value;
+     var cantEnt = cantidad;
+     var tmpCanP = cantidadp;
+     cantidad = cantidad.replace(",", ".");
+     let a = new Decimal(precio);
+     let b = new Decimal(cantidad);
+     let c = a.mul(b).toNumber();
+     let d = cantidadp - cantidad;
+     let e = new Decimal(cantidadp);
+     if (cantidadp == 0) {
+         document.getElementById("cantidadp").value = cantidad;
+         document.getElementById("cantrest").value = 0;
+         document.getElementById("importe").value = c;
+     } else {
+         if (operacion == 1) {
+             $('#cantidadp').empty();
+             let oper = (parseFloat(b) + parseFloat(e));
+             document.getElementById("cantidadp").value = oper;
+             document.getElementById("importe").value = c;
+         } else {
+             document.getElementById("cantrest").value = d;
+             document.getElementById("importe").value = c;
+         }
+     }
+ });
+        });
+        </script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#data_1 .input-group.date').datepicker({
+                    todayBtn: "linked",
+                    keyboardNavigation: false,
+                    format: "dd/mm/yyyy",
+                    forceParse: false,
+                    calendarWeeks: true,
+                    autoclose: true
+                });
+            });
+        </script>
+    }

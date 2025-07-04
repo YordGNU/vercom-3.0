@@ -1,0 +1,22 @@
+﻿@model vercom.Models.tipo_operacion
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>tipo_operacion</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.tipo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.tipo)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

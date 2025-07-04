@@ -1,0 +1,26 @@
+﻿@model vercom.Models.tipo_operacion
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>tipo_operacion</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.tipo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.tipo)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

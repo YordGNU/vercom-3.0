@@ -1,0 +1,8 @@
+﻿@model List<vercom.Models.punto_venta>
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <option value="@item.nombre" data-id="@item.id">@item.nombre</option>
+    }
+}

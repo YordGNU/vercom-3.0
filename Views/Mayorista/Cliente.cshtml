@@ -1,0 +1,208 @@
+﻿@model IEnumerable<vercom.Models.cliente>
+@{
+    ViewBag.Title = "CLIENTES";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>CLIENTES</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+            </li>
+            <li class="breadcrumb-item">
+               <a href="@Url.Action("Index", "Mayorista")">Venta mayorista</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>Clientes</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>LISTADO DE CLIENTES <small class="m-l-sm"> @DateTime.Today.Day/@DateTime.Now.Month/@DateTime.Now.Year</small></h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="fullscreen-link">
+                            <i class="fa fa-expand"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div style="text-align: right">
+                        <a class="btn btn-outline-primary btn-rounded btn-block" style="width: 10%;" href="@Url.Action("CreateCliente", "Mayorista")"><i class="fa fa-plus"></i> AGREGAR </a>
+                    </div>
+                    <hr class="hr-line-dashed" />
+                    <div style="width: 100%; padding-left: -0px; ">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover dt-responsive display nowrap DataTable" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                           NOMBRE
+                                        </th>
+                                        <th>
+                                           NACIONALIDAD
+                                        </th>
+                                        <th>
+                                           DIRECCIÓN
+                                        </th>                                     
+                                        <th>
+                                           TIPO
+                                        </th>
+                                        <th>OPCIONES</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr id="row_@item.id">
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.nombre)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.nacionalidad)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.direccion)
+                                            </td>                                           
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.tipo_cliente.tipo)
+                                            </td>
+                                            <td class="text-right">
+                                                <div class="btn-group">
+                                                    <a class="btn-outline-info btn btn-xs" href="@Url.Action("DetailsCliente", "Mayorista", new {id = item.id})"><i class="fa fa-info"></i></a>
+                                                    <a class="btn-outline-success btn btn-xs" href="@Url.Action("EditCliente", "Mayorista", new {id = item.id})"><i class="fa fa-edit"></i></a>
+                                                    <button data-id="@item.id" class="deleteButton btn-outline-danger btn btn-xs"><i class="fa fa-trash"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/sweetAlertStyles")
+    <style>
+        div.dataTables_wrapper div.dataTables_filter input {
+            width: 500px;
+        }
+    </style>
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/sweetAlert")
+    <script>
+ $(document).ready(function () {
+     $(document).on('click', '.deleteButton', function () {
+         var id = $(this).data('id');
+         swal({
+             title: "Estas seguro?",
+             text: "Esta acción es irrebercible!",
+             type: "warning",
+             showCancelButton: true,
+             confirmButtonColor: "#DD6B55",
+             confirmButtonText: "Si, eliminar!",
+             cancelButtonText: "No, cancelar!",
+             closeOnConfirm: true,
+         },
+             function (isConfirm) {
+                 if (isConfirm) {
+                     $.ajax({
+                         url: '@Url.Action("DeleteCliente", "Mayorista")',
+                         type: 'GET',
+                         data: { id: id },
+                         success: function (response) {
+                             if (response.success) {
+                                 $('#row_' + id).remove();
+                             } else {
+                             }
+                         },
+                         error: function (xhr, status, error) {
+                         }
+                     });
+                 }
+             });
+     });
+ });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.DataTable').DataTable({
+                pageLength: 25,
+                dom: '<"html5buttons"B>lTfgitp',
+                header: true,
+                fixedHeader: {
+                    header: true,
+                    headerOffset: 120
+                },
+                buttons: [
+                    { extend: 'excel', text: 'EXP. EXCEL' ,title: 'Listado de clientes ' + '@System.DateTime.Now.ToString("d")' },
+                    {
+                        extend: 'print',
+                        text: 'IMPRIMIR',
+                        title: 'Listado de clientes ' + '@System.DateTime.Now.ToString("d")',
+                        exportOptions: {
+                            orientation: 'landscape',
+                            columns: [0,1,2,3]
+                        },
+                        customize: function (win) {
+                            var css = '@Page { size: landscape; }',
+                                head = win.document.head || win.document.getElementsByTagName('head')[0],
+                                style = win.document.createElement('style');
+                            style.type = 'text/css';
+                            style.media = 'print';
+                            if (style.styleSheet) {
+                                style.styleSheet.cssText = css;
+                            } else {
+                                style.appendChild(win.document.createTextNode(css));
+                            }
+                            head.appendChild(style);
+                        }
+                    }
+                ], language: {
+                    "sProcessing": "Procesando...",
+                    "sLengthMenu": "Mostrar _MENU_ registros",
+                    "sZeroRecords": "No se encontraron resultados",
+                    "sEmptyTable": "Ningún dato disponible en esta tabla",
+                    "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Buscar:",
+                    "sUrl": "",
+                    "sInfoThousands": ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    }
+                }
+
+            });
+        });
+    </script>
+}

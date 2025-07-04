@@ -1,0 +1,66 @@
+﻿@model vercom.Models.operacion
+<form class="form-horizontal">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group" id="data_1">
+                <label for="fecha">FECHA </label>
+                <div class="input-group date">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" name="fecha" id="fecha" value="@DateTime.Now.ToString("d")" class="form-control">
+                </div>
+                @Html.ValidationMessageFor(model => model.fecha)
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="tipo_operacionid">TIPO DE OPERACION</label>
+                <select class="form-control" name="tipo_operacionid" id="tipo_operacionid">
+                    <option value="0"></option>
+                    @Html.Action("_listoperaciontipo", "Parcial")
+                </select>
+                @Html.ValidationMessageFor(model => model.tipo_operacionid)
+            </div>
+        </div>
+        <div class="col-md-2" id="tipPago" style="display: none">
+            <div class="form-group">
+                <label for="tipo_pagoid">TIPO DE PAGO</label>
+                <select class="form-control" name="tipo_pagoid" id="tipo_pagoid">
+                    <option value="0"></option>
+                    @Html.Action("_listtipopago", "Parcial")
+                </select>
+                @Html.ValidationMessageFor(model => model.tipo_pagoid)
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="punto_ventaid">PUNTO DE VENTA</label>
+                <select class="form-control" name="punto_ventaid" id="punto_ventaid" required="">
+                    <option value="0"></option>
+                    @Html.Action("_listapuntos", "Parcial")
+                </select>
+                @Html.ValidationMessageFor(model => model.punto_ventaid)
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="form-group">
+                <label for="cat">CATEGORIA</label>
+                <select class="form-control" name="categoriaid" id="categoriaid" required="">
+                    <option value="0"></option>
+                    @Html.Action("_listcategorias", "Parcial")
+                </select>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="form-group">
+                <label for="productoid">PRODUCTO</label>
+                <select class="form-control" name="productoid" id="productoid" required="">
+                    <option value="0"></option>
+                    @Html.Action("_listtproductos", "Parcial")
+                </select>
+            </div>
+        </div>
+        <div class="col-md-12 text-right">
+            <div class="hr-line-dashed"></div>
+            <button type="button" class="btn btn-outline-primary" id="filterOper">FILTRAR</button>
+        </div>
+    </div>
+</form>

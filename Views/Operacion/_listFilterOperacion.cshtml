@@ -1,0 +1,73 @@
+﻿@model IEnumerable<vercom.Models.operacion>
+<div style="width: 100%; padding-left: -0px; ">
+    @if (Model.Any())
+    {
+        <button id="eliminarSeleccionados" class="btn btn-outline-danger btn-sm float-right" style="margin-block-end: 15px; margin-right: 15px;">
+            <i class="fa fa-trash"></i> Eliminar seleccionados
+        </button>
+    }
+    <div class="table-responsive">
+        <table class="table table-striped table-hover dt-responsive display nowrap DataTable" width="100%">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="checkAll" /></th>
+                    <th>FECHA</th>
+                    <th>TIPO DE OPERACIÓN</th>
+                    <th>PUNTO DE VENTA</th>
+                    <th>COD. PRODUCTO</th>
+                    <th>PRODUCTO</th>
+                    <th>CANTIDAD</th>
+                    <th>U.M</th>
+                    <th>IMPORTE</th>
+                    <th>OPCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    var fecha = "";
+                    var cantidad = Convert.ToDouble(String.Format("{0:#,##0.000}", item.cantidad));
+                    if (item.fecha != null)
+                    {
+                        fecha = item.fecha.Value.Day + "/" + item.fecha.Value.Month + "/" + item.fecha.Value.Year;
+                    }
+
+                    <tr id="row_@item.id">
+                        <td><input type="checkbox" class="checkItem" data-id="@item.id" /></td>
+                        <td>
+                            @fecha
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.tipo_operacion.tipo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.punto_venta.nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.producto.cod)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.producto.nombre)
+                        </td>
+                        <td>
+                            @cantidad
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.producto.unidad.unidad1)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.importe)
+                        </td>
+                        <td class="text-right">
+                            <div class="btn-group">
+                                <a class="btn-outline-success btn btn-xs" href="@Url.Action("Edit", "Operacion", new { id = item.id })"><i class="fa fa-edit"></i></a>                               
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

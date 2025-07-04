@@ -1,0 +1,480 @@
+﻿@model vercom.Models.operacion
+@{
+    ViewBag.Title = "CIERRE";
+}
+<div class="page-title-head d-flex align-items-center">
+    <div class="flex-grow-1">
+        <h4 class="fs-sm text-uppercase fw-bold m-0">OPERACIONES</h4>
+    </div>
+    <div class="text-end">
+        <ol class="breadcrumb m-0 py-0">
+            <li class="breadcrumb-item">
+                <a href="javascript: void(0);">VERCOM</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="javascript: void(0);">OPERACIONES</a>
+            </li>
+            <li class="breadcrumb-item active">CIERRE</li>
+        </ol>
+    </div>
+</div>
+<div class="row row-cols-xxl-5 row-cols-md-3 row-cols-1 align-items-center g-1">
+    <div class="col">
+        <div class="card mb-1">
+            <div class="card-body">
+                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
+                <h5 title="Total Products">Products</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-primary rounded-circle fs-22">
+                            <i class="ti ti-package"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0">1,240</h3>
+                    <span class="badge badge-soft-primary fw-medium ms-2 fs-xs ms-auto">+24 New</span>
+                </div>
+                <p class="mb-0">
+                    <span class="text-primary"><i class="ti ti-point-filled"></i></span>
+                    <span class="text-nowrap text-muted">Active Listings</span>
+                    <span class="float-end"><b>980</b></span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card mb-1">
+            <div class="card-body">
+                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
+                <h5 title="Customer Orders">Orders</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-secondary rounded-circle fs-22">
+                            <i class="ti ti-shopping-cart"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0">8,540</h3>
+                    <span class="badge badge-soft-secondary fw-medium ms-2 fs-xs ms-auto">+120 New</span>
+                </div>
+                <p class="mb-0">
+                    <span class="text-secondary"><i class="ti ti-point-filled"></i></span>
+                    <span class="text-nowrap text-muted">Total Orders</span>
+                    <span class="float-end"><b>105K</b></span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card mb-1">
+            <div class="card-body">
+                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
+                <h5 title="Sales Today">Sales</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-success rounded-circle fs-22">
+                            <i class="ti ti-currency-dollar"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0">$9,860</h3>
+                    <span class="badge badge-soft-success fw-medium ms-2 fs-xs ms-auto">+8.2%</span>
+                </div>
+                <p class="mb-0">
+                    <span class="text-success"><i class="ti ti-point-filled"></i></span>
+                    <span class="text-nowrap text-muted">Today's Sales</span>
+                    <span class="float-end"><b>$156K</b></span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card mb-1">
+            <div class="card-body">
+                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
+                <h5 title="Customer Count">Customers</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-info rounded-circle fs-22">
+                            <i class="ti ti-users"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0">2,945</h3>
+                    <span class="badge badge-soft-info fw-medium ms-2 fs-xs ms-auto">+36 New</span>
+                </div>
+                <p class="mb-0">
+                    <span class="text-info"><i class="ti ti-point-filled"></i></span>
+                    <span class="text-nowrap text-muted">Total Customers</span>
+                    <span class="float-end"><b>58,320</b></span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card mb-1">
+            <div class="card-body">
+                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
+                <h5 title="Total Revenue">Revenue</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-warning rounded-circle fs-22">
+                            <i class="ti ti-chart-bar"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0">$1.2M</h3>
+                    <span class="badge badge-soft-warning fw-medium ms-2 fs-xs ms-auto">+4.5%</span>
+                </div>
+                <p class="mb-0">
+                    <span class="text-warning"><i class="ti ti-point-filled"></i></span>
+                    <span class="text-nowrap text-muted">Total Revenue</span>
+                    <span class="float-end"><b>$12.8M</b></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div><!-- end row -->
+<div class="row">
+    <div class="col-12">
+        <div data-table="" data-table-rows-per-page="100" class="card">
+            <div class="card-header border-light justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="me-2 fw-semibold">Generar de:</span>
+                    <div class="app-search">
+                        <div class="input-group date">
+                            <input type="text" name="fecha" id="data_1" class="form-control" value="@DateTime.Now.ToString("d")" placeholder="fecha">
+                            <i data-lucide="calendar" class="app-search-icon text-muted"></i>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.fecha)
+                    </div>
+                    <!-- Punto Filter -->
+                    <div class="app-search">
+                        <select data-table-filter="PUNTO" class="form-select form-control my-1 my-md-0" id="punto_ventaid" name="punto_ventaid">
+                            <option value="All">Punto de venta</option>
+                            @Html.Action("_listapuntos", "Parcial")
+                        </select>
+                        <i data-lucide="tag" class="app-search-icon text-muted"></i>
+                    </div>
+                    <!-- Category Filter -->
+                    <div class="app-search">
+                        <select data-table-filter="CATEGORIA" class="form-select form-control my-1 my-md-0" id="categoriaid" name="categoriaid">
+                            <option value="All">Categoría</option>
+                            @Html.Action("_listcategorias", "Parcial")
+                        </select>
+                        <i data-lucide="tag" class="app-search-icon text-muted"></i>
+                    </div>
+                </div>
+                <div class="d-flex gap-1">                   
+                    <button type="button" class="btn btn-success  float-left" id="BTNfilter"><span class="ti ti-filter"></span> GENERAR</button>
+                    <button class="btn btn-outline-primary float-right" id="BTNCierre" type="button" style="display:none"><strong>CERRAR OPERACIONES</strong></button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom table-centered table-select table-hover w-100 mb-0" id="ipv">
+                    <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                        <tr>
+                            <td colspan="12"> Sociedad Mercantil “Tierra Prometida” S.U.R.L </td>
+                            <td colspan="3">FECHA </td>
+                        </tr>
+                        <tr>
+                            <td colspan="15"> IPV Punto de Venta </td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">CÓDIGO</td>
+                            <td rowspan="2">PRODUCTO</td>
+                            <td rowspan="2">U/M</td>
+                            <td colspan="2">SALDO INICIAL</td>
+                            <td colspan="2">ENTRADAS</td>
+                            <td colspan="3">VENTAS</td>
+                            <td colspan="2">DEVOLUCIÓN</td>
+                            <td>MERMAS</td>
+                            <td colspan="2">SALDO FINAL</td>
+                        </tr>
+                        <tr>
+                            <td>CANT.</td>
+                            <td>IMP.</td>
+                            <td>CANT.</td>
+                            <td>IMP.</td>
+                            <td>CANT.</td>
+                            <td>PRECIO</td>
+                            <td>IMP.</td>
+                            <td>CANT.</td>
+                            <td>IMP.</td>
+                            <td>CANT</td>
+                            <td>CANT.</td>
+                            <td>IMP.</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div data-table-pagination-info="products"></div>
+                    <div data-table-pagination=""></div>
+                </div>
+            </div>
+        </div>
+    </div><!-- end col -->
+</div><!-- end row -->
+@section Styles {
+    @Styles.Render("~/plugins/dateRangeStyles")
+   <link href="~/Content/plugins/choices/choices.min.css" rel="stylesheet" />
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    <link href="~/Content/plugins/datapicker/datepicker3.css" rel="stylesheet" />
+    <style>
+        div.dataTables_wrapper div.dataTables_filter input {
+            width: 500px;
+        }
+    </style>
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    <script src="~/Scripts/plugins/choices/choices.min.js"></script>
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/dataTables")
+    <script src="~/Scripts/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/decimal.js"></script>
+    <script>
+          $(document).ready(function () {
+              $('#data_1 .input-group.date').datepicker({
+                  todayBtn: "linked",
+                  locale: 'es',
+                  keyboardNavigation: false,
+                  format: "dd/mm/yyyy",
+                  forceParse: false,
+                  calendarWeeks: true,
+                  autoclose: true
+              });
+
+              var table =  $('#ipv').DataTable({
+                  pageLength: 250,
+                  dom: '<"html5buttons"B>lTfgitp',
+                  header: true,
+                  order: [[3, "desc"]],
+                  buttons: [
+                      { extend: 'excel', title: 'CIERRE' },
+                      {
+                          extend: 'print',
+                          title: '',
+                          orientation: 'landscape',
+                          customize: function (win) {
+                              $(win.document.body).addClass('white-bg');
+                              $(win.document.body).css('font-size', 'inherit');
+                              $(win.document.body).find('thead').empty();
+                              $(win.document.body).find('thead').append('<tr>< td colspan = "12" ></td ><td colspan="3">FECHA:</td></tr ><tr><td colspan="15"> IPV PUNTO DE VENTA: </td></tr><tr><td rowspan="2">CÓDIGO</td><td rowspan="2">PRODUCTO</td><td rowspan="2">U/M</td><td colspan="2">SALDO INICIAL</td><td colspan="2">ENTRADAS</td><td colspan="3">VENTAS</td><td colspan="2">DEVOLUCIÓN</td><td>MERMAS</td><td colspan="2">SALDO FINAL</td></tr><tr><td> CANT.</td><td>IMP.</td><td>CANT.</td><td>IMP.</td><td>CANT.</td><td>PRECIO</td><td>IMP.</td><td>CANT.</td><td>IMP.</td><td>CANT</td><td>CANT.</td><td>IMP.</td></tr >');
+                              $(win.document.body).find('table').addClass('compact').css('font-size', 'inherit');
+
+                              // Asegurar que se selecciona una sola página para imprimir por defecto
+                              $(win.document.body).css('page-break-after', 'always');
+
+                              // Añadir bordes inferiores a las filas de la tabla
+                              $(win.document.body).find('table tr').css('border-bottom', '1px solid black');
+                          }
+                      },
+                  ], language: {
+                      info: "Mostrando _START_ de _TOTAL_ registros",
+                      infoFiltered: '(filtrado de _MAX_ registros totales)',
+                      search: "Buscar:",
+                      paginate: {
+                          first: "Primero",
+                          last: "Último",
+                          next: "Siguiente",
+                          previous: "Anterior",
+                      },
+                  }
+              });
+
+              $('.chosen-select').chosen({ width: "100%" });
+
+              $('#BTNfilter').on('click',
+                  function () {
+
+                      $('#ipv').DataTable().clear().destroy();
+
+                      const url = '@Url.Action("CierreJsonConsultResult", "Operacion")';
+
+                      const fecha = document.getElementById("fecha").value;
+                      const puntoId = document.getElementById("punto_ventaid").value;
+                      const categid = document.getElementById("categoriaid").value;
+
+                      var tSimport = 0;
+                      var tEimport = 0;
+                      var tVimport = 0;
+                      var tDimport = 0;
+                      var tMimport = 0;
+                      var tFimport = 0;
+
+                      var lnk_entrada = "" + 0;
+                      var lnk_venta = "" + 0;
+                      var lnk_devol = "" + 0;
+                      var lnk_merma = "" + 0;
+
+                      $.getJSON(url,
+                          { fecha: fecha, pventa: puntoId, categ: categid },
+                          function (data) {
+                              if (data.length > 0) {
+                                  if (data[0].producto !== "CIERRE") {
+                                      $('#BTNCierre').show();
+                                  } else {
+                                      $('#BTNCierre').hide();
+                                  }
+                              }
+                              $.each(data,
+                                  function (i, item) {
+
+                                      if (item.cantidad_entrada == 0) { lnk_entrada = item.cantidad_entrada } else { lnk_entrada = '<a class="" href="Edit/' + item.lnk_entrada + '">' + item.cantidad_entrada + '</a>' }
+                                      if (item.cantidad_venta == 0) { lnk_venta = item.cantidad_venta } else { lnk_venta = '<a class="" href="Edit/' + item.lnk_venta + '">' + item.cantidad_venta + '</a>' }
+                                      if (item.cantidad_devolucion == 0) { lnk_devol = item.cantidad_devolucion } else { lnk_devol = '<a class="" href="Edit/' + item.lnk_devol + '">' + item.cantidad_devolucion + '</a>' }
+                                      if (item.cantidad_merma == 0) { lnk_merma = item.cantidad_merma } else { lnk_merma = '<a class="" href="Edit/' + item.lnk_merma + '">' + item.cantidad_merma + '</a>' }
+
+
+                                      $('#ipv').append('<tr><td>' + item.cod + '</td>' + '<td>' + '<a class="" href="Edit/' + item.id + '">' + item.producto + '</a>' + '</td>' + '<td>' + item.unidad + '</td>' + '<td>' + item.cantidad_saldo + '</td>' + '<td>' + item.importe_saldo + '</td>' + '<td>' + lnk_entrada + '</td>' + '<td>' + item.importe_entrada + '</td>' + '<td>' + lnk_venta + '</td>' + '<td>' + item.precio_venta + '</td>' + '<td>' + item.importe_venta + '</td>' + '<td>' + lnk_devol + '</td>' + '<td>' + item.importe_devolucion + '</td>' + '<td>' + lnk_merma + '</td>' + '<td>' + item.final_saldo + '</td>' + '<td>' + item.final_importe + '</td></tr>');
+
+                                      tSimport = tSimport + item.importe_saldo;
+                                      tEimport = tEimport + item.importe_entrada;
+                                      tVimport = tVimport + item.importe_venta;
+                                      tDimport = tDimport + item.importe_devolucion;
+                                      tMimport = tMimport + item.importe_merma;
+                                  });
+
+                              if (data.length > 0) {
+                                  tFimport = (tSimport + tEimport) - (tVimport + tDimport + tMimport);
+                                  $('#ipv').append('<tr style="background-color: aquamarine;"><td></td><td></td><td></td><td></td><td><strong>' + (tSimport.toFixed(2)) + '</strong></td><td></td><td>' + (tEimport.toFixed(2)) + '</td><td></td><td></td><td>' + (tVimport.toFixed(2)) + '</td><td></td><td>' + (tDimport.toFixed(2)) + '</td><td></td><td></td><td>' + (tFimport.toFixed(2)) + '</td></tr>');
+                              }
+                              $('#ipv').DataTable({
+                                  pageLength: 250,
+                                  dom: '<"html5buttons"B>lTfgitp',
+                                  header: true,
+                                  order: [[3, "desc"]],
+                                  buttons: [
+                                      { extend: 'excel', title: 'CIERRE' },
+                                      {
+                                          extend: 'print',
+                                          title: '',
+                                          orientation: 'landscape',
+                                          customize: function (win) {
+                                              $(win.document.body).addClass('white-bg');
+                                              $(win.document.body).css('font-size', 'inherit');
+                                              $(win.document.body).find('thead').empty();
+                                              $(win.document.body).find('thead').append('<tr>< td colspan = "12" ></td ><td colspan="3">FECHA:' + fecha + '</td></tr ><tr><td colspan="15"> IPV CIERRE PUNTO DE VENTA: ' + puntoId + '</td></tr><tr><td rowspan="2">CÓDIGO</td><td rowspan="2">PRODUCTO</td><td rowspan="2">U/M</td><td colspan="2">SALDO INICIAL</td><td colspan="2">ENTRADAS</td><td colspan="3">VENTAS</td><td colspan="2">DEVOLUCIÓN</td><td>MERMAS</td><td colspan="2">SALDO FINAL</td></tr><tr><td> CANT.</td><td>IMP.</td><td>CANT.</td><td>IMP.</td><td>CANT.</td><td>PRECIO</td><td>IMP.</td><td>CANT.</td><td>IMP.</td><td>CANT</td><td>CANT.</td><td>IMP.</td></tr >');
+                                              $(win.document.body).find('table').addClass('compact').css('font-size', 'inherit');
+
+                                              // Asegurar que se selecciona una sola página para imprimir por defecto
+                                              $(win.document.body).css('page-break-after', 'always');
+
+                                              // Añadir bordes inferiores a las filas de la tabla
+                                              $(win.document.body).find('table tr').css('border-bottom', '1px solid black');
+                                          }
+                                      },
+                                  ], language: {
+                                      info: "Mostrando _START_ de _TOTAL_ registros",
+                                      infoFiltered: '(filtrado de _MAX_ registros totales)',
+                                      search: "Buscar:",
+                                      paginate: {
+                                          first: "Primero",
+                                          last: "Último",
+                                          next: "Siguiente",
+                                          previous: "Anterior",
+                                      },
+                                  }
+                              });
+                          });
+                  });
+
+              $('#BTNCierre').on('click',
+                  function () {
+                      $('#BTNCierre').hide();
+                      $('#ipv').DataTable().clear().destroy();
+                      const url = '@Url.Action("CierreJsonResult", "Operacion")';
+                      const fecha = document.getElementById("fecha").value;
+                      const puntoId = document.getElementById("punto_ventaid").value;
+                      const categid = document.getElementById("categoriaid").value;
+                      var tSimport = 0;
+                      var tEimport = 0;
+                      var tVimport = 0;
+                      var tDimport = 0;
+                      var tMimport = 0;
+                      var tFimport = 0;
+                            $.getJSON(url,
+                                { fecha: fecha, pventa: puntoId, categ: categid },
+                                function (data) {
+                                    $.each(data,
+                                        function (i, item) {
+                                            $('#ipv').append('<tr><td>' + item.cod + '</td>' + '<td>' + item.producto + '</td>' + '<td>' + item.unidad + '</td>' + '<td>' + item.final_saldo + '</td>' + '<td>' + item.final_importe + '</td>' + '<td>' + item.cantidad_entrada + '</td>' + '<td>' + item.importe_entrada + '</td>' + '<td>' + item.cantidad_venta + '</td>' + '<td>' + item.precio_venta + '</td>' + '<td>' + item.importe_venta + '</td>' + '<td>' + item.cantidad_devolucion + '</td>' + '<td>' + item.importe_devolucion + '</td>' + '<td>' + item.cantidad_merma + '</td>' + '<td>' + item.final_saldo + '</td>' + '<td>' + item.final_importe + '</td></tr>');
+                                            tSimport = tSimport + item.importe_saldo;
+                                            tEimport = tEimport + item.importe_entrada;
+                                            tVimport = tVimport + item.importe_venta;
+                                            tDimport = tDimport + item.importe_devolucion;
+                                            tMimport = tMimport + item.importe_merma;
+                                        });
+                                    tFimport = (tSimport + tEimport) - (tVimport + tDimport + tMimport);
+                                    $('#ipv').append('<tr><td></td><td></td><td></td><td></td><td>' + (tFimport.toFixed(2)) + '</td><td></td><td>' + (tEimport.toFixed(2)) + '</td><td></td><td></td><td>' + (tVimport.toFixed(2)) + '</td><td></td><td>' + (tDimport.toFixed(2)) + '</td><td></td><td></td><td>' + (tFimport.toFixed(2)) + '</td></tr>');
+                                    $('#ipv').DataTable({
+                                        pageLength: 250,
+                                        dom: '<"html5buttons"B>lTfgitp',
+                                        header: true,
+                                        order: [[3, "desc"]],
+                                        buttons: [
+                                            { extend: 'excel', title: 'CIERRE' },
+                                            {
+                                                extend: 'print',
+                                                title: '',
+                                                orientation: 'landscape',
+                                                customize: function (win) {
+                                                    $(win.document.body).addClass('white-bg');
+                                                    $(win.document.body).css('font-size', 'inherit');
+                                                    $(win.document.body).find('thead').empty();
+                                                    $(win.document.body).find('thead').append('<tr>< td colspan = "12" ></td ><td colspan="3">FECHA:' + fecha + '</td></tr ><tr><td colspan="15"> IPV PUNTO DE VENTA: ' + puntoId + '</td></tr><tr><td rowspan="2">CÓDIGO</td><td rowspan="2">PRODUCTO</td><td rowspan="2">U/M</td><td colspan="2">SALDO INICIAL</td><td colspan="2">ENTRADAS</td><td colspan="3">VENTAS</td><td colspan="2">DEVOLUCIÓN</td><td>MERMAS</td><td colspan="2">SALDO FINAL</td></tr><tr><td> CANT.</td><td>IMP.</td><td>CANT.</td><td>IMP.</td><td>CANT.</td><td>PRECIO</td><td>IMP.</td><td>CANT.</td><td>IMP.</td><td>CANT</td><td>CANT.</td><td>IMP.</td></tr >');
+                                                    $(win.document.body).find('table').addClass('compact').css('font-size', 'inherit');
+
+                                                    // Asegurar que se selecciona una sola página para imprimir por defecto
+                                                    $(win.document.body).css('page-break-after', 'always');
+
+                                                    // Añadir bordes inferiores a las filas de la tabla
+                                                    $(win.document.body).find('table tr').css('border-bottom', '1px solid black');
+                                                }
+                                            },
+                                        ], language: {
+                                            "sProcessing": "Procesando...",
+                                            "sLengthMenu": "Mostrar _MENU_ registros",
+                                            "sZeroRecords": "No se encontraron resultados",
+                                            "sEmptyTable": "Ningún dato disponible en esta tabla",
+                                            "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                            "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                            "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                                            "sInfoPostFix": "",
+                                            "sSearch": "Buscar:",
+                                            "sUrl": "",
+                                            "sInfoThousands": ",",
+                                            "sLoadingRecords": "Cargando...",
+                                            "oPaginate": {
+                                                "sFirst": "Primero",
+                                                "sLast": "Último",
+                                                "sNext": "Siguiente",
+                                                "sPrevious": "Anterior"
+                                            },
+                                            "oAria": {
+                                                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                                                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                                            }
+                                        }
+                                    });
+                                });
+                        });
+
+          });
+          $(document).ajaxStart(function () {
+              $('#ajaxLoader').show();
+
+          });
+
+          $(document).ajaxComplete(function () {
+              $('#ajaxLoader').hide();
+          });
+    </script>
+}

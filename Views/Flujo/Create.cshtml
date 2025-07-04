@@ -1,0 +1,172 @@
+﻿@model vercom.Models.flujo
+@{
+    ViewBag.Title = "Flujo de efectivo";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>FLUJO DE EFECTIVO</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Operacion")">Flujo de efectivo</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>Agregar</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>FLUJO DE EFECTIVO <small>datos de la operación</small></h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="fullscreen-link">
+                            <i class="fa fa-expand"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div id="ajaxLoader" style="display: none">
+                        <div class="sk-cube-grid">
+                            <div class="sk-cube sk-cube1"></div>
+                            <div class="sk-cube sk-cube2"></div>
+                            <div class="sk-cube sk-cube3"></div>
+                            <div class="sk-cube sk-cube4"></div>
+                            <div class="sk-cube sk-cube5"></div>
+                            <div class="sk-cube sk-cube6"></div>
+                            <div class="sk-cube sk-cube7"></div>
+                            <div class="sk-cube sk-cube8"></div>
+                            <div class="sk-cube sk-cube9"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 b-r">
+                            <form role="form" method="post" action="@Url.Action("Create", "Flujo")">
+                                @Html.AntiForgeryToken()
+                                <div class="form-group" id="data_1">
+                                    <label class="font-normal">FECHA</label>
+                                    <div class="input-group date">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" name="fecha" id="fecha" class="form-control" value="@DateTime.Now.ToString("d")" required>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.fecha)
+                                </div>
+                                <div class="form-group">
+                                    <label>AREA ECÓNOMICA</label>
+                                    @Html.DropDownList("areaid", null, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.areaid, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group">
+                                    <label>TIPO DE FLUJO</label>
+                                    @Html.DropDownList("tipo_flujoid", null, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.tipo_flujoid, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group">
+                                    <div class="i-checks"><label> <div class="icheckbox_square-green"><input type="checkbox" id="venta-directa" value="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style=""></ins></div> <i></i>  VENTA DIRECTA</label></div>
+                                </div>
+                                <div class="form-group">
+                                    <label>CONCEPTO</label>
+                                    @Html.EditorFor(model => model.concepto, new { htmlAttributes = new { @class = "form-control", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.concepto, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group" style="display: none" id="campo-cantidad">
+                                    <label>CANTIDAD</label>
+                                    @Html.EditorFor(model => model.cantidad, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.cantidad, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group" style="display:none" id="campo-precio">
+                                    <label>PRECIO</label>
+                                    @Html.EditorFor(model => model.precio, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.precio, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group">
+                                    <label>IMPORTE</label>
+                                    @Html.EditorFor(model => model.importe, new { htmlAttributes = new { @class = "form-control", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.importe, "", new { @class = "text-danger" })
+                                </div>
+                                <div>
+                                    <a href="@Url.Action("Index")" class="btn btn-default float-left m-t-n-xs"><i class="fa fa-arrow-left"></i> REGRESAR</a>
+                                    <button class="btn btn-sm btn-outline-primary float-right m-t-n-xs" type="submit"><strong>AGREGAR</strong></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles {
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/iCheck")
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#data_1 .input-group.date').datepicker({
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                format: "dd/mm/yyyy",
+                forceParse: false,
+                calendarWeeks: true,
+                autoclose: true
+            });
+
+      
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+            const value = $('#venta-directa').iCheck('update')[0].checked;
+
+            $('#tipo_flujoid').on('change', function () {
+                var tipo = document.getElementById("tipo_flujoid").value;
+                if (tipo == 2) {
+                    $('.i-checks').iCheck('uncheck');
+                    $('.i-checks').hide();
+                } else {
+                    $('.i-checks').show();
+                }
+            });
+
+            $('.i-checks').on('ifChanged', function (event) {
+                if (event.target.checked) {
+                    $('#campo-cantidad').show();
+                    $('#campo-precio').show();
+                } else {
+                    document.getElementById("campo-cantidad").value = null;
+                    document.getElementById("campo-precio").value = null;
+                    $('#campo-cantidad').hide();
+                    $('#campo-precio').hide();
+                }
+
+            });
+
+            $('#cantidad').change(function () {
+                let precio = document.getElementById("precio").value;
+                let cantidad = document.getElementById("cantidad").value;
+                let a = new Decimal(precio);
+                let b = new Decimal(cantidad);
+                let c = a.mul(b).toNumber();   
+            });
+        });
+    </script>
+}

@@ -1,0 +1,8 @@
+﻿@model List<vercom.Models.unidad>
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <option value="@item.id">@item.unidad1</option>
+    }
+}

@@ -1,0 +1,68 @@
+﻿@model vercom.Models.operacion
+<form role="form">
+    <div class="form-group" id="data_5">
+        <label for="star" class="sr-only">RANGO DE FECHA</label>@{
+            //Primero obtenemos el día actual
+            var date = DateTime.Now;
+
+            //Asi obtenemos el primer dia del mes actual
+            var oPrimerDiaDelMes = new DateTime(date.Year, date.Month, 1);
+
+            //Y de la siguiente forma obtenemos el ultimo dia del mes
+            //agregamos 1 mes al objeto anterior y restamos 1 día.
+            var oUltimoDiaDelMes = oPrimerDiaDelMes.AddMonths(1).AddDays(-1);
+        }
+        <div class="input-daterange input-group" id="datepicker">
+            <input type="text" class="input-sm form-control" name="start" id="star" value="@oPrimerDiaDelMes.ToString("d")" />
+            <span class="input-group-addon">al</span>
+            <input type="text" class="input-sm form-control" name="end" id="end" value="@oUltimoDiaDelMes.ToString("d")" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="tipo_operacionid" class="sr-only">TIPO DE OPERACION</label>
+        <select class="form-control" name="tipo_operacionid" id="tipo_operacionid">
+            <option value="">tipo de operación..</option>
+            @Html.Action("_listoperaciontipo", "Parcial")
+        </select>
+        @Html.ValidationMessageFor(model => model.tipo_operacionid)
+    </div>
+    <div class="form-group" id="form_pventa">
+        <label for="punto_ventaid" class="sr-only">PUNTO DE VENTA</label>
+        <select class="form-control" name="punto_ventaid" id="punto_ventaid" required="">
+            <option value="0">punto de venta...</option>
+            @Html.Action("_listapuntos", "Parcial")
+        </select>
+        @Html.ValidationMessageFor(model => model.punto_ventaid)
+    </div>
+    <div class="form-group" id="form_categoria">
+        <label for="cat" class="sr-only">CATEGORÍA</label>
+        <select class="form-control" name="cat" id="cat" required="">
+            <option value="0">categoría...</option>
+            @Html.Action("_listcategorias", "Parcial")
+        </select>
+    </div>
+    <div class="form-group" id="form_tipPago">
+        <label for="tipo_pagoid" class="sr-only">ÁREA ECONÓMICA</label>
+        <select class="form-control" name="areaid" id="areaid">
+            <option value="0">área económica..</option>
+            @Html.Action("_listareas", "Parcial")
+        </select>
+        @Html.ValidationMessageFor(model => model.tipo_pagoid)
+    </div>
+    <div class="form-group" id="form_producto">
+        <label for="productoid" class="sr-only">PRODUCTO</label>
+        <select class="form-control" name="productoid" id="productoid" required="">
+            <option value="0">producto...</option>
+            @Html.Action("_listtproductos", "Parcial")
+        </select>
+    </div>
+    <div class="form-group" id="form_tipPago">
+        <label for="tipo_pagoid" class="sr-only">TIPO DE PAGO</label>
+        <select class="form-control" name="tipo_pagoid" id="tipo_pagoid">
+            <option value="0">tipo de pago..</option>
+            @Html.Action("_listtipopago", "Parcial")
+        </select>
+        @Html.ValidationMessageFor(model => model.tipo_pagoid)
+    </div>
+    <button class="btn btn-outline-success float-right m-t-n-xs" id="filterOper" type="button">FILTRAR</button>
+</form>  

@@ -1,0 +1,64 @@
+﻿@model vercom.Models.operacion
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>operacion</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.producto.cod)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.producto.cod)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.punto_venta.nombre)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.punto_venta.nombre)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.fecha)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.fecha)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.cantidad)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.cantidad)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.importe)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.importe)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.tipo_pago.tipo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.tipo_pago.tipo)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.tipo_operacion.tipo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.tipo_operacion.tipo)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

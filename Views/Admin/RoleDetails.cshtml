@@ -1,0 +1,166 @@
+﻿@model vercom.Models.Roles
+@{
+    ViewBag.Title = "Roles";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>PANEL DE ADMINISTRACÓN</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Home")">Inicio</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Admin")">Administrar</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("PermissionIndex", "Admin")">Roles</a>
+            </li>
+            <li class="active breadcrumb-item">
+                Destalles del rol:
+                <strong>@Model.RoleName</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Detalles del rol: <small class="m-l-sm">@Model.RoleName</small></h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="fullscreen-link">
+                            <i class="fa fa-expand"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-4 b-r ">
+                            <dl class="row mb-0">
+                                <div class="col-sm-12 text-sm-right">
+                                    <a class="btn-outline-success btn btn-xs" href="@Url.Action("RoleEdit", "Admin", new {id = Model.RoleID})"><i class="fa fa-edit"></i> EDITAR</a>
+                                </div>
+                            </dl>
+                            <dl class="row mb-0">
+                                <div class="col-sm-4 text-sm-right">
+                                    <dt>NOMBRE DEL ROL:</dt>
+                                </div>
+                                <div class="col-sm-8 text-sm-left">
+                                    <dd class="mb-1">@Model.RoleName</dd>
+                                </div>
+                            </dl>
+                            <dl class="row mb-0">
+                                <div class="col-sm-4 text-sm-right">
+                                    <dt>DESCRIPCCIÓN:</dt>
+                                </div>
+                                <div class="col-sm-8 text-sm-left">
+                                    <dd class="mb-1">@Model.RoleDescription</dd>
+                                </div>
+                            </dl>
+
+                            <dl class="row mb-0">
+                                <div class="col-sm-4 text-sm-right">
+                                    <dt>SYS ROL:</dt>
+                                </div>
+                                <div class="col-sm-8 text-sm-left">
+                                    <dd class="mb-1"> @Model.IsSysAdmin</dd>
+                                </div>
+                            </dl>
+                        </div>
+                        <div class="col-sm-8 b-r ">
+                            <div id="PermissionsTable">
+                                @Html.Partial("_ListPermissions", Model)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12" style="text-align: right">
+                        <a href="@Url.Action("RoleIndex")" class="btn btn-default"><i class="fa fa-arrow-left"></i> Regresar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/sweetAlertStyles")
+    <style>
+        div.dataTables_wrapper div.dataTables_filter input {
+            width: 250px;
+        }
+    </style>
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/sweetAlert")
+    <script>
+    $(document).ready(function () {
+        $(document).on('click', '.deleteButton', function () {
+
+            var _permissionId = $(this).data('id');
+            var _id = $(this).data('rolid');
+
+            swal({
+                title: "Estas seguro?",
+                text: "Esta acción es irrebercible!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Si, eliminar!",
+                cancelButtonText: "No, cancelar!",
+                closeOnConfirm: true,
+            },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            url: '@Url.Action("DeletePermissionFromRoleReturnPartialView", "Admin")',
+                            type: "GET",
+                            data: { id: _id, permissionId: _permissionId },
+                            success: function (response) {
+                                if (response.success) {
+                                    $('#row_' + _id).remove();
+                                } else {
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                            }
+                        });
+                    }
+                });
+        });
+    });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#permisosTable').DataTable({
+                pageLength: 15,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+
+                ], language: {
+                    info: "Mostrando _START_ de _TOTAL_ registros",
+                    infoFiltered: '(filtrado de _MAX_ registros totales)',
+                    search: "Buscar:",
+                    paginate: {
+                        first: "Primero",
+                        last: "Último",
+                        next: "Siguiente",
+                        previous: "Anterior",
+                    },
+                }
+
+            });
+        });
+    </script>
+}
+
+

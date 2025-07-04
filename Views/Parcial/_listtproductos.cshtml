@@ -1,0 +1,8 @@
+﻿@model List<vercom.Models.producto>
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <option value="@item.id" data-precio="@item.precio">( @item.cod ) - @item.nombre</option>
+    }
+}
