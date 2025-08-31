@@ -6,76 +6,117 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VERCOM | CREAR CUENTA</title>
-    <link href="~/Content/bootstrap.min.css" rel="stylesheet">
-    <link href="~/Fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
-    <link href="~/Content/animate.css" rel="stylesheet">
-    <link href="~/Content/style.css" rel="stylesheet">
+    <title>VERCOM | REGISTRAR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Inspinia is the #1 best-selling admin dashboard template on Wrapmarket. Perfect for building CRM, CMS, project management tools, and custom web apps with clean UI, responsive design, and powerful features.">
+    <meta name="keywords" content="Inspinia, admin dashboard, Wrapmarket, Wrapbootstrap, HTML template, Bootstrap admin, CRM template, CMS template, responsive admin, web app UI, admin theme, best admin template">
+    <meta name="author" content="WebAppLayers">
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="~/Content/images/favicon.ico">
+    <!-- Theme Config Js -->
+    <script src="~/Scripts/config.js"></script>
+    <!-- Vendor css -->
+    <link href="~/Content/vendors.min.css" rel="stylesheet" />
+    <!-- App css -->
+    <link href="~/Content/app.min.css" rel="stylesheet" />
     <link href="~/Content/logoanimate.css" rel="stylesheet" />
 </head>
-<body class="gray-bg area">
-    <ul class="circles">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
-    <div class="loginColumns animated fadeInDown">
-        <div class="row">
-            <div class="col-md-6" style="text-align:center">
-                <img src="~/vercom.png" alt="Logo de VERCOM" class="logo" />
-                <h2 class="font-bold">BIENVENIDO A VERCOM</h2>
-                <p>"Las personas no compran bienes y servicios. Compran relaciones, historias y magia."</p>
-                <p class="float-lg-right" style="margin-right:10%"><small>Seth Godin</small></p>
-            </div>
-            <div class="col-md-6">
-                <div class="ibox-content">
-                    @{
-                        if (User.Identity.IsAuthenticated)
-                        {
-                            <script>
-                                window.location.href = '@Url.Action("Index", "Home")';
-                            </script>
-                        }
-                    }
-                    <form class="m-t" role="form" action="@Url.Action("Register", "Account")" method="post">
-                        @Html.AntiForgeryToken()
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="Username" id="Username" placeholder="usuario" required="">
-                            @Html.ValidationMessageFor(model => model.UserName)
+<body>
+    <div class="auth-box d-flex">
+        <div class="container-xxl">
+            <div class="row justify-content-center">
+                <ul class="circles">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+                <div class="col-xl-7">
+                    <div class="card rounded-3">
+                        <div class="row g-0">
+                            <div class="col-6 border-end border-dashed d-lg-block align-content-around rounded-3">
+                                <div class="auth-brand text-center mb-4">
+                                    <a href="index.html" class="logo-dark">
+                                        <img src="~/logo.png" alt="logo" class="logo" height="32" />
+                                    </a>
+                                    <a href="index.html" class="logo-light">
+                                        <img src="~/logo.png" alt="logo" class="logo" height="32" />
+                                    </a>
+                                    <h4 class="fw-bold mt-4">Bienvenido a VERCOM</h4>
+                                    <p class="text-muted w-lg-75 mx-auto">"Las personas no compran bienes y servicios. Compran relaciones, historias y magia."</p>
+                                    <p class="text-muted w-lg-75 mx-auto" style="margin-left:10%">Seth Godin</p>
+                                </div>
+                            </div>
+                            <div class="col-6 d-none d-lg-block">
+                                <div class="card-body">
+                                    <form class="mt-4" role="form" action="@Url.Action("Register", "Account")" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <div class="mb-3">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control py-2 px-3" name="Username" id="Username" placeholder="usuario" required="">
+                                                @Html.ValidationMessageFor(model => model.UserName)
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="input-group">
+                                                <input type="email" class="form-control py-2 px-3" name="Email" id="Email" placeholder="correo" required="">
+                                                @Html.ValidationMessageFor(model => model.Email)
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="input-group">
+                                                <input type="password" class="form-control py-2 px-3 bg-light bg-opacity-40 border-light" name="Password" id="Password" placeholder="contraseña" required="">
+                                                @Html.ValidationMessageFor(model => model.Password)
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="input-group">
+                                                <input type="password" class="form-control py-2 px-3 bg-light bg-opacity-40 border-light" name="PasswordConfirma" id="PasswordConfirma" placeholder="confirmar contraseña" required="">
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input form-check-input-light fs-14" type="checkbox" id="rememberMe">
+                                                <label class="form-check-label" for="rememberMe">Recuerdame</label>
+                                            </div>
+                                            <a href="auth-3-reset-pass.html" class="text-decoration-underline link-offset-3 text-muted">Olvide mi contraseña</a>
+                                        </div>
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary fw-bold py-2">Autenticarse</button>
+                                        </div>
+                                    </form>
+                                    <p class="text-muted text-center mt-4 mb-0">
+                                        Ya tienes una cuenta? <a href="@Url.Action("Login", "Account")" class="text-decoration-underline link-offset-3 fw-semibold">Autenticarse</a>
+                                    </p>
+                                    <p class="text-muted text-center mt-4 mb-0">
+                                        VERCOM by <span class="fw-semibold">yordanisvc@gmail.com</span>
+                                    </p>
+                                    <p class="text-muted text-center">
+                                        © 2024 -
+                                        <script>document.write(new Date().getFullYear())</script>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <input type="email" class="form-control" name="Email" id="Email" placeholder="correo" required="">
-                            @Html.ValidationMessageFor(model => model.Email)
-                        </div>
-                        <div class="form-group">
-                            <input type="password" class="form-control" name="Password" id="Password" placeholder="contraseña" required="">
-                            @Html.ValidationMessageFor(model => model.Password)
-                        </div>
-                        <div class="form-group">
-                            <input type="password" class="form-control" name="PasswordConfirma" id="PasswordConfirma" placeholder="confirmar contraseña" required="">
-                        </div>
-                        <button type="submit" class="btn btn-outline-primary block full-width m-b">REGISTRAR</button>
-                        <p class="text-muted text-center"><small>Ya tienes una cuenta?</small></p>
-                        <a class="btn btn-sm btn-white btn-block" href="@Url.Action("Login", "Account")">ENTRAR</a>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
-        <hr />
-        <div class="row">
-            <div class="col-md-6">
-                VERCOM <small>© 2024-2025</small> yordanisvc@gmail.com
-            </div>
-        </div>
     </div>
+    @{
+        if (User.Identity.IsAuthenticated)
+        {
+            <script>
+                    window.location.href = '@Url.Action("Index", "Home")';
+            </script>
+        }
+    }
 </body>
 </html>
 

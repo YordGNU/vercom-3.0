@@ -1,64 +1,462 @@
-﻿@model vercom.Models.operacion
-
+﻿@model IEnumerable<vercom.Interfaces.iOperacion>
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "DETALLES";
+}
+<div class="page-title-head d-flex align-items-center">
+    <div class="flex-grow-1">
+        <h4 class="fs-sm text-uppercase fw-bold m-0">OPERACIONES</h4>
+    </div>
+    <div class="text-end">
+        <ol class="breadcrumb m-0 py-0">
+            <li class="breadcrumb-item">
+                <a href="javascript: void(0);">VERCOM</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="javascript: void(0);">OPERACIONES</a>
+            </li>
+            <li class="breadcrumb-item active">DETALLES</li>
+        </ol>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <!-- Simple card -->
+        <div class="card">
+            <div class="card-body">
+                <form>
+                    <div class="row gy-2 gx-2 align-items-center">
+                        <div class="col-auto">
+                            <div class="input-group mb-2">
+                                <div class="input-group-text"><i data-lucide="calendar"></i></div>
+                                <input type="text" name="fecha" id="fecha" value="@DateTime.Now.ToString("d")" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="input-group mb-2">
+                                <div class="input-group-text"><i data-lucide="package"></i></div>
+                                <select class="form-control" name="tipo_operacionid" id="tipo_operacionid">
+                                    <option value="0">Tipo de operación</option>
+                                    @Html.Action("_listoperaciontipo", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-auto" id="tipPago" style="display: none">
+                            <div class="input-group mb-2">
+                                <div class="input-group-text"><i data-lucide="package" class="app-search-icon text-muted"></i></div>
+                                <select class="form-control" name="tipo_pagoid" id="tipo_pagoid">
+                                    <option value="0">Tipo de pago</option>
+                                    @Html.Action("_listtipopago", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="input-group mb-2">
+                                <div class="input-group-text"><i data-lucide="store" class="app-search-icon text-muted"></i></div>
+                                <select class="form-control" name="punto_ventaid" id="punto_ventaid" required="">
+                                    <option value="0">Punto de venta</option>
+                                    @Html.Action("_listapuntos", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="input-group mb-2">
+                                <div class="input-group-text"><i data-lucide="tag" class="app-search-icon text-muted"></i></div>
+                                <select class="form-control" name="categoriaid" id="categoriaid" required="">
+                                    <option value="0">Categoría</option>
+                                    @Html.Action("_listcategorias", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="input-group-lg mb-2">
+                                <select class="form-control" name="productoid" id="productoid" required="">
+                                    <option value="0">Producto</option>
+                                    @Html.Action("_listtproductos", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-primary mb-2" id="filterOper">
+                                <i data-lucide="filter" class="fs-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- end card-body-->
+        </div>
+        <!-- end card-->
+    </div>
+    <!-- end col -->
+</div>
+<div class="row" id="bloque-Toperaciones">
+    <div class="col-12">
+        <div data-table="" data-table-rows-per-page="100" class="card">
+            <div class="card-header border-light justify-content-between">
+                <div class="d-flex gap-2">
+                    <div class="app-search">
+                        <input data-table-search="" type="search" class="form-control" placeholder="Buscar por nombre...">
+                        <i data-lucide="search" class="app-search-icon text-muted"></i>
+                    </div>
+                    <button data-table-delete-selected="" data-table-delete-url="@Url.Action("EliminarMultiples","Operacion")" type="button" class="btn btn-danger btn-icon d-none">
+                        <i class="ti ti-trash fs-xl"></i>
+                    </button>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="me-2 fw-semibold">Filtrar por:</span>
+                    <!-- Operacion Filter -->
+                    <div class="app-search">
+                        <select data-table-filter="TIPOOPER" class="form-select form-control my-1 my-md-0">
+                            <option value="All">Tipo de operación</option>
+                            @Html.Action("_listoperaciontipoName", "Parcial")
+                        </select>
+                    </div>
+                    <!-- Category Filter -->
+                    <div class="app-search">
+                        <select data-table-filter="CATEGORIA" class="form-select form-control my-1 my-md-0">
+                            <option value="All">Categoría</option>
+                            @Html.Action("_listcategoriasName", "Parcial")
+                        </select>
+                    </div>
+                    <!-- Punto Filter -->
+                    <div class="app-search">
+                        <select data-table-filter="PUNTO" class="form-select form-control my-1 my-md-0">
+                            <option value="All">Punto de venta</option>
+                            @Html.Action("_listapuntosName", "Parcial")
+                        </select>
+                    </div>
+                    <!-- Records Per Page -->
+                    <div>
+                        <select data-table-set-rows-per-page="" class="form-select form-control my-1 my-md-0">
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex gap-1">
+                    <a href="@Url.Action("Create","Operacion")" class="btn btn-secondary btn-icon">
+                        <i class="ti ti-plus fs-xxl"></i>
+                    </a>
+                    <button class="btn btn-primary btn-icon" id="btnExportExcel">
+                        <i data-lucide="file-spreadsheet" class="fs-lg"></i>
+                    </button>
+                    <button class="btn btn-info btn-icon" id="btnPrint">
+                        <i data-lucide="printer" class="fs-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom table-centered table-select table-hover w-100 mb-0" id="OperacionTable">
+                    <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                        <tr class="text-uppercase fs-xxs">
+                            <th class="ps-3 noExport" style="width: 1%;" data-exclude="true">
+                                <input data-table-select-all="" class="form-check-input form-check-input-light fs-14 mt-0" type="checkbox" id="select-all-products" value="option">
+                            </th>
+                            <th data-table-sort="" data-column="FECHA">FECHA</th>
+                            <th data-table-sort="" data-column="TIPOOPER">TIPO DE OPERACIÓN</th>
+                            <th data-table-sort="" data-column="CATEGORIA">CATEGORIA</th>
+                            <th data-table-sort="" data-column="PUNTO">PUNTO DE VENTA</th>
+                            <th data-table-sort="" data-column="COD. PRODUCTO">COD. PRODUCTO</th>
+                            <th data-table-sort="" data-column="PRODUCTO">PRODUCTO</th>
+                            <th data-table-sort="" data-column="CANTIDAD">CANTIDAD</th>
+                            <th data-table-sort="" data-column="UNIDAD">UNIDAD</th>
+                            <th data-table-sort="" data-column="IMPORTE">IMPORTE</th>
+                            <th class="text-center noExport" style="width: 1%;" data-exclude="true">ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="noExport">
+                                    <input class="form-check-input form-check-input-light fs-14 product-item-check mt-0" type="checkbox" value="@item.id">
+                                </td>
+                                <td>@item.FechaTexto</td>
+                                <td>@item.tipo_operacion</td>
+                                <td>@item.categoria</td>
+                                <td>@item.punto_venta</td>
+                                <td>@item.prod_cod</td>
+                                <td>@item.prod_nombre</td>
+                                <td>@item.cantidad</td>
+                                <td>@item.unidad</td>
+                                <td>@item.importe</td>
+                                <td class="noExport">
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <a href="@Url.Action("Edit", "Operacion")/@item.id" class="btn btn-light btn-icon btn-sm rounded-circle"><i class="ti ti-edit fs-lg"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div data-table-pagination-info="entradas"></div>
+                    <div data-table-pagination=""></div>
+                </div>
+            </div>
+        </div>
+    </div><!-- end col -->
+</div><!-- end row -->
+@section Styles {
+    <link href="~/Content/plugins/toastr/toastr.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
 }
 
-<h2>Details</h2>
+@section Scripts {
+    <script src="~/Scripts/plugins/toastr/toastr.min.js"></script>
+    <script src="~/Scripts/plugins/moment/moment.min.js"></script>
+    <script src="~/Scripts/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/Scripts/plugins/choices/choices.min.js"></script>
+    <script src="~/Scripts/plugins/table2excel/table2excel.js"></script>
+    <script src="~/Scripts/custom-table.js"></script>
+    <script>
+        $(document).ready(function () {
 
-<fieldset>
-    <legend>operacion</legend>
+            window.customTable = new CustomTable();
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.producto.cod)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.producto.cod)
-    </div>
+            const selectProductos = document.getElementById('productoid');
+            const choicesProductos = new Choices(selectProductos, {
+                removeItemButton: true,
+                searchEnabled: true,
+                placeholderValue: 'Producto',
+            });
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.punto_venta.nombre)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.punto_venta.nombre)
-    </div>
+            const formato = 'DD/MM/YYYY';
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.fecha)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.fecha)
-    </div>
+            $('#fecha').daterangepicker({
+                startDate: moment().startOf('month'),
+                endDate: moment().endOf('month'),
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: true,
+                cancelClass: "btn-light",
+                applyButtonClasses: "btn-success",
+                opens: 'left',
+                locale: {
+                    format: formato,
+                    separator: ' - ',
+                    applyLabel: 'Aplicar',
+                    cancelLabel: 'Cancelar',
+                    fromLabel: 'Desde',
+                    toLabel: 'Hasta',
+                    customRangeLabel: 'Personalizado',
+                    daysOfWeek: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+                    monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                    firstDay: 1
+                }
+            }, function (start) {
+                $('#fecha').val(start.format(formato));
+            });
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.cantidad)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.cantidad)
-    </div>
+            $('#tipo_operacionid').on('change', function () {
+                var tipo = document.getElementById("tipo_operacionid").value;
+                if (tipo == 2) {
+                    $('#tipPago').show();
+                } else {
+                    document.getElementById("tipo_pagoid").value = null;
+                    $('#tipPago').hide();
+                }
+            });
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.importe)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.importe)
-    </div>
+            $('#filterOper').on('click', function () {
+                var url = '@Url.Action("listFilterOperacion", "Operacion")';
+                const bloqueID = '#bloque-Toperaciones';
+                var fecha = document.getElementById("fecha").value;
+                var tperacion = document.getElementById("tipo_operacionid").value;
+                var tpago = document.getElementById("tipo_pagoid").value;
+                var pventa = document.getElementById("punto_ventaid").value;
+                var categ = document.getElementById("categoriaid").value;
+                var prod = document.getElementById("productoid").value;
+                activarOverlayEnContenedor(bloqueID);
+                $.getJSON(url, { fecha: fecha, tperacion: tperacion, tpago: tpago, pventa: pventa, categ: categ, prod: prod }).done(data => refreshTable(data)).always(() => desactivarOverlayEnContenedor(bloqueID));
+            });
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.tipo_pago.tipo)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.tipo_pago.tipo)
-    </div>
+            function refreshTable(data) {
+                // 1. Localiza <table> y su instancia
+                const tableEl = document.querySelector('[data-table]');
+                const instance = window.customTable.tables.find(t => t.table === tableEl);
+                const tbody = tableEl.querySelector("tbody");
+                tbody.innerHTML = "";
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.tipo_operacion.tipo)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.tipo_operacion.tipo)
-    </div>
-</fieldset>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+                const rows = data.map(item => {
+                    const tr = document.createElement('tr');
+                    tr.id = `${item.id}`;
+                    tr.innerHTML = `
+                    <td class="noExport">
+                    <input class="form-check-input form-check-input-light fs-14 product-item-check mt-0" type="checkbox" value="${item.id}">
+                    </td>
+                    <td>${item.FechaTexto}</td>
+                    <td>${item.tipo_operacion}</td>
+                    <td>${item.categoria} </td>
+                    <td>${item.punto_venta}</td>
+                    <td>${item.prod_cod}</td>
+                    <td>${item.prod_nombre}</td>
+                    <td>${item.cantidad}</td>
+                    <td>${item.unidad}</td>
+                    <td>${item.importe}</td>
+                    <td class="noExport">
+                    <div class="d-flex justify-content-center gap-1">
+                    <a href="@Url.Action("Edit", "Operacion")/${item.id}" class="btn btn-light btn-icon btn-sm rounded-circle"><i class="ti ti-edit fs-lg"></i></a>
+                    </div>
+                    </td>`;
+                    return tr;
+                });
+                instance.fullRefresh(rows);
+                setupCheckboxListeners();
+            }
+
+            function setupCheckboxListeners() {
+                let tableEl = document.querySelector('[data-table]');
+                let btnDeleteSelected = document.querySelector('[data-table-delete-selected]');
+                let e = tableEl.querySelector("tbody");
+                let checkAllCheckBox = document.querySelector("#select-all-products");
+                let t = e.querySelectorAll('input[type="checkbox"]');
+                let rows = Array.from(e.querySelectorAll("tr"));
+                let filteredRows = [...rows];
+
+                checkAllCheckBox &&
+                    0 < t.length &&
+                    t.forEach((e) => {
+                        e.addEventListener("change", () => {
+                            var e = Array.from(t).some((e) => e.checked);
+                            btnDeleteSelected &&
+                                0 < filteredRows.length &&
+                                btnDeleteSelected.classList.toggle("d-none", !e);
+                        });
+                    });
+            }
+
+            function activarOverlayEnContenedor(contenedorID) {
+                const contenedor = document.querySelector(contenedorID);
+                if (!contenedor) return;
+
+                const cards = contenedor.querySelectorAll('.card');
+                cards.forEach(card => {
+                    let overlay = card.querySelector('.card-overlay');
+                    if (!overlay) {
+                        overlay = document.createElement('div');
+                        overlay.classList.add(
+                            'card-overlay',
+                            'position-absolute',
+                            'top-0',
+                            'start-0',
+                            'w-100',
+                            'h-100',
+                            'd-flex',
+                            'justify-content-center',
+                            'align-items-center',
+                            'noExport'
+                        );
+
+                        overlay.style.zIndex = '10';
+                        const spinner = document.createElement('div');
+                        spinner.classList.add('spinner-border', 'text-primary');
+                        spinner.setAttribute('role', 'status');
+                        const label = document.createElement('span');
+                        label.classList.add('visually-hidden');
+                        label.textContent = 'Cargando...';
+                        spinner.appendChild(label);
+                        overlay.appendChild(spinner);
+                        card.appendChild(overlay);
+                    }
+
+                    overlay.style.display = 'flex';
+                    $(overlay).hide().fadeIn(200);
+                });
+            }
+
+            function desactivarOverlayEnContenedor(contenedorID) {
+                const contenedor = document.querySelector(contenedorID);
+                if (!contenedor) return;
+                const overlays = contenedor.querySelectorAll('.card .card-overlay');
+                overlays.forEach(overlay => {
+                    $(overlay).fadeOut(200, () => overlay.remove());
+                });
+            }
+
+            document.getElementById("btnExportExcel").addEventListener("click", function () {
+                const exporter = new Table2Excel();
+                // Clona la tabla para no afectar el original
+                let tablaClonada = $("#OperacionTable").clone();
+                // Elimina las columnas que no deseas
+                tablaClonada.find("th:nth-child(1), td:nth-child(1)").remove(); // 1
+                tablaClonada.find("th:nth-child(10), td:nth-child(10)").remove(); // 10
+                // Export tabla
+                exporter.export(tablaClonada, "Operaciones", {
+                    exclude: ".noExport",
+                    name: "Exportación",
+                    filename: "Operaciones.xlsx",
+                    preserveColors: true
+                });
+
+            });
+            document.getElementById("btnPrint").addEventListener("click", function () {
+                let tablaClonada = $("#OperacionTable").clone();
+                tablaClonada.find(".noExport").remove();
+                const ventana = window.open('', '', 'height=1080,width=1920');
+                ventana.document.write(`
+                 <html>
+                 <head>
+                 <title>IMPRIMIR TABLA OPERACIONES</title>
+                 <style>
+                     body {
+                         font-family: Arial, sans-serif;
+                         margin: 20px;
+                         font-size: 12px;
+                         color: #333;
+                     }
+                     h3 {
+                         margin-bottom: 5px;
+                         color: #004080;
+                     }
+                     p {
+                         margin: 0 0 10px;
+                         font-weight: bold;
+                     }
+                     table {
+                         width: 100%;
+                         border-collapse: collapse;
+                         margin-top: 10px;
+                     }
+                     th, td {
+                         border: 1px solid #999;
+                         padding: 6px 4px;
+                         text-align: center;
+                     }
+                     thead {
+                         background-color: #004080;
+                         color: white;
+                         font-weight: bold;
+                     }
+                     tfoot td {
+                         background-color: #f0f0f0;
+                         font-weight: bold;
+                     }
+                     tr:nth-child(even) td {
+                         background-color: #f9f9f9;
+                     }
+                     media print {
+                         body {
+                             font-size: 12px;
+                         }
+                     }
+                 </style>
+                 </head>
+                 <body>
+                 <h3>📋 Listado de operaciones </h3>
+                 ${tablaClonada[0].outerHTML}
+                 </body>
+                 </html>
+                 `);
+                ventana.document.close();
+                ventana.focus();
+                ventana.print();
+            });
+        });
+    </script>
+}

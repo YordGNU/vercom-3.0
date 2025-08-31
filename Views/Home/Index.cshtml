@@ -1,29 +1,558 @@
-﻿<div class="page-title-head d-flex align-items-center">
-    <div class="flex-grow-1">
-        <h4 class="fs-sm text-uppercase fw-bold m-0">Cards</h4>
-    </div>
+﻿@{
+    ViewBag.Title = "INICIO";
 
+    var date = DateTime.Now;
+    var oPrimerDiaDelMes = new DateTime(date.Year, date.Month, 1);
+    var oUltimoA = oPrimerDiaDelMes.AddYears(-1);
+
+}
+<div class="page-title-head d-flex align-items-center">
+    <div class="flex-grow-1">
+        <h4 class="fs-sm text-uppercase fw-bold m-0">INICIO</h4>
+    </div>
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="javascript: void(0);">Inspinia</a></li>
-
-            <li class="breadcrumb-item"><a href="javascript: void(0);">UI</a></li>
-
-            <li class="breadcrumb-item active">Cards</li>
+            <li class="breadcrumb-item"><a href="#">VERCOM</a></li>
+            <li class="breadcrumb-item active">INICIO</li>
         </ol>
     </div>
 </div>
-<div class="card">
-    <div class="card-header">
-        <h4 class="card-title">Examples</h4>
+<div class="row row-cols-xxl-4 row-cols-md-3 align-items-center g-1" id="bloque-resumen">
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <h5 title="Total Products">Importe</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-primary rounded-circle fs-22">
+                            <i class="ti ti-cash-banknote"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0" id="label_totalImporte">0,00</h3>
+                    <span class="badge badge-soft-secondary fw-medium ms-2 fs-xs ms-auto"
+                          id="label_porcienImporte"></span>
+                </div>
+                <p class="mb-0">
+                    <span class="text-primary"><i class="ti ti-point-filled"></i></span>
+                    <span class="text-nowrap text-muted">Importe total</span>
+                    <span class="float-end"><b id="tlabel_totalImporte"></b></span>
+                </p>
+            </div>         
+        </div>
     </div>
-    <div class="card-body">
-        <p class="text-muted mb-2">
-            Bootstrap’s cards provide a flexible and extensible content container with multiple variants and options.
-        </p>
-        <a class="btn btn-link p-0 fw-semibold" href="https://getbootstrap.com/docs/5.3/components/card/" target="_blank">
-            Cards on Bootstrap
-            <i class="ti ti-chevron-right ms-1"></i>
-        </a>
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <h5 title="Customer Orders">Costo</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-secondary rounded-circle fs-22">
+                            <i class="ti ti-math-cos"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0" id="label_totalCosto">0,00</h3>
+                    <span class="badge badge-soft-secondary fw-medium ms-2 fs-xs ms-auto"
+                          id="label_porcienCosto"></span>
+                </div>
+                <p class="mb-0">
+                    <span class="text-secondary"><i class="ti ti-point-filled"></i></span>
+                    <span class="text-nowrap text-muted">Costo total</span>
+                    <span class="float-end"><b id="tlabel_totalCosto"></b></span>
+                </p>
+            </div>           
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <h5 title="Sales Today">Utilidad</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-success rounded-circle fs-22">
+                            <i class="ti ti-premium-rights"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0" id="label_utilidades">0,00</h3>
+                    <span class="badge badge-soft-success fw-medium ms-2 fs-xs ms-auto"
+                          id="label_porcienutilidades"></span>
+                </div>
+                <p class="mb-0">
+                    <span class="text-success"><i class="ti ti-point-filled"></i></span>
+                    <span class="text-nowrap text-muted">Utilidad (b) total</span>
+                    <span class="float-end"><b id="tlabel_utilidades"></b></span>
+                </p>
+            </div>         
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <h5 title="Customer Count">Tipo de pago</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-info rounded-circle fs-22">
+                            <i class="ti ti-cash"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0" id="label_cantEfectivo">0,00</h3>                   
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-info rounded-circle fs-22">
+                            <i class="ti ti-credit-card-pay"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0" id="label_cantTransfer">0,00</h3>                
+                </div>
+                <p class="mb-0">
+                    <span class="text-info"><i class="ti ti-point-filled"></i></span>
+                    <span class="text-nowrap text-muted"> Efectivo </span>
+                    <span class="badge badge-soft-info fw-medium ms-2 fs-xs ms-auto" id="label_porcientEfectivo"></span>
+                    <span class="text-nowrap text-muted"> Transferencia </span>
+                    <span class="badge badge-soft-warning fw-medium ms-2 fs-xs ms-auto" id="label_porcientTransfer"></span>
+                </p>
+            </div>        
+        </div>
     </div>
 </div>
+<div class="row" id="bloque-grafico">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header border-dashed card-tabs d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <h4 class="card-title">Distribución de ventas</h4>
+                </div>
+                <ul class="nav nav-tabs nav-justified card-header-tabs nav-bordered">
+                    <li class="nav-item">
+                        <a href="#today-ct" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                            <i class="ti ti-home d-md-none d-block"></i>
+                            <span class="d-none d-md-block">Hoy</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#monthly-ct" data-bs-toggle="tab" aria-expanded="true" class="nav-link active">
+                            <i class="ti ti-user-circle d-md-none d-block"></i>
+                            <span class="d-none d-md-block">Mensual</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#annual-ct" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                            <i class="ti ti-settings d-md-none d-block"></i>
+                            <span class="d-none d-md-block">Anual</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body p-0">
+                <div class="row g-0">
+                    <div class="col-xxl-8  align-content-center border-end border-dashed">
+                        <div id="canvaForVXfecha" class="dashboard-bloque" style="min-height: 405px;">                      
+                            <!-- Aquí va el gráfico o contenido renderizado -->
+                        </div>
+                    </div><!-- end col -->
+                    <div class="col-xxl-4 align-content-center">                      
+                        <div id="canvaForVXpunto" class="dashboard-bloque">                           
+                            <!-- Aquí va el gráfico o contenido renderizado -->
+                        </div>
+                    </div> <!-- end col-->
+                </div> <!-- end row-->
+            </div> <!-- end card-body-->
+        </div> <!-- end card-->
+    </div> <!-- end col-->
+</div> <!-- end row-->
+<div class="row">
+    <div class="col-xxl-6" id="bloque-productosR">
+        <div data-table="" data-table-rows-per-page="5" class="card">
+            <div class="card-header justify-content-between align-items-center border-dashed">
+                <h4 class="card-title mb-0">Productos recientes</h4>
+                <div class="d-flex gap-2">
+                    <a href="@Url.Action("Create", "Producto")" class="btn btn-sm btn-soft-secondary">
+                        <i class="ti ti-plus me-1"></i> Agregar Producto                
+                    </a>                   
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-centered table-custom table-sm table-nowrap table-hover mb-0" id="tablaProductosRecientes">
+                        <tbody>
+                           
+                        </tbody>
+                    </table>
+                </div> <!-- end table-responsive-->
+            </div> <!-- end card-body-->
+            <div class="card-footer border-0">
+                <div class="align-items-center justify-content-between row text-center text-sm-start">
+                    <div class="col-sm">
+                        <div data-table-pagination-info="products"></div>
+                    </div>
+                    <div class="col-sm-auto mt-3 mt-sm-0">
+                        <div data-table-pagination=""></div>
+                    </div> <!-- end col-->
+                </div> <!-- end row-->
+            </div> <!-- end card-footer-->
+        </div> <!-- end card-->
+    </div> <!-- end col-->
+    <div class="col-xxl-6" id="bloque-operacionesR">
+        <div data-table="" data-table-rows-per-page="5" class="card">
+            <div class="card-header justify-content-between align-items-center border-dashed">
+                <h4 class="card-title mb-0">Operaciones recientes</h4>
+                <div class="d-flex gap-2">
+                    <a href="@Url.Action("Create","Operacion")" class="btn btn-sm btn-soft-secondary">
+                        <i class="ti ti-plus me-1"></i> Agregar Operación
+                    </a>                  
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-centered table-custom table-sm table-nowrap table-hover mb-0" id="tablaOperacionesRecientes">
+                        <tbody>                           
+                        </tbody>
+                    </table>
+                </div> <!-- end table-responsive-->
+            </div> <!-- end card-body-->
+            <div class="card-footer border-0">
+                <div class="align-items-center justify-content-between row text-center text-sm-start">
+                    <div class="col-sm">
+                        <div data-table-pagination-info="orders"></div>
+                    </div>
+                    <div class="col-sm-auto mt-3 mt-sm-0">
+                        <div data-table-pagination=""></div>
+                    </div> <!-- end col-->
+                </div> <!-- end row-->
+            </div> <!-- end card-footer-->
+        </div> <!-- end card-->
+    </div> <!-- end col-->
+</div> <!-- end row-->
+
+@section Styles {
+    <link href="~/Content/plugins/chartist/chartist.min.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="~/Scripts/plugins/chartJs/Chart.min.js"></script>
+    <script src="~/Scripts/plugins/apexcharts/apexcharts.min.js"></script>
+    <script src="~/Scripts/charts/custom-charts.js"></script>
+    <script>
+        window.onload = function () {
+            iniciarDashboard();
+        };
+
+        let ChartByFecha;
+        let ChartByPunto;
+
+        const parametros = {
+            inicio: "@oUltimoA",
+            fin: "@oPrimerDiaDelMes",
+            toper: 2,
+            pventa: 0,
+            categ: 0,
+            producto: 0,
+            tpago: 0,
+            area: 0
+        };
+
+        function iniciarDashboard() {
+            // 🧠 Ejecutar en cascada sin dependencia entre ellas
+            try { cargarKPIsDashboard(); } catch (e) { console.error("Error en KPIs:", e.message); }
+            try { cargarDistribucionPorFecha(); } catch (e) { console.error("Error en Fecha:", e.message); }
+            try { cargarDistribucionPorPunto(); } catch (e) { console.error("Error en Punto:", e.message); }
+            try { cargarProductosRecientes(); } catch (e) { console.error("Error en Punto:", e.message); }
+            try { cargarOperacionesRecientes(); } catch (e) { console.error("Error en Punto:", e.message); }
+        }
+
+        function formatearNumero(valor) {
+            if (parseFloat(valor).toString().indexOf(".")) return valor.toFixed(2);       
+            return valor.toFixed(0);
+        }
+
+        async function cargarKPIsDashboard() {
+            const url = '@Url.Action("iGeneralData", "Analisis")';
+            const bloqueID = '#bloque-resumen';
+
+            const datos = await OptenerData(url, bloqueID, parametros);
+            if (datos) {
+                actualizarEtiquetas(datos, bloqueID);
+            }
+        }
+
+        async function cargarDistribucionPorFecha() {
+            const url = '@Url.Action("ChartDxFecha", "Analisis")';
+            const bloqueID = '#bloque-grafico';
+            const datos = await OptenerData(url, bloqueID, parametros);
+            if (datos) {
+                if (typeof ChartByFecha?.update === "function") {
+                    ChartByFecha.update(datos.iData, '');
+                } else {
+                    // Si no existe, lo creamos por primera vez
+                    ChartByFecha = new OperChartByFecha({
+                        containerId: '#canvaForVXfecha',
+                        titulo: '',
+                        iData: datos.iData
+                    });
+                    ChartByFecha.render();
+                    desactivarOverlayEnContenedor(bloqueID);
+                }
+            }
+        }
+
+        async function cargarDistribucionPorPunto() {
+
+           const url = '@Url.Action("ChartDxPunto", "Analisis")';
+           const bloqueID = '#bloquegrafico';
+
+           const datos = await OptenerData(url, bloqueID, parametros);
+           if (datos) {
+               if (typeof ChartByPunto?.update === "function") {
+                   ChartByPunto.update(datos.iData, '');
+               } else {
+                   // Si no existe, lo creamos por primera vez
+                   ChartByPunto = new OperChartByPuntoDonnut({
+                       containerId: '#canvaForVXpunto',
+                       titulo: '',
+                       iData: datos.iData
+                   });
+                   ChartByPunto.render();
+               }
+           }
+       }
+
+        async function cargarProductosRecientes() {
+            const url = '@Url.Action("GetProductosRecientes", "Analisis")';
+            const bloqueID = '#bloque-productosR';
+            const datos = await OptenerData(url, bloqueID, parametros);
+            if (datos) {
+                actualizarTablaProductos(datos, bloqueID);
+            }
+        }
+
+        async function cargarOperacionesRecientes() {
+            const url = '@Url.Action("GetOperacionesRecientes", "Analisis")';
+            const bloqueID = '#bloque-operacionesR';
+            const datos = await OptenerData(url, bloqueID, parametros);
+            if (datos) {
+                actualizarTablaOperaciones(datos, bloqueID);
+            }
+        }
+
+        async function OptenerData(url, bloqueID, parametros = {}) {
+            const queryParams = new URLSearchParams(parametros).toString();
+            const fullUrl = `${url}?${queryParams}`;
+            activarOverlayEnContenedor(bloqueID);
+            try {
+                const response = await fetch(fullUrl, { method: "GET" });
+
+                const tipo = response.headers.get("content-type") || "";
+                if (!response.ok) {
+                    console.warn(`⚠️ Error HTTP ${response.status} en ${url}`);
+                    const texto = await response.text();
+                    console.log("Contenido devuelto:", texto.slice(0, 200));
+                    return null;
+                }
+
+                if (!tipo.includes("application/json")) {
+                    const texto = await response.text();
+                    console.error("❌ Respuesta no es JSON válida:", texto.slice(0, 200));
+                    return null;
+                }
+                return await response.json();
+            } catch (error) {
+                console.error(`❌ Error de red o fetch en ${url}:`, error);
+                return null;
+            }
+        }
+
+        function actualizarEtiquetas(data, bloqueID) {
+            $('#label_totalImporte').empty();
+            $('#label_totalCosto').empty();
+            $('#label_utilidades').empty();
+            $('#label_cantEfectivo').empty();
+            $('#label_porcientEfectivo').empty();
+            $('#label_cantTransfer').empty();
+            $('#label_porcientTransfer').empty();
+            $('#label_porcienImporte').empty();
+            $('#label_porcienCosto').empty();
+            $('#label_porcienutilidades').empty();
+
+            $.each(data,
+                function (i, item) {
+                    $('#label_totalImporte').append(formatearNumero(item.importe_venta));
+                    $('#tlabel_totalImporte').append(item.importe_venta.toFixed(2));
+                    $('#label_porcienImporte').append(formatearNumero(item.pcien_importe) + '%');
+                    $('#label_totalCosto').append(formatearNumero(item.costo_venta));
+                    $('#tlabel_totalCosto').append(item.costo_venta.toFixed(2));
+                    $('#label_porcienCosto').append(formatearNumero(item.pcien_costo) + '%');
+                    $('#label_utilidades').append(formatearNumero(item.utilidades));
+                    $('#tlabel_utilidades').append(item.utilidades.toFixed(2));
+                    $('#label_porcienutilidades').append(formatearNumero(item.pcien_utilidad) + '%');
+                    $('#label_cantEfectivo').append(formatearNumero(item.tipo_pago[0].cantidad));
+                    $('#label_porcientEfectivo').append(formatearNumero(item.tipo_pago[0].porciento) + '%');
+                    $('#label_cantTransfer').append(formatearNumero(item.tipo_pago[1].cantidad));
+                    $('#label_porcientTransfer').append(formatearNumero(item.tipo_pago[1].porciento) + '%');
+                });
+            desactivarOverlayEnContenedor(bloqueID);
+        }
+
+        function actualizarTablaProductos(data, bloqueID) {
+            const tbody = document.getElementById('tablaProductosRecientes');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+            if (!Array.isArray(data) || data.length === 0) {
+                tbody.innerHTML = `
+                <tr>
+                <td colspan="6" class="text-center text-muted">No hay productos recientes disponibles</td>
+                </tr>`;
+                return;
+            }
+            data.forEach(p => {
+                const fila = `
+                 <tr>
+                 <td>
+                     <h5 class="fs-base my-1"><a href="#" class="text-body"> ${p.Nombre?.length > 20 ? p.Nombre.substring(0, 20) + '…' : p.Nombre}</a></h5>
+                     <span class="text-muted fs-xs">Categoria: ${p.CategoriaNombre}</span>               
+                 </td>
+                 <td>
+                 <span class="text-muted fs-xs">COD</span>
+                 <h5 class="fs-base mt-1 fw-normal">${p.Codigo?.length > 15 ? p.Codigo.substring(0, 15) + '…' : p.Codigo}</h5>
+                 </td>
+                 <td>
+                   <span class="text-muted fs-xs">Fecha</span>
+                   <h5 class="fs-base mt-1 fw-normal">${p.FechaTexto}</h5>
+                 </td>
+                 <td>
+                   <span class="text-muted fs-xs">Precio</span>
+                   <h5 class="fs-base mt-1 fw-normal">${p.Precio}</h5>
+                 </td>
+                 <td>
+                 <span class="text-muted fs-xs">Costo</span>
+                 <h5 class="fs-base mt-1 fw-normal">${p.Costo}</h5>
+                 </td>
+                   <td style="width: 30px;">
+                   <div class="dropdown">
+                   <a href="#" class="dropdown-toggle text-muted drop-arrow-none card-drop p-0" data-bs-toggle="dropdown">
+                     <i class="ti ti-dots-vertical fs-lg"></i>
+                   </a>
+                   <div class="dropdown-menu dropdown-menu-end">
+                   <a href="@Url.Action("Edit","Producto")/${p.ProductoID}" class="dropdown-item">Editar</a>
+                   </div>
+                   </div>
+                 </td></tr>`;
+                tbody.insertAdjacentHTML('beforeend', fila);
+            });
+            desactivarOverlayEnContenedor(bloqueID);
+        }
+
+        function actualizarTablaOperaciones(data, bloqueID) {
+            const tbody = document.getElementById('tablaOperacionesRecientes');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+
+            if (!Array.isArray(data) || data.length === 0) {
+                tbody.innerHTML = `
+                <tr>
+                <td colspan="6" class="text-center text-muted">No hay operaciones recientes registradas</td>
+                </tr>`;
+                return;
+            }
+
+            data.forEach(op => {
+                const fecha = new Date(op.Fecha).toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
+
+                const fila = `
+                 <tr>
+                 <td>
+                 <h5 class="fs-base my-1"><a href="ecommerce-order-details.html" class="text-body">${op.TipoOperacion}</a></h5>
+                 <span class="text-muted fs-xs">Punto: ${op.PuntoVenta}</span>            
+                 </td>
+                 <td>
+                 <h5 class="fs-base my-1"><a href="#" class="text-body"> ${op.Producto?.length > 20 ? op.Producto.substring(0, 20) + '…' : op.Producto}</a></h5>
+                 <span class="text-muted fs-xs">COD: ${op.ProductoCod}</span>            
+                 </td>
+                 <td>
+                 <span class="text-muted fs-xs">Fecha</span>
+                 <h5 class="fs-base mt-1 fw-normal">${op.FechaTexto}</h5>
+                 </td>
+                 <td>
+                 <span class="text-muted fs-xs">Cantidad</span>
+                 <h5 class="fs-base mt-1 fw-normal">${op.Cantidad}</h5>
+                 </td>
+                 <td>
+                 <span class="text-muted fs-xs">Importe</span>
+                 <h5 class="fs-base mt-1 fw-normal">${op.Importe}</h5>
+                 </td>
+                 <td style="width: 30px;">
+                 <div class="dropdown">
+                 <a href="#" class="dropdown-toggle text-muted drop-arrow-none card-drop p-0" data-bs-toggle="dropdown">
+                 <i class="ti ti-dots-vertical fs-lg"></i>
+                 </a>
+                 <div class="dropdown-menu dropdown-menu-end">
+                 <a href="@Url.Action("Edit","Operacion")/${op.OperacionID}" class="dropdown-item">Editar</a>
+                 </div>
+                 </div>
+                 </td>
+                 </tr>`;
+                tbody.insertAdjacentHTML('beforeend', fila);
+            });
+            desactivarOverlayEnContenedor(bloqueID);
+        }
+
+        function activarLoader(idBloque) {
+            $(`${idBloque} .bloque-loader`).show();
+        }
+
+        function activarOverlayEnContenedor(contenedorID) {
+            const contenedor = document.querySelector(contenedorID);
+            if (!contenedor) return;
+
+            const cards = contenedor.querySelectorAll('.card');
+            cards.forEach(card => {
+                let overlay = card.querySelector('.card-overlay');
+                if (!overlay) {
+                    overlay = document.createElement('div');
+                    overlay.classList.add(
+                        'card-overlay',
+                        'position-absolute',
+                        'top-0',
+                        'start-0',
+                        'w-100',
+                        'h-100',
+                        'd-flex',
+                        'justify-content-center',
+                        'align-items-center',
+                        'noExport'
+                    );
+                    overlay.style.zIndex = '10';
+
+                    const spinner = document.createElement('div');
+                    spinner.classList.add('spinner-border', 'text-primary');
+                    spinner.setAttribute('role', 'status');
+
+                    const label = document.createElement('span');
+                    label.classList.add('visually-hidden');
+                    label.textContent = 'Cargando...';
+
+                    spinner.appendChild(label);
+                    overlay.appendChild(spinner);
+                    card.appendChild(overlay);
+                }
+
+                overlay.style.display = 'flex';
+                $(overlay).hide().fadeIn(200);
+            });
+        }
+
+        function desactivarOverlayEnContenedor(contenedorID) {
+            const contenedor = document.querySelector(contenedorID);
+            if (!contenedor) return;
+
+            const overlays = contenedor.querySelectorAll('.card .card-overlay');
+            overlays.forEach(overlay => {
+                $(overlay).fadeOut(200, () => overlay.remove());
+            });
+        }
+
+    </script>
+}

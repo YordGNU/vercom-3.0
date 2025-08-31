@@ -1,0 +1,719 @@
+﻿@{
+    ViewBag.Title = "MOVIMIENTOS DE CAJA";
+}
+<div class="page-title-head d-flex align-items-center">
+    <div class="flex-grow-1">
+        <h4 class="fs-sm text-uppercase fw-bold m-0">CAJA</h4>
+    </div>
+    <div class="text-end">
+        <ol class="breadcrumb m-0 py-0">
+            <li class="breadcrumb-item">
+                <a href="javascript:void(0);">VERCOM</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="javascript:void(0);">CAJA</a>
+            </li>
+            <li class="breadcrumb-item active">MOVIMIENTOS</li>
+        </ol>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <!-- Simple card -->
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="mb-2 fw-semibold">Desde:</span>
+                    <div class="col-auto">
+                        <div class="input-group mb-2">
+                            <input type="datetime-local" class="form-control" id="filtroDesde" value="@DateTime.Today.ToString("yyyy-MM-ddTHH:mm")" />
+                        </div>
+                    </div>
+                    <span class="mb-2 fw-semibold">Hasta:</span>
+                    <div class="col-auto">
+                        <div class="input-group mb-2">
+                            <input type="datetime-local" class="form-control" id="filtroHasta" value="@DateTime.Today.AddDays(1).AddSeconds(-1).ToString("yyyy-MM-ddTHH:mm")" />
+                        </div>
+                    </div>
+                    <span class="mb-2 fw-semibold">Sub-Mayor:</span>
+                    <div class="col-auto">
+                        <div class="input-group mb-2">
+                            <div class="input-group-text"><i data-lucide="store" class="app-search-icon text-muted"></i></div>
+                            <select class="form-select form-control" id="filtroSubMayor" name="filtroSubMayor">
+                                <option value=""></option>
+                                @Html.Action("_ListSubMayores", "Parcial")
+                            </select>
+                        </div>
+                    </div>
+                    <span class="mb-2 fw-semibold">Tipo de operación:</span>
+                    <div class="col-auto">
+                        <div class="input-group mb-2">
+                            <div class="input-group-text"><i data-lucide="tag"></i></div>
+                            <select class="form-select form-control" id="filtroTipo" name="filtroTipo">
+                                <option data-name="todas" value=""></option>
+                                <option data-name="Entrada" value="Entrada">Entrada</option>
+                                <option data-name="Salida" value="Salida">Salida</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="input-group mb-2">
+                            <button type="button" class="btn btn-primary w-100" id="btnFiltrar">
+                                <i data-lucide="search" class="me-2"></i> Filtrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end card-body-->
+        </div>
+        <!-- end card-->
+    </div>
+    <!-- end col -->
+</div>
+<div class="row row-cols-xxl-5 row-cols-md-3 row-cols-1 align-items-center g-1">
+    <div class="col">
+        <div class="card mb-1">
+            <div class="card-body">
+                <h5 title="Total Products">Saldo inicial</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-primary rounded-circle fs-22">
+                            <i class="ti ti-wallet"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0 text-info" id="resumenSaldoInicial">0</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card mb-1">
+            <div class="card-body">
+                <h5 title="Customer Orders">Cantidad de movimientos</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-secondary rounded-circle fs-22">
+                            <i class="ti ti-transform"></i>
+                        </span>
+                    </div>
+                    <h3 class="card-subtitle" id="resumenCantidad">0</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card mb-1">
+            <div class="card-body">
+                <h5 title="Customer Orders">Entradas</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-success rounded-circle fs-22">
+                            <i class="ti ti-stack-push"></i>
+                        </span>
+                    </div>
+                    <h3 class="card-subtitle text-success" id="resumenEntradas">$0.00</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card mb-1">
+            <div class="card-body">
+                <h5 title="Sales Today">Salidas</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-danger rounded-circle fs-22">
+                            <i class="ti ti-stack-pop"></i>
+                        </span>
+                    </div>
+                    <h3 class="card-subtitle text-danger" id="resumenSalidas">$0.00</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card mb-1">
+            <div class="card-body">
+                <h5 title="Total Revenue">Saldo final</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-warning rounded-circle fs-22">
+                            <i class="ti ti-wallet-off"></i>
+                        </span>
+                    </div>
+                    <h3 class="card-subtitle text-primary" id="resumenSaldo">$0.00</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!-- end row -->
+<!-- Modal de edición -->
+<div class="row" id="bloque-Tmovimientos">
+    <div class="col-12">
+        <div data-table="" data-table-rows-per-page="100" class="card">
+            <div class="card-header border-light justify-content-between">
+                <div class="d-flex gap-2">
+                    <div class="app-search">
+                        <input data-table-search="" type="search" class="form-control" placeholder="Buscar por nombre...">
+                        <i data-lucide="search" class="app-search-icon text-muted"></i>
+                    </div>
+                    <button data-table-delete-selected="" data-table-delete-url="@Url.Action("EliminarMultiples","Caja")" type="button" class="btn btn-danger btn-icon d-none">
+                        <i class="ti ti-trash fs-xl"></i>
+                    </button>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Records Per Page -->
+                    <div>
+                        <select data-table-set-rows-per-page="" class="form-select form-control my-1 my-md-0">
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex gap-1">
+                    <button class="btn btn-primary btn-icon" id="btnAgregarMovimiento">
+                        <i class="ti ti-plus fs-xxl"></i>
+                    </button>
+                    <button class="btn btn-success btn-icon" id="btnExportExcel">
+                        <i data-lucide="file-spreadsheet" class="fs-lg"></i>
+                    </button>
+                    <button class="btn btn-info btn-icon" id="btnPrint">
+                        <i data-lucide="printer" class="fs-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id="tablaMovimientosCaja" class="table table-custom table-centered table-select table-hover w-100 mb-0">
+                    <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                        <tr class="text-uppercase fs-xxs">
+                            <th class="ps-3 noExport" style="width: 1%;" data-exclude="true">
+                                <input data-table-select-all="" class="form-check-input form-check-input-light fs-14 mt-0" type="checkbox" id="select-all-products" value="option">
+                            </th>
+                            <th data-table-sort="" data-column="FECHA">FECHA</th>
+                            <th data-table-sort="" data-column="SUBMAYOR">SUB-MAYOR</th>
+                            <th data-table-sort="" data-column="TIPO">TIPO</th>
+                            <th data-table-sort="" data-column="MONTO">MONTO</th>
+                            <th data-table-sort="" data-column="CONCEPTO">CONCEPTO</th>
+                            <th data-table-sort="" data-column="REFERENCIA">REFERENCIA</th>
+                            <th data-table-sort="" data-column="METODO">METODO</th>
+                            <th data-table-sort="" data-column="USUARIO">USUARIO</th>
+                            <th class="text-center noExport" style="width: 1%;" data-exclude="true">ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="card-footer border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div data-table-pagination-info="entradas"></div>
+                    <div data-table-pagination=""></div>
+                </div>
+            </div>
+        </div>
+    </div><!-- end col -->
+</div><!-- end row -->
+<div class="modal fade" id="modalAgregarMovimiento" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">Agregar movimiento</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formAgregarMovimiento">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="SubMayorID" class="form-label">Sub-Mayor <span class="text-danger">*</span></label>
+                                <div class="app-search">
+                                    <select class="form-select form-control" id="SubMayorID" name="SubMayorID" required>
+                                        @Html.Action("_listsubmayores", "Parcial")
+                                    </select>
+                                    <i data-lucide="layers" class="app-search-icon text-muted"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="TipoMovimiento" class="form-label">Tipo <span class="text-danger">*</span></label>
+                                <select class="form-select" id="TipoMovimiento" name="TipoMovimiento" required>
+                                    <option value="Entrada">Entrada</option>
+                                    <option value="Salida">Salida</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="MetodoPago" class="form-label">Método de Pago <span class="text-danger">*</span></label>
+                                <select class="form-select" id="MetodoPago" name="MetodoPago" required>
+                                    <option value="Efectivo">Efectivo</option>
+                                    <option value="Transferencia">Transferencia</option>
+                                    <option value="Cheque">Cheque</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="Monto" class="form-label">Monto <span class="text-danger">*</span></label>
+                                <div class="app-search">
+                                    <input type="text" class="form-control decimalVAL" id="Monto" name="Monto" placeholder="Ej. 1500.00" required>
+                                    <i data-lucide="dollar-sign" class="app-search-icon text-muted"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label for="Concepto" class="form-label">Concepto</label>
+                                <textarea id="Concepto" name="Concepto" class="form-control" rows="3" maxlength="255"
+                                          placeholder="Escribe aquí alguna nota o comentario..."></textarea>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label for="ReferenciaExterna" class="form-label">Referencia Externa</label>
+                                <input type="text" class="form-control" id="ReferenciaExterna" name="ReferenciaExterna" maxlength="100" placeholder="Ej. ID de factura, nota, etc.">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" id="btnGuardarMovimiento" class="btn btn-primary">Agregar</button>
+                </div>
+            </form>
+        </div>
+    </div> <!-- end modal dialog-->
+</div> <!-- end modal-->
+<div class="modal fade" id="modalEditarMovimiento" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="formEditarMovimiento">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="Edit_MovimientoID" name="Edit_MovimientoID" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar movimiento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="Edit_SubMayorIDval" class="form-label">Sub-Mayor </label>
+                                <div class="app-search">
+                                    <select class="form-select form-control" id="Edit_SubMayorIDval" name="Edit_SubMayorIDval" disabled>
+                                        @Html.Action("_listsubmayores", "Parcial")
+                                    </select>
+                                    <i data-lucide="layers" class="app-search-icon text-muted"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Saldo disponible</label>
+                            <div class="app-search">
+                                <input type="text" class="form-control" id="SaldoSubMayor" disabled />
+                                <i data-lucide="wallet" class="app-search-icon text-muted"></i>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Saldo actualizado</label>
+                            <div class="app-search">
+                                <input type="text" class="form-control" id="SaldoSubMayorRes" disabled />
+                                <i data-lucide="wallet" class="app-search-icon text-muted"></i>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Tipo</label>
+                            <select class="form-select" id="TipoMovimientoVal" name="TipoMovimientoVal" disabled>
+                                <option value="Entrada">Entrada</option>
+                                <option value="Salida">Salida</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-3 mb-3">
+                            <label class="form-label">Método de Pago <span class="text-danger">*</span></label>
+                            <select class="form-select" id="Edit_MetodoPago" name="Edit_MetodoPago" required>
+                                <option value="Efectivo">Efectivo</option>
+                                <option value="Transferencia">Transferencia</option>
+                                <option value="Cheque">Cheque</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                            <label class="form-label">Monto <span class="text-danger">*</span></label>
+                            <div class="app-search">
+                                <input type="text" class="form-control decimalVAL" data-val-anterior="" id="Edit_Monto" name="Edit_Monto" required />
+                                <i data-lucide="dollar-sign" class="app-search-icon text-muted"></i>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Concepto</label>
+                            <input type="text" class="form-control" id="Edit_Concepto" name="Edit_Concepto" maxlength="255" />
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Referencia Externa</label>
+                            <input type="text" class="form-control" id="Edit_ReferenciaExterna" name="Edit_ReferenciaExterna" maxlength="100" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div> <!-- end modal dialog-->
+</div> <!-- end modal-->
+@section Styles {
+    <link href="~/Content/plugins/toastr/toastr.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="~/Scripts/plugins/toastr/toastr.min.js"></script>
+    <script src="~/Scripts/plugins/moment/moment.min.js"></script>
+    <script src="~/Scripts/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/Scripts/plugins/choices/choices.min.js"></script>
+    <script src="~/Scripts/plugins/table2excel/table2excel.js"></script>
+    <script src="~/Scripts/custom-table.js"></script>
+    <script>
+        $(document).ready(function () {
+            window.customTable = new CustomTable();
+            cargarMovimientosCaja();
+            cargarResumenFiltrado();
+            $('#btnFiltrar').on('click', function () {
+                cargarMovimientosCaja();
+                cargarResumenFiltrado();
+            });
+            $('#tablaMovimientosCaja').on('click', '.btnEditar', function (e) {
+                const id = $(this).closest('tr').data('id');
+                e.preventDefault();
+                if ($("#Edit_Monto").hasClass("bg-danger")) {
+                    $("#Edit_Monto").removeClass("bg-danger");
+                }
+                $.getJSON(`/Caja/ObtenerMovimientoPorId/${id}`, function (res) {
+                    activarOverlayEnContenedor('#formEditarMovimiento');
+                     //Asignar valores al modal
+                    const m = res.iData[0];
+                    $('#Edit_MovimientoID').val(m.MovimientoID);
+                    $('#SaldoSubMayor').val(m.SaldoSubMayor);
+                    $('#SaldoSubMayorRes').val(m.SaldoSubMayor);
+                    $('#TipoMovimiento').val(m.TipoMovimiento);
+                    $('#TipoMovimientoVal').val(m.TipoMovimiento);
+                    $('#Edit_MetodoPago').val(m.MetodoPago);
+                    $('#Edit_Monto').val(m.Monto);
+                    $("#Edit_Monto").attr('data-val-anterior',m.Monto);
+                    $('#Edit_Concepto').val(m.Concepto);
+                    $('#Edit_ReferenciaExterna').val(m.ReferenciaExterna);
+                    $('#modalEditarMovimiento').modal('show');
+                    $("#Edit_Monto").on("input", function () {
+                        actualizarVal(this, m.TipoMovimiento);
+                    });
+                }).fail(function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de conexión',
+                        text: 'No se pudo consultar los datos. Verifica tu conexión o intenta nuevamente.'
+                    });
+                });
+            });
+            $('#btnAgregarMovimiento').on('click', function (e) {
+                e.preventDefault();
+                $('#modalAgregarMovimiento').modal('show');
+            });
+            $('#formAgregarMovimiento').on("submit", function (e) {
+                $(".decimalVAL").each(function () {
+                    var valor = $(this).val().replace(".", ",");
+                    $(this).val(valor);
+                });
+                e.preventDefault();
+                $.ajax({
+                 url: '@Url.Action("RegistrarMovimiento", "Caja")',
+                 type: 'POST',
+                 data: $(this).serialize(),
+                 success: function (response) {
+                     if (response.exito) {
+                         Swal.fire({
+                             icon: 'success',
+                             title: 'Movimiento registrado',
+                             text: 'Se ha registrado correctamente el movimiento de saldo',
+                             timer: 1500,
+                             showConfirmButton: false
+                         });
+                         $('#modalAgregarMovimiento').modal('hide');
+                         cargarMovimientosCaja();
+                     } else {
+                         Swal.fire({
+                             icon: 'error',
+                             title: '¡Error!',
+                             text: response.mensaje
+                         });
+                     }
+                 },
+                 error: function () {
+                     Swal.fire({
+                         icon: 'error',
+                         title: 'Oops...',
+                         text: 'Hubo un problema al enviar el formulario.'
+                     });
+                    }
+                });
+            });
+            $('#btnCerrarCaja').on('click', function (e) {
+                Swal.fire({
+                    title: "¿Confirmar cierre de caja?",
+                    text: "Esto generará un registro en base a los movimientos de saldo realizados.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Sí, cerrar ahora",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.post('@Url.Action("CierreDiario", "Caja")', {
+                            cajaId: 1,
+                            usuario: '@User.Identity.Name',
+                            observaciones: 'Cierre automático'
+                        }, function (res) {
+                            if (res.exito) {
+                                $('#totalIngresos').text(`$${res.resumen.TotalIngresos.toFixed(2)}`);
+                                $('#totalEgresos').text(`$${res.resumen.TotalEgresos.toFixed(2)}`);
+                                $('#saldoFinal').text(`$${res.resumen.SaldoFinal.toFixed(2)}`);
+                                toastr.success('✅ Cierre realizado correctamente');
+                            } else {
+                                Swal.fire({ icon: 'error', title: 'Error', text: res.mensaje });
+                            }
+                        });
+                    }
+                });
+            });
+            $('#formEditarMovimiento').on('submit', function (e) {
+                e.preventDefault();
+                const hayError = $("form input.bg-danger").length > 0;
+                if (hayError) {
+                    e.preventDefault(); // ⛔ Evita el envío
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No puedes enviar el formulario: el monto restante es negativo.'
+                    });
+                    return false;
+                }
+                $(".decimalVAL").each(function () {
+                    var valor = $(this).val().replace(".", ",");
+                    $(this).val(valor);
+                });
+                datos = $(this).serialize();
+                console.log(datos);
+                $.ajax({
+                    url: '@Url.Action("EditarMovimiento", "Caja")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (res) {
+                        if (res.exito) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Movimiento actualizado',
+                                text: res.mensaje,
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            $('#modalEditarMovimiento').modal('hide');
+                            cargarMovimientosCaja(); // Recarga la tabla
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: res.mensaje
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Hubo un problema al actualizar el movimiento.'
+                        });
+                    }
+                });
+            });
+            // Actualizar visualmente la fila
+            function actualizarFila(id, tipo, monto, obs) {
+                const row = $(`tr[data-id="${id}"]`);
+                row.find('.tipo').text(tipo);
+                row.find('.monto').text(`$${parseFloat(monto).toFixed(2)}`);
+                row.data('obs', obs);
+                row.addClass('table-success');
+                setTimeout(() => row.removeClass('table-success'), 1000);
+            }
+
+        });
+        function cargarMovimientosCaja() {
+            var url = '@Url.Action("ListarMovimientos", "Caja")';
+            var filtroDesde = $('#filtroDesde').val();
+            var filtroHasta = $('#filtroHasta').val();
+            var filtroSubMayor = $('#filtroSubMayor').val();
+            var filtroTipo = $('#filtroTipo').val();
+            const bloqueID = '#bloque-Tmovimientos';
+            activarOverlayEnContenedor(bloqueID);
+            $.getJSON(url, { filtroDesde, filtroHasta, filtroSubMayor, filtroTipo }).done(data => {
+                if (data.length > 0) {
+                    refreshTable(data);
+                    return;
+                } else {
+                    Swal.fire({
+                            icon: 'warning',
+                            title: 'Sin resultados',
+                            text: 'No se encontraron movimientos.'
+                        });
+                    }
+                }).fail(() => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de conexión',
+                        text: 'No se pudo consultar los datos. Verifica tu conexión o intenta nuevamente.'
+                    });
+                }).always(() => desactivarOverlayEnContenedor(bloqueID));
+        }
+        function cargarResumenFiltrado() {
+            const desde = $('#filtroDesde').val();
+            const hasta = $('#filtroHasta').val();
+            const subMayorId = $('#filtroSubMayor').val() || null;
+            const tipo = $('#filtroTipo').val() || null;
+            $.get('/Caja/ResumenFiltrado', {  fechaDesde: desde, fechaHasta: hasta, subMayorId, tipo
+            }, function (res) {
+                if (res.length === 0) return;
+                $('#resumenSaldoInicial').text(res.SaldoInicial);
+                $('#resumenCantidad').text(res.CantidadMovimientos);
+                $('#resumenEntradas').text(`$${res.TotalEntradas.toFixed(2)}`);
+                $('#resumenSalidas').text(`$${res.TotalSalidas.toFixed(2)}`);
+                $('#resumenSaldo').text(`$${res.SaldoTotal.toFixed(2)}`);
+            });
+        }
+        function refreshTable(data) {
+            // 1. Localiza <table> y su instancia
+            const tableEl = document.querySelector('[data-table]');
+            const instance = window.customTable.tables.find(t => t.table === tableEl);
+            const tbody = tableEl.querySelector("tbody");
+            tbody.innerHTML = "";
+            let ingresos = 0, egresos = 0;
+            const rows = data.map(m => {
+                const tr = document.createElement('tr');
+                const tipColor = "";
+                if (m.TipoMovimiento === "Entrada") { }
+                tr.id = `${m.MovimientoID}`;
+                tr.dataset.id = m.MovimientoID;
+                tr.dataset.obs = m.Concepto;
+                tr.innerHTML = `
+                    <td class="noExport">
+                    <input class="form-check-input form-check-input-light fs-14 product-item-check mt-0" type="checkbox" value="${m.MovimientoID}">
+                    </td>
+                    <td>${m.FechaTexto}</td>
+                    <td>${m.SubMayor}</td>
+                    <td class="tipo">${m.TipoMovimiento}</td>
+                    <td class="monto">$${m.Monto.toFixed(2)}</td>
+                    <td>${m.Concepto}</td>
+                    <td>${m.ReferenciaExterna}</td>
+                    <td>${m.MetodoPago}</td>
+                    <td>${m.Usuario}</td>
+                    <td class="noExport">
+                    <div class="d-flex justify-content-center gap-1">
+                    <button class="btn btn-light btn-icon btn-sm rounded-circle btn_edit btnEditar"><i class="ti ti-edit fs-lg"></i></button>
+                    </div>
+                    </td>`;
+                return tr;
+            });
+
+            $('#totalIngresos').text(`$${ingresos.toFixed(2)}`);
+            $('#totalEgresos').text(`$${egresos.toFixed(2)}`);
+            $('#saldoFinal').text(`$${(ingresos - egresos).toFixed(2)}`);
+            instance.fullRefresh(rows);
+            setupCheckboxListeners();
+        }
+        function setupCheckboxListeners() {
+            let tableEl = document.querySelector('[data-table]');
+            let btnDeleteSelected = document.querySelector('[data-table-delete-selected]');
+            let e = tableEl.querySelector("tbody");
+            let checkAllCheckBox = document.querySelector("#select-all-products");
+            let t = e.querySelectorAll('input[type="checkbox"]');
+            let rows = Array.from(e.querySelectorAll("tr"));
+            let filteredRows = [...rows];
+
+            checkAllCheckBox &&
+                0 < t.length &&
+                t.forEach((e) => {
+                    e.addEventListener("change", () => {
+                        var e = Array.from(t).some((e) => e.checked);
+                        btnDeleteSelected &&
+                            0 < filteredRows.length &&
+                            btnDeleteSelected.classList.toggle("d-none", !e);
+                    });
+                });
+        }
+        function activarOverlayEnContenedor(contenedorID) {
+            const contenedor = document.querySelector(contenedorID);
+            if (!contenedor) return;
+
+            const cards = contenedor.querySelectorAll('.card');
+            cards.forEach(card => {
+                let overlay = card.querySelector('.card-overlay');
+                if (!overlay) {
+                    overlay = document.createElement('div');
+                    overlay.classList.add(
+                        'card-overlay',
+                        'position-absolute',
+                        'top-0',
+                        'start-0',
+                        'w-100',
+                        'h-100',
+                        'd-flex',
+                        'justify-content-center',
+                        'align-items-center',
+                        'noExport'
+                    );
+
+                    overlay.style.zIndex = '10';
+                    const spinner = document.createElement('div');
+                    spinner.classList.add('spinner-border', 'text-primary');
+                    spinner.setAttribute('role', 'status');
+                    const label = document.createElement('span');
+                    label.classList.add('visually-hidden');
+                    label.textContent = 'Cargando...';
+                    spinner.appendChild(label);
+                    overlay.appendChild(spinner);
+                    card.appendChild(overlay);
+                }
+
+                overlay.style.display = 'flex';
+                $(overlay).hide().fadeIn(200);
+            });
+        }
+        function desactivarOverlayEnContenedor(contenedorID) {
+            const contenedor = document.querySelector(contenedorID);
+            if (!contenedor) return;
+            const overlays = contenedor.querySelectorAll('.card .card-overlay');
+            overlays.forEach(overlay => {
+                $(overlay).fadeOut(200, () => overlay.remove());
+            });
+        }
+
+        function actualizarVal(elemento, tipo) {
+            const nuevoVal = elemento.value ? parseFloat(elemento.value) : 0;
+            const valAnterior = parseFloat(elemento.getAttribute('data-val-anterior')) || 0;
+            const cantSaldo = parseFloat($('#SaldoSubMayor').val()) || 0;
+            let total = 0;
+            if (tipo === "Entrada") {
+                total = cantSaldo - valAnterior + nuevoVal;
+            } else {
+                total = cantSaldo + valAnterior - nuevoVal;
+            }
+            $('#SaldoSubMayorRes').val(total);
+            if (total < 0) {
+                elemento.classList.add("bg-danger");
+            } else {
+                elemento.classList.remove("bg-danger");
+            }
+        }
+    </script>
+}

@@ -25,32 +25,38 @@ namespace vercom.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<AlertasSistema> AlertasSistema { get; set; }
         public virtual DbSet<area> area { get; set; }
+        public virtual DbSet<AuditoriaMovimientosCaja> AuditoriaMovimientosCaja { get; set; }
+        public virtual DbSet<CajaPrincipal> CajaPrincipal { get; set; }
         public virtual DbSet<categoria> categoria { get; set; }
         public virtual DbSet<cliente> cliente { get; set; }
         public virtual DbSet<cliente_cuenta> cliente_cuenta { get; set; }
+        public virtual DbSet<ConfiguracionHorarioCaja> ConfiguracionHorarioCaja { get; set; }
         public virtual DbSet<cuenta> cuenta { get; set; }
-        public virtual DbSet<flujo> flujo { get; set; }
         public virtual DbSet<forma_operacion> forma_operacion { get; set; }
         public virtual DbSet<medio_pago> medio_pago { get; set; }
+        public virtual DbSet<MovimientoCaja> MovimientoCaja { get; set; }
         public virtual DbSet<negocio> negocio { get; set; }
+        public virtual DbSet<Notifications> Notifications { get; set; }
         public virtual DbSet<operacion> operacion { get; set; }
         public virtual DbSet<Permissions> Permissions { get; set; }
         public virtual DbSet<presupuesto> presupuesto { get; set; }
         public virtual DbSet<producto> producto { get; set; }
         public virtual DbSet<producto_servicio> producto_servicio { get; set; }
         public virtual DbSet<punto_venta> punto_venta { get; set; }
+        public virtual DbSet<RegistroDiarioCaja> RegistroDiarioCaja { get; set; }
         public virtual DbSet<RolePermissions> RolePermissions { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
+        public virtual DbSet<SubMayor> SubMayor { get; set; }
         public virtual DbSet<tipo_cliente> tipo_cliente { get; set; }
         public virtual DbSet<tipo_factura> tipo_factura { get; set; }
-        public virtual DbSet<tipo_flujo> tipo_flujo { get; set; }
         public virtual DbSet<tipo_operacion> tipo_operacion { get; set; }
         public virtual DbSet<tipo_pago> tipo_pago { get; set; }
         public virtual DbSet<trazas> trazas { get; set; }
         public virtual DbSet<unidad> unidad { get; set; }
         public virtual DbSet<UserRoles> UserRoles { get; set; }
         public virtual DbSet<Users> Users { get; set; }
-        public virtual DbSet<Notifications> Notifications { get; set; }
+        public virtual DbSet<CierreCaja> CierreCaja { get; set; }
     }
 }

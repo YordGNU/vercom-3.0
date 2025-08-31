@@ -10,21 +10,26 @@
     <meta name="description" content="Inspinia is the #1 best-selling admin dashboard template on Wrapmarket. Perfect for building CRM, CMS, project management tools, and custom web apps with clean UI, responsive design, and powerful features.">
     <meta name="keywords" content="Inspinia, admin dashboard, Wrapmarket, Wrapbootstrap, HTML template, Bootstrap admin, CRM template, CMS template, responsive admin, web app UI, admin theme, best admin template">
     <meta name="author" content="WebAppLayers">
-
     <!-- App favicon -->
     <link rel="shortcut icon" href="~/Content/images/favicon.ico">
-
     <!-- Theme Config Js -->
     <script src="~/Scripts/config.js"></script>
-
     <!-- Vendor css -->
     <link href="~/Content/vendors.min.css" rel="stylesheet" />
-
     <!-- App css -->
     <link href="~/Content/app.min.css" rel="stylesheet" />
+    <style>
+        #notification-stock {
+            overflow-y: auto;
+            word-wrap: break-word;
+        }
+
+        .notification-item {
+            white-space: normal;
+        }
+    </style>
     @if (IsSectionDefined("Styles"))
     {@RenderSection("Styles", required: false)}
-
 </head>
 <body>
     <!-- Begin page -->
@@ -39,7 +44,7 @@
         <!-- Start Main Content -->
         <!-- ============================================================== -->
         <div class="content-page">
-            <div class="container-fluid">
+            <div class="container-fluid">         
                 @RenderBody()
             </div> <!-- container -->
             <!-- Footer Start -->
@@ -55,8 +60,188 @@
     @Html.Partial("_Theme")
     <!-- Vendor js -->
     <script src="~/Scripts/vendors.min.js"></script>
+    <script src="~/Scripts/plugins/sweetalert/sweetalert2@11.js"></script>
     <!-- App js -->
+    <script src="~/Scripts/ajax/ajax.js"></script>
     <script src="~/Scripts/app.js"></script>
+    <script src="~/Scripts/jquery.signalR.min.js"></script>
+    <script src="/signalr/hubs"></script>
+    <script>
+        $(document).ready(function () {
+            const connection = $.connection.notificacionesHub;
+            // Maneja las notificaciones enviadas desde el servidor          
+            $('.dropdown-menu').on('scroll', function () {
+                const container = $(this);
+                const cercaDelFinal = container.scrollTop() + container.innerHeight() >= container[0].scrollHeight - 10;
+
+                if (cercaDelFinal && !cargando) {
+                    cargando = true;
+                    paginaActual = (paginaActual + 1);
+                }
+            });
+
+              connection.client.recibirNotificacion = function (notificacion) {
+                const notificationList = $('#notification-list');
+                const notificationCount = $('#notification-count');
+                let count = parseInt(notificationCount.text()) || 0;
+
+                // Agregar el mensaje de notificación a la lista
+                const fechaConvertida = notificacion.CreatedAt.split('.')[0];
+                const fechaInicio = new Date(fechaConvertida);
+                const fechaFinTexto = '@System.DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss")';
+                const fechaFin = new Date(fechaFinTexto);
+                const diferencia = fechaFin.getTime() - fechaInicio.getTime();
+                const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+                const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                  const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+                  const item = `<div class="dropdown-item notification-item py-2 text-wrap" id="notificacion-${notificacion.Id}">
+                  <span class="d-flex gap-2">
+                  <span class="avatar-md flex-shrink-0">
+                  <span class="avatar-title bg-danger-subtle text-danger rounded fs-22">
+                  <i data-lucide="server-crash" class="fs-xl fill-danger"></i>
+                  </span>
+                  </span>
+                  <span class="flex-grow-1 text-muted">
+                  <small class="fs-xs">${notificacion.Message}</small>
+                  <br>
+                  <span class="fs-xs">Hace ${dias}d ${horas}h ${minutos}m</span>
+                  </span>
+                  <button type="button" class="flex-shrink-0 text-muted btn btn-link p-0" data-dismissible="#notificacion-${notificacion.Id}">
+                  <i class="ti ti-xbox-x-filled fs-xxl"></i>
+                  </button>
+                  </span>
+                  </div>`;
+                notificationList.append(item);
+                notificationCount.text(count + 1);
+                notificationCount.show();
+              };
+
+            function cargarNotificacionesStock() {
+                let ultimoId = 0;
+                $.get("/Notificaciones/GetStockNotifications?username=" + '@User.Identity.Name', function (data) {
+                    const contenedorNotificaciones = $('#notification-stock');
+                    const contadorGrande = $('#notificationsctock-count');
+                    const contadorPequeno = $('#notificationsctock-counttiny');
+
+                    contenedorNotificaciones.empty();
+                    contadorGrande.text(data.length);
+                    contadorPequeno.text(data.length);
+
+                    const maximoNotificaciones = 5;
+                    const visibles = data.slice(0, maximoNotificaciones);
+
+                    visibles.forEach(notificacion => {
+                        const fechaInicio = new Date(notificacion.CreatedAt);
+                        const fechaFin = new Date();
+                        const diferencia = fechaFin - fechaInicio;
+                        const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+                        const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+                        const tiempoTexto = dias > 0 ? `${dias} días atrás` : horas > 0 ? `${horas} horas atrás` : `${minutos} minutos atrás`;
+                        const item = `
+                        <div class="dropdown-item notification-item py-2 text-wrap" id="notification-${notificacion.Id}">
+                           <span class="d-flex gap-2">
+                           <span class="avatar-md flex-shrink-0">
+                            <span class="avatar-title bg-danger-subtle text-danger rounded fs-22">
+                                <i data-lucide="server-crash" class="fs-xl fill-danger"></i>
+                            </span>
+                        </span>
+                        <span class="flex-grow-1 text-muted">
+                            <span class="fs-xs">${notificacion.Message}</span>
+                            <br>
+                            <span class="fs-xs">${tiempoTexto}</span>
+                        </span>
+                        <button type="button" class="flex-shrink-0 text-muted btn btn-link p-0" data-dismissible="#notification-${notificacion.Id}">
+                            <i class="ti ti-xbox-x-filled fs-xxl"></i>
+                        </button>
+                        </span>
+                       </div>`;
+                        ultimoId = notificacion.Id;
+                        contenedorNotificaciones.append(item);
+                    });
+                });
+            }
+
+            // Lógica para cerrar notificaciones
+            $(document).on('click', '[data-dismissible]', function () {
+                const objetivo = $(this).data('dismissible');
+                $(objetivo).remove();
+            });
+
+              let page = 1; // Variable para rastrear la página actual
+              const pageSize = 5; // Número de notificaciones por página
+
+            setInterval(cargarNotificacionesStock(), 30000); // Ejecuta cada 30 segundos
+
+            // Iniciar la conexión con SignalR
+            $.connection.hub.start()
+                .done(function () {
+                    console.log("Conexión establecida con SignalR.");
+                })
+                .fail(function (error) {
+                    console.error("Error al conectar con SignalR:", error);
+                });
+          });
+    </script>
+    <script>
+
+        let cargando = false;
+        let paginaActual = 1;
+        const tamañoPagina = 5;
+        function marcarComoLeidaStock(id) {
+            $.get("/Notificaciones/MarkNotificationAsRead?id=" + id, function () {
+                const notificationCount = $('#notificationsctock-count');
+                $("#notificacion-" + id).fadeOut(); // Ocultar la notificación en la interfaz
+                let count = parseInt(notificationCount.text()) || 0;
+                notificationCount.text(count - 1);
+                if (count < 1) { notificationCount.fadeOut(); }
+            });
+        }
+        function cargarMasNotificaciones(pagina) {
+            $.get(`/Notificaciones/GetStockNotifications?username=@User.Identity.Name&page=${pagina}&pageSize=${tamañoPagina}`, function (data) {
+                if (data.length === 0) {
+                    // No hay más notificaciones
+                    return;
+                }
+                const contenedor = $('#notification-stock');
+                data.forEach(notificacion => {
+                    const fechaInicio = new Date(notificacion.CreatedAt);
+                    const ahora = new Date();
+                    const diferencia = ahora - fechaInicio;
+                    const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+                    const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+
+                    const tiempoTexto = dias > 0 ? `${dias} días atrás` : horas > 0 ? `${horas} horas atrás` : `${minutos} minutos atrás`;
+
+                    const item = `
+                <div class="dropdown-item notification-item py-2 text-wrap" id="notification-${notificacion.Id}">
+                    <span class="d-flex gap-2">
+                        <span class="avatar-md flex-shrink-0">
+                            <span class="avatar-title bg-danger-subtle text-danger rounded fs-22">
+                                <i data-lucide="server-crash" class="fs-xl fill-danger"></i>
+                            </span>
+                        </span>
+                        <span class="flex-grow-1 text-muted overflow-hidden">
+                            <span class="fs-xs">${notificacion.Titulo}</span>
+                            <br>
+                            <span class="fs-xs">${tiempoTexto}</span>
+                        </span>
+                        <button type="button" class="flex-shrink-0 text-muted btn btn-link p-0" data-dismissible="#notification-${notificacion.Id}">
+                            <i class="ti ti-xbox-x-filled fs-xxl"></i>
+                        </button>
+                    </span>
+                </div>`;
+                    contenedor.append(item);
+                });
+                paginaActual = pagina;
+                cargando = false;
+            }).fail(function () {
+                cargando = false;
+                console.error("Error al cargar más notificaciones");
+            });
+        }
+    </script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

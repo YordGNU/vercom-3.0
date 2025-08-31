@@ -1,0 +1,9 @@
+﻿@model List<vercom.Models.CajaPrincipal>
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <option value="@item.CajaID">@item.Nombre</option>
+    }
+}
+

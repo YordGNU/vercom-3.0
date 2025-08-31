@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
+using vercom.Helpers;
 using vercom.Interfaces;
 using vercom.Models;
 using EntityState = System.Data.Entity.EntityState;
@@ -28,12 +29,12 @@ namespace vercom.Controllers
             return PartialView("_listapuntosName", consulta.ToList());
         }
 
-
         public ActionResult _listunidades()
         {
             var consulta = from r in db.unidad orderby r.unidad1 ascending select r;
             return PartialView("_listunidades", consulta.ToList());
         }
+
         public ActionResult _listunidadesName()
         {
             var consulta = from r in db.unidad orderby r.unidad1 ascending select r;
@@ -63,6 +64,7 @@ namespace vercom.Controllers
             var consulta = from r in db.categoria orderby r.clave ascending select r;
             return PartialView("_listcategorias", consulta.ToList());
         }
+
         public ActionResult _listcategoriasName()
         {
             var consulta = from r in db.categoria orderby r.clave ascending select r;
@@ -92,6 +94,12 @@ namespace vercom.Controllers
         {
             var consulta = from r in db.area orderby r.nombre ascending select r;
             return PartialView("_listareas", consulta.ToList());
+        }
+
+        public ActionResult _listareasName()
+        {
+            var consulta = from r in db.area orderby r.nombre ascending select r;
+            return PartialView("_listareasName", consulta.ToList());
         }
 
         public ActionResult _listpresupuestos()
@@ -137,6 +145,18 @@ namespace vercom.Controllers
             var consulta = from r in db.forma_operacion orderby r.forma ascending select r;
             return PartialView("_listformaoperacion", consulta.ToList()); // Ajusta el nombre de la vista parcial
         }
+
+        public ActionResult _listcajas()
+        {
+            var consulta = from r in db.CajaPrincipal orderby r.CajaID ascending select r;
+            return PartialView("_listcajas", consulta.ToList());
+        }
+        public ActionResult _listsubmayores()
+        {
+            var consulta = from r in db.SubMayor orderby r.Nombre ascending select r;
+            return PartialView("_listsubmayores", consulta.ToList());
+        }
+
         public ContentResult _listpresupuestosFecha(string fecha)
         {
             List<iFlujoResumen> iData = new List<iFlujoResumen>();
@@ -209,55 +229,54 @@ namespace vercom.Controllers
 
         public ContentResult _productosXpuntoFilCategoria(int id, int tipo, string fecha, int categ)
         {
-            List<iProductosXpunto> iData = new List<iProductosXpunto>();
-            var cvFecha = Convert.ToDateTime(fecha);
+            var cvFecha = DateTime.Parse(fecha);
             var cvFechaSaldo = cvFecha.AddDays(-1);
-            var dataSaldo = db.operacion.Where(s => s.fecha == cvFechaSaldo && s.producto.categoriaid == categ && s.punto_ventaid == id).ToList();
-            // Obtener el saldo anterior
-            var saldo = db.operacion.ToList()
-                .Where(r => r.tipo_operacionid == 5)
-                .GroupBy(r => r.productoid)
-                .Select(g => new { ProductoId = g.Key, Cantidad = g.Sum(r => r.cantidad) })
-                .ToDictionary(s => s.ProductoId, s => s.Cantidad);
+            var iData = new List<iProductosXpunto>();
+            db.Database.CommandTimeout = 120;
+            var data = IPVHelper.GenerarAnaliticoDesdeSP(cvFechaSaldo, cvFecha, id, categ);
 
-            // Obtener las entradas desde la fecha dada
-            var entradas = dataSaldo
-                .Where(r => r.fecha >= cvFecha && r.tipo_operacionid == 1)
-                .GroupBy(r => r.productoid)
-                .Select(g => new { ProductoId = g.Key, Cantidad = g.Sum(r => r.cantidad) })
-                .ToDictionary(e => e.ProductoId, e => e.Cantidad);
-
-            if (tipo == 5 || tipo == 1)
+            if (tipo == 1 || tipo == 5)
             {
-                var productos = db.producto.ToList();
-                foreach (var item in productos)
+                var productoList = db.producto.Where(p => p.categoriaid == categ && p.activo == true).ToList();
+                foreach (var producto in productoList)
                 {
-                    iProductosXpunto iVal = new iProductosXpunto
+                    float? kvp = 0;
+                    var saldo = data.Where(p => p.id == producto.id).Select(p => p.final_saldo).SingleOrDefault();
+                    if (saldo != null)
                     {
-                        id = item.id,
-                        cod = item.cod,
-                        nombre = item.nombre,
-                        precio = item.precio,
-                        cant_saldo = (saldo.ContainsKey(item.id) ? saldo[item.id] : 0) +
-                                     (entradas.ContainsKey(item.id) ? entradas[item.id] : 0),
+                        kvp += (float?) saldo;
+                    }                   
+                    
+                    var produntoPunto = new iProductosXpunto
+                    {
+                        id = producto.id,
+                        cod = producto.cod,
+                        nombre = producto.nombre,
+                        precio = producto.precio,
+                        cant_saldo = kvp,
                     };
-                    iData.Add(iVal);
+                    iData.Add(produntoPunto);
                 }
-            }
-            else
-            {
-                var productosFiltrados = saldo.Keys.ToList()
-                    .Where(pid => saldo[pid] > 0 || entradas.ContainsKey(pid) && db.producto.First(p => p.id == pid).categoriaid == categ)
-                    .Select(pid => new iProductosXpunto
+            }else {
+                // 🎯 Catálogo de productos por categoría
+
+                foreach (var kvp in data.Where(p => p.final_saldo > 0))
+                {
+                    var producto = db.producto.Where(p => p.id == kvp.id).SingleOrDefault();
+                    // 🛠 Constructor de respuesta
+                    var produntoPunto = new iProductosXpunto
                     {
-                        id = (int) pid,
-                        cod = db.producto.First(p => p.id == pid).cod,
-                        nombre = db.producto.First(p => p.id == pid).nombre,
-                        precio = db.producto.First(p => p.id == pid).precio,
-                        cant_saldo = saldo[pid] + (entradas.ContainsKey(pid) ? entradas[pid] : 0),
-                    }).ToList();
-                iData.AddRange(productosFiltrados);
-            }
+                        id = producto.id,
+                        cod = producto.cod,
+                        nombre = producto.nombre,
+                        precio = producto.precio,
+                        cant_saldo = (float?)kvp.final_saldo,
+                    };
+                    iData.Add(produntoPunto);
+                }
+
+            }           
+
             return Content(JsonConvert.SerializeObject(iData), "application/json");
         }
 
@@ -313,6 +332,35 @@ namespace vercom.Controllers
             };
 
             iData.Add(iVal);
+            return Content(JsonConvert.SerializeObject(iData), "application/json");
+        }
+
+        public ContentResult _productoSaldoXpuntoXfechaXcateg(int idprod, int idpunto, string fecha, int categ)
+        {
+            var cvFecha = DateTime.Parse(fecha);
+            var cvFechaSaldo = cvFecha.AddDays(-1);
+            db.Database.CommandTimeout = 120;
+
+            var data = IPVHelper.GenerarAnaliticoDesdeSP(cvFechaSaldo, cvFecha, idpunto, categ);
+            var iData = new List<iProductosXpunto>();
+
+            // 🎯 Catálogo de productos por categoría
+            var producto = db.producto.Where(p => p.id == idprod).SingleOrDefault();
+
+
+            foreach ( var kvp in data.Where(p => p.id == idprod))
+            {
+                // 🛠 Constructor de respuesta
+                var produntoPunto =  new iProductosXpunto
+                {
+                    id = producto.id,
+                    cod = producto.cod,
+                    nombre = producto.nombre,
+                    precio = producto.precio,
+                    cant_saldo = (float?) kvp.final_saldo,
+                };
+                iData.Add(produntoPunto);
+            }
             return Content(JsonConvert.SerializeObject(iData), "application/json");
         }
 

@@ -20,12 +20,12 @@ public class StockJob : IJob
 
         var productosBajoStock = db.operacion
             .Where(p => p.cantidad <= 10 && p.tipo_operacionid == 5 && p.fecha <= ultimaOperacion && p.fecha >= cvDate)
-            .Select(p => new { p.producto.nombre, p.cantidad, Punto = p.punto_venta.nombre})
+            .Select(p => new { p.producto.nombre, p.cantidad, p.producto.unidad.unidad1, Punto = p.punto_venta.nombre})
             .ToList();
 
         foreach (var producto in productosBajoStock)
         {
-            string mensaje = $"El producto {producto.nombre} tiene bajo stock ({producto.cantidad} unidades), en el punto de venta {producto.Punto}"; 
+            string mensaje = $"{producto.nombre} tiene bajo stock ({producto.cantidad} {producto.unidad1} ), en {producto.Punto}"; 
             var existeNotificacion = db.Notifications.Where(m => m.Message == mensaje).FirstOrDefault();          
             if (existeNotificacion != null) 
             {

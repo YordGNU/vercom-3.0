@@ -2,14 +2,15 @@
 {
     public class iOperacionXproducto
     {
-        public string cod { get; set; }
-        public string tipo { get; set; }
-        public string producto { get; set; }
+        public int ProductoID { get; set; }
+        public string Cod { get; set; }
+        public string Producto { get; set; }
+        public string Unidad { get; set; }
+        public string TipoOperacion { get; set; }
         public double? cantidad { get; set; }
-        public string unidad { get; set; }
-        public double? porciento { get; set; }
         public double? importe { get; set; }
         public double? costo { get; set; }
         public double? utilidad { get; set; }
+        public double? porciento { get; set; }
     }
 }

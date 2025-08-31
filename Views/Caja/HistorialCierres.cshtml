@@ -1,0 +1,312 @@
+﻿@{
+    ViewBag.Title = "HISTORIAL";
+}
+<div class="page-title-head d-flex align-items-center">
+    <div class="flex-grow-1">
+        <h4 class="fs-sm text-uppercase fw-bold m-0">CIERRES DE CAJA</h4>
+    </div>
+    <div class="text-end">
+        <ol class="breadcrumb m-0 py-0">
+            <li class="breadcrumb-item"><a href="javascript:void(0);">VERCOM</a></li>
+            <li class="breadcrumb-item"><a href="javascript:void(0);">CAJA</a></li>
+            <li class="breadcrumb-item active">HISTORIAL</li>
+        </ol>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-lg-3">
+        <label class="form-label">Caja</label>
+        <select class="form-select" id="filtroCajaID">
+            @Html.Action("_listcajas", "Parcial")
+        </select>
+    </div>
+    <div class="col-lg-3">
+        <label class="form-label">Desde</label>
+        <input type="datetime-local" class="form-control" id="filtroDesde" value="@DateTime.Today.ToString("yyyy-MM-ddTHH:mm")"/>
+    </div>
+    <div class="col-lg-3">
+        <label class="form-label">Hasta</label>
+        <input type="datetime-local" class="form-control" id="filtroHasta" value="@DateTime.Today.AddDays(1).AddSeconds(-1).ToString("yyyy-MM-ddTHH:mm")" />
+    </div>
+    <div class="col-lg-3 d-flex align-items-end">
+        <button class="btn btn-primary w-100" onclick="filtrarCierres()">
+            <i data-lucide="search" class="me-2"></i> Filtrar
+        </button>
+    </div>
+</div>
+<div class="row" id="bloque-Thistorialcierres">
+    <div class="col-12">
+        <div data-table="" data-table-rows-per-page="100" class="card">
+            <div class="card-header border-light justify-content-between">
+                <div class="d-flex gap-2">
+                    <div class="app-search">
+                        <input data-table-search="" type="search" class="form-control" placeholder="Buscar por nombre...">
+                        <i data-lucide="search" class="app-search-icon text-muted"></i>
+                    </div>
+                    <button data-table-delete-selected="" data-table-delete-url="@Url.Action("EliminarMultiples","Caja")" type="button" class="btn btn-danger btn-icon d-none">
+                        <i class="ti ti-trash fs-xl"></i>
+                    </button>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Records Per Page -->
+                    <div>
+                        <select data-table-set-rows-per-page="" class="form-select form-control my-1 my-md-0">
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex gap-1">            
+                    <button class="btn btn-primary btn-icon" id="btnExportExcel">
+                        <i data-lucide="file-spreadsheet" class="fs-lg"></i>
+                    </button>
+                    <button class="btn btn-info btn-icon" id="btnPrint">
+                        <i data-lucide="printer" class="fs-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id="tablaHistorialCierres" class="table table-custom table-centered table-select table-hover w-100 mb-0">
+                    <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                        <tr class="text-uppercase fs-xxs">                       
+                            <th data-table-sort="" data-column="FECHA">Fecha</th>
+                            <th data-table-sort="" data-column="CAJA">Caja</th>
+                            <th data-table-sort="" data-column="ENTRADAS">Entradas</th>
+                            <th data-table-sort="" data-column="SALIDA">Salida</th>
+                            <th data-table-sort="" data-column="SALDO">Saldo Final</th>
+                            <th data-table-sort="" data-column="USUARIO">Usuario</th>
+                            <th data-table-sort="" data-column="OBSERVACIONES">Observaciones</th>
+                            <th data-table-sort="" data-column="ESTADO">Estado</th>
+                            <th class="text-center noExport" style="width: 1%;" data-exclude="true">ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="card-footer border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div data-table-pagination-info="entradas"></div>
+                    <div data-table-pagination=""></div>
+                </div>
+            </div>
+        </div>
+    </div><!-- end col -->
+</div><!-- end row -->
+<div class="modal fade" id="modalDetalleCierre" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">Detalle del cierre</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table id="tablaDetalleCierre" class="table table-custom table-centered table-select table-hover w-100 mb-0">
+                        <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                            <tr class="text-uppercase fs-xxs">
+                                <th>Fecha</th>
+                                <th>Sub-Mayor</th>
+                                <th>Tipo</th>
+                                <th>Monto</th>
+                                <th>Método</th>
+                                <th>Concepto</th>
+                                <th>Referencia</th>
+                                <th>Usuario</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles {
+    <link href="~/Content/plugins/toastr/toastr.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="~/Scripts/plugins/toastr/toastr.min.js"></script>
+    <script src="~/Scripts/plugins/moment/moment.min.js"></script>
+    <script src="~/Scripts/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/Scripts/plugins/choices/choices.min.js"></script>
+    <script src="~/Scripts/plugins/table2excel/table2excel.js"></script>
+    <script src="~/Scripts/custom-table.js"></script>
+    <script>
+        $(document).ready(function () {
+            window.customTable = new CustomTable();
+            $('#tablaHistorialCierres').on('click', '.btnEditar', function (e) {
+                const id = $(this).closest('tr').data('id');
+                e.preventDefault();
+                $.getJSON(`/Caja/ObtenerDetalleCierre/${id}`, function (res) {
+                    const tbody = $('#tablaDetalleCierre tbody');
+                    tbody.empty();
+
+                    res.movimientos.forEach(m => {
+                        const fila = `
+                        <tr>
+                        <td>${m.FechaTexto}</td>
+                        <td>${m.SubMayor}</td>
+                        <td>${m.TipoMovimiento}</td>
+                        <td>$${m.Monto.toFixed(2)}</td>
+                        <td>${m.MetodoPago}</td>
+                        <td>${m.Concepto}</td>
+                        <td>${m.ReferenciaExterna}</td>
+                        <td>${m.Usuario}</td>
+                        </tr>`;
+                        tbody.append(fila);
+                    });
+                    $('#modalDetalleCierre').modal('show');
+                }).fail(function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de conexión',
+                        text: 'No se pudo consultar los datos. Verifica tu conexión o intenta nuevamente.'
+                    });
+                });
+            });
+        });
+        function filtrarCierres() {
+            const cajaId = $('#filtroCajaID').val();
+            const desde = $('#filtroDesde').val();
+            const hasta = $('#filtroHasta').val();
+            $.get('/Caja/ObtenerHistorialCierres', {
+                cajaId: cajaId,
+                desde: desde,
+                hasta: hasta
+            }, function (data) {
+                refreshTable(data);
+            });
+        }
+        function refreshTable(data) {
+            // 1. Localiza <table> y su instancia
+            const tableEl = document.querySelector('[data-table]');
+            const instance = window.customTable.tables.find(t => t.table === tableEl);
+            const tbody = tableEl.querySelector("tbody");
+            tbody.innerHTML = "";
+            let ingresos = 0, egresos = 0;
+            const rows = data.map(c => {
+                const tr = document.createElement('tr');
+                tr.id = `${c.CierreID}`;
+                tr.dataset.id = c.CierreID;
+                tr.innerHTML = `                 
+                  <td>${c.FechaTexto}</td>
+                  <td>${c.Caja}</td>
+                  <td>$${c.TotalIngresos.toFixed(2)}</td>
+                  <td>$${c.TotalEgresos.toFixed(2)}</td>
+                  <td>$${c.SaldoFinal.toFixed(2)}</td>
+                  <td>${c.Usuario}</td>
+                  <td>${c.Observaciones}</td>
+                  <td>${c.Estado}</td>
+                  <td class="noExport">
+                  <div class="d-flex justify-content-center gap-1">
+                  <button class="btn btn-light btn-icon btn-sm rounded-circle btn_edit btnEditar" onclick="verDetalleCierre(${c.CierreID})"><i class="ti ti-edit fs-lg"></i></button>
+                  </div>
+                  </td>`;
+                return tr;
+            });
+
+            $('#totalIngresos').text(`$${ingresos.toFixed(2)}`);
+            $('#totalEgresos').text(`$${egresos.toFixed(2)}`);
+            $('#saldoFinal').text(`$${(ingresos - egresos).toFixed(2)}`);
+            instance.fullRefresh(rows);
+            setupCheckboxListeners();
+        }
+        function setupCheckboxListeners() {
+            let tableEl = document.querySelector('[data-table]');
+            let btnDeleteSelected = document.querySelector('[data-table-delete-selected]');
+            let e = tableEl.querySelector("tbody");
+            let checkAllCheckBox = document.querySelector("#select-all-products");
+            let t = e.querySelectorAll('input[type="checkbox"]');
+            let rows = Array.from(e.querySelectorAll("tr"));
+            let filteredRows = [...rows];
+
+            checkAllCheckBox &&
+                0 < t.length &&
+                t.forEach((e) => {
+                    e.addEventListener("change", () => {
+                        var e = Array.from(t).some((e) => e.checked);
+                        btnDeleteSelected &&
+                            0 < filteredRows.length &&
+                            btnDeleteSelected.classList.toggle("d-none", !e);
+                    });
+                });
+        }
+        function activarOverlayEnContenedor(contenedorID) {
+            const contenedor = document.querySelector(contenedorID);
+            if (!contenedor) return;
+
+            const cards = contenedor.querySelectorAll('.card');
+            cards.forEach(card => {
+                let overlay = card.querySelector('.card-overlay');
+                if (!overlay) {
+                    overlay = document.createElement('div');
+                    overlay.classList.add(
+                        'card-overlay',
+                        'position-absolute',
+                        'top-0',
+                        'start-0',
+                        'w-100',
+                        'h-100',
+                        'd-flex',
+                        'justify-content-center',
+                        'align-items-center',
+                        'noExport'
+                    );
+
+                    overlay.style.zIndex = '10';
+                    const spinner = document.createElement('div');
+                    spinner.classList.add('spinner-border', 'text-primary');
+                    spinner.setAttribute('role', 'status');
+                    const label = document.createElement('span');
+                    label.classList.add('visually-hidden');
+                    label.textContent = 'Cargando...';
+                    spinner.appendChild(label);
+                    overlay.appendChild(spinner);
+                    card.appendChild(overlay);
+                }
+
+                overlay.style.display = 'flex';
+                $(overlay).hide().fadeIn(200);
+            });
+        }
+        function desactivarOverlayEnContenedor(contenedorID) {
+            const contenedor = document.querySelector(contenedorID);
+            if (!contenedor) return;
+            const overlays = contenedor.querySelectorAll('.card .card-overlay');
+            overlays.forEach(overlay => {
+                $(overlay).fadeOut(200, () => overlay.remove());
+            });
+        }
+        function verDetalleCierre(cierreId) {
+            $.get('/Caja/ObtenerDetalleCierre', { cierreId }, function (res) {
+                if (res.exito) {
+                    const tbody = $('#tablaDetalleCierre tbody');
+                    tbody.empty();
+                    res.movimientos.forEach(m => {
+                        const fila = `
+                            <tr>
+                            <td>${m.Fecha}</td>
+                            <td>${m.SubMayor}</td>
+                            <td>${m.TipoMovimiento}</td>
+                            <td>$${m.Monto.toFixed(2)}</td>
+                            <td>${m.MetodoPago}</td>
+                            <td>${m.Concepto}</td>
+                            <td>${m.ReferenciaExterna}</td>
+                            <td>${m.Usuario}</td>
+                            </tr>`;
+                        tbody.append(fila);
+                    });
+
+                    $('#modalDetalleCierre').modal('show');
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Error', text: res.mensaje });
+                }
+            });
+        }
+    </script>
+}

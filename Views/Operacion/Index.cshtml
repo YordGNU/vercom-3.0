@@ -1,5 +1,4 @@
-﻿@model IEnumerable<vercom.Models.operacion>
-@{
+﻿@{
     ViewBag.Title = "OPERACIONES";
 }
 <div class="page-title-head d-flex align-items-center">
@@ -18,122 +17,78 @@
         </ol>
     </div>
 </div>
-<div class="row row-cols-xxl-5 row-cols-md-3 row-cols-1 align-items-center g-1">
-    <div class="col">
-        <div class="card mb-1">
-            <div class="card-body">
-                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
-                <h5 title="Total Products">Products</h5>
-                <div class="d-flex align-items-center gap-2 my-3">
-                    <div class="avatar-md flex-shrink-0">
-                        <span class="avatar-title text-bg-primary rounded-circle fs-22">
-                            <i class="ti ti-package"></i>
-                        </span>
-                    </div>
-                    <h3 class="mb-0">1,240</h3>
-                    <span class="badge badge-soft-primary fw-medium ms-2 fs-xs ms-auto">+24 New</span>
-                </div>
-                <p class="mb-0">
-                    <span class="text-primary"><i class="ti ti-point-filled"></i></span>
-                    <span class="text-nowrap text-muted">Active Listings</span>
-                    <span class="float-end"><b>980</b></span>
-                </p>
-            </div>
-        </div>
-    </div>
-    <div class="col">
-        <div class="card mb-1">
-            <div class="card-body">
-                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
-                <h5 title="Customer Orders">Orders</h5>
-                <div class="d-flex align-items-center gap-2 my-3">
-                    <div class="avatar-md flex-shrink-0">
-                        <span class="avatar-title text-bg-secondary rounded-circle fs-22">
-                            <i class="ti ti-shopping-cart"></i>
-                        </span>
-                    </div>
-                    <h3 class="mb-0">8,540</h3>
-                    <span class="badge badge-soft-secondary fw-medium ms-2 fs-xs ms-auto">+120 New</span>
-                </div>
-                <p class="mb-0">
-                    <span class="text-secondary"><i class="ti ti-point-filled"></i></span>
-                    <span class="text-nowrap text-muted">Total Orders</span>
-                    <span class="float-end"><b>105K</b></span>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col">
-        <div class="card mb-1">
-            <div class="card-body">
-                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
-                <h5 title="Sales Today">Sales</h5>
-                <div class="d-flex align-items-center gap-2 my-3">
-                    <div class="avatar-md flex-shrink-0">
-                        <span class="avatar-title text-bg-success rounded-circle fs-22">
-                            <i class="ti ti-currency-dollar"></i>
-                        </span>
-                    </div>
-                    <h3 class="mb-0">$9,860</h3>
-                    <span class="badge badge-soft-success fw-medium ms-2 fs-xs ms-auto">+8.2%</span>
-                </div>
-                <p class="mb-0">
-                    <span class="text-success"><i class="ti ti-point-filled"></i></span>
-                    <span class="text-nowrap text-muted">Today's Sales</span>
-                    <span class="float-end"><b>$156K</b></span>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col">
-        <div class="card mb-1">
-            <div class="card-body">
-                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
-                <h5 title="Customer Count">Customers</h5>
-                <div class="d-flex align-items-center gap-2 my-3">
-                    <div class="avatar-md flex-shrink-0">
-                        <span class="avatar-title text-bg-info rounded-circle fs-22">
-                            <i class="ti ti-users"></i>
-                        </span>
-                    </div>
-                    <h3 class="mb-0">2,945</h3>
-                    <span class="badge badge-soft-info fw-medium ms-2 fs-xs ms-auto">+36 New</span>
-                </div>
-                <p class="mb-0">
-                    <span class="text-info"><i class="ti ti-point-filled"></i></span>
-                    <span class="text-nowrap text-muted">Total Customers</span>
-                    <span class="float-end"><b>58,320</b></span>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col">
-        <div class="card mb-1">
-            <div class="card-body">
-                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
-                <h5 title="Total Revenue">Revenue</h5>
-                <div class="d-flex align-items-center gap-2 my-3">
-                    <div class="avatar-md flex-shrink-0">
-                        <span class="avatar-title text-bg-warning rounded-circle fs-22">
-                            <i class="ti ti-chart-bar"></i>
-                        </span>
-                    </div>
-                    <h3 class="mb-0">$1.2M</h3>
-                    <span class="badge badge-soft-warning fw-medium ms-2 fs-xs ms-auto">+4.5%</span>
-                </div>
-                <p class="mb-0">
-                    <span class="text-warning"><i class="ti ti-point-filled"></i></span>
-                    <span class="text-nowrap text-muted">Total Revenue</span>
-                    <span class="float-end"><b>$12.8M</b></span>
-                </p>
-            </div>
-        </div>
-    </div>
-</div><!-- end row -->
 <div class="row">
+    <div class="col-12">
+        <!-- Simple card -->
+        <div class="card">
+            <div class="card-body">
+                <form>
+                    <div class="row gy-2 gx-2 align-items-center">
+                        <div class="col-auto">
+                            <div class="input-group mb-2">
+                                <div class="input-group-text"><i data-lucide="calendar"></i></div>
+                                <input type="text" name="fecha" id="fecha" value="@DateTime.Now.ToString("d")" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="input-group mb-2">
+                                <div class="input-group-text"><i data-lucide="package"></i></div>
+                                <select class="form-control" name="tipo_operacionid" id="tipo_operacionid">
+                                    <option value="0">Tipo de operación</option>
+                                    @Html.Action("_listoperaciontipo", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-auto" id="tipPago" style="display: none">
+                            <div class="input-group mb-2">
+                                <div class="input-group-text"><i data-lucide="package" class="app-search-icon text-muted"></i></div>
+                                <select class="form-control" name="tipo_pagoid" id="tipo_pagoid">
+                                    <option value="0">Tipo de pago</option>
+                                    @Html.Action("_listtipopago", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="input-group mb-2">
+                                <div class="input-group-text"><i data-lucide="store" class="app-search-icon text-muted"></i></div>
+                                <select class="form-control" name="punto_ventaid" id="punto_ventaid" required="">
+                                    <option value="0">Punto de venta</option>
+                                    @Html.Action("_listapuntos", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="input-group mb-2">
+                                <div class="input-group-text"><i data-lucide="tag" class="app-search-icon text-muted"></i></div>
+                                <select class="form-control" name="categoriaid" id="categoriaid" required="">
+                                    <option value="0">Categoría</option>
+                                    @Html.Action("_listcategorias", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="input-group-lg mb-2">
+                                <select class="form-control" name="productoid" id="productoid" required="">
+                                    <option value="0">Producto</option>
+                                    @Html.Action("_listtproductos", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-primary mb-2" id="filterOper">
+                                <i data-lucide="filter" class="fs-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- end card-body-->
+        </div>
+        <!-- end card-->
+    </div>
+    <!-- end col -->
+</div>
+<div class="row" id="bloque-Toperaciones">
     <div class="col-12">
         <div data-table="" data-table-rows-per-page="100" class="card">
             <div class="card-header border-light justify-content-between">
@@ -142,34 +97,11 @@
                         <input data-table-search="" type="search" class="form-control" placeholder="Buscar por nombre...">
                         <i data-lucide="search" class="app-search-icon text-muted"></i>
                     </div>
-                    <button data-table-delete-selected="" class="btn btn-danger d-none">Delete</button>
+                    <button data-table-delete-selected="" data-table-delete-url="@Url.Action("EliminarMultiples","Operacion")" type="button" class="btn btn-danger btn-icon d-none">
+                        <i class="ti ti-trash fs-xl"></i>
+                    </button>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                    <span class="me-2 fw-semibold">Filtrar por:</span>
-                    <!-- Operacion Filter -->
-                    <div class="app-search">
-                        <select data-table-filter="TIPOOPER" class="form-select form-control my-1 my-md-0">
-                            <option value="All">Tipo de operación</option>
-                            @Html.Action("_listoperaciontipoName", "Parcial")
-                        </select>
-                        <i data-lucide="tag" class="app-search-icon text-muted"></i>
-                    </div>
-                    <!-- Category Filter -->
-                    <div class="app-search">
-                        <select data-table-filter="CATEGORIA" class="form-select form-control my-1 my-md-0">
-                            <option value="All">Categoría</option>
-                            @Html.Action("_listcategoriasName", "Parcial")
-                        </select>
-                        <i data-lucide="tag" class="app-search-icon text-muted"></i>
-                    </div>
-                    <!-- Punto Filter -->
-                    <div class="app-search">
-                        <select data-table-filter="PUNTO" class="form-select form-control my-1 my-md-0">
-                            <option value="All">Punto de venta</option>
-                            @Html.Action("_listapuntosName", "Parcial")
-                        </select>
-                        <i data-lucide="tag" class="app-search-icon text-muted"></i>
-                    </div>                  
                     <!-- Records Per Page -->
                     <div>
                         <select data-table-set-rows-per-page="" class="form-select form-control my-1 my-md-0">
@@ -180,17 +112,23 @@
                         </select>
                     </div>
                 </div>
-                <div class="d-flex gap-1">                   
-                    <a href="@Url.Action("Create")" class="btn btn-danger ms-1">
-                        <i data-lucide="plus" class="fs-sm me-2"></i> Agregar Operación
+                <div class="d-flex gap-1">
+                    <a href="@Url.Action("Create","Operacion")" class="btn btn-secondary btn-icon">
+                        <i class="ti ti-plus fs-xxl"></i>
                     </a>
+                    <button class="btn btn-primary btn-icon" id="btnExportExcel">
+                        <i data-lucide="file-spreadsheet" class="fs-lg"></i>
+                    </button>
+                    <button class="btn btn-info btn-icon" id="btnPrint">
+                        <i data-lucide="printer" class="fs-lg"></i>
+                    </button>
                 </div>
             </div>
             <div class="table-responsive">
-                <table class="table table-custom table-centered table-select table-hover w-100 mb-0">
+                <table class="table table-custom table-centered table-select table-hover w-100 mb-0" id="OperacionTable">
                     <thead class="bg-light align-middle bg-opacity-25 thead-sm">
                         <tr class="text-uppercase fs-xxs">
-                            <th class="ps-3" style="width: 1%;">
+                            <th class="ps-3 noExport" style="width: 1%;" data-exclude="true">
                                 <input data-table-select-all="" class="form-check-input form-check-input-light fs-14 mt-0" type="checkbox" id="select-all-products" value="option">
                             </th>
                             <th data-table-sort="" data-column="FECHA">FECHA</th>
@@ -200,58 +138,598 @@
                             <th data-table-sort="" data-column="COD. PRODUCTO">COD. PRODUCTO</th>
                             <th data-table-sort="" data-column="PRODUCTO">PRODUCTO</th>
                             <th data-table-sort="" data-column="CANTIDAD">CANTIDAD</th>
-                            <th data-table-sort="" data-column="IMPORTE">IMPORTE</th>                           
-                            <th class="text-center" style="width: 1%;">ACCIONES</th>
+                            <th data-table-sort="" data-column="UNIDAD">UNIDAD</th>
+                            <th data-table-sort="" data-column="IMPORTE">IMPORTE</th>
+                            <th class="text-center noExport" style="width: 1%;" data-exclude="true">ACCIONES</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr id="row_@item.id">
-                                <td class="ps-3">
-                                    <input class="form-check-input form-check-input-light fs-14 product-item-check mt-0" type="checkbox" value="option">
-                                </td>
-                                <td>
-                                    @item.fecha.Value.ToString("d")
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.tipo_operacion.tipo)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.producto.categoria.clave)
-                                </td>
-                                <td>@Html.DisplayFor(modelItem => item.punto_venta.nombre)</td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.producto.cod)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.producto.nombre)
-                                </td>                               
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.cantidad)  @item.producto.unidad.unidad1
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.importe)
-                                </td>
-                                <td>
-                                    <div class="d-flex justify-content-center gap-1">
-                                        <a href="@Url.Action("Edit", "Operacion", new {id = item.id})" class="btn btn-light btn-icon btn-sm rounded-circle"><i class="ti ti-edit fs-lg"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
                     </tbody>
                 </table>
             </div>
             <div class="card-footer border-0">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div data-table-pagination-info="products"></div>
+                    <div data-table-pagination-info="entradas"></div>
                     <div data-table-pagination=""></div>
                 </div>
             </div>
         </div>
     </div><!-- end col -->
 </div><!-- end row -->
+<!-- Modal -->
+<div class="modal fade" id="modalEditarOperacion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Editar operación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div> <!-- end modal header -->
+            <div class="modal-body">
+                <form id="formEditarOperacion">
+                    <div class="col-xxl-12">
+                        <div class="card">
+                            <div class="card-header d-block p-3">
+                                <h4 class="card-title mb-1">Datos generales</h4>
+                            </div> <!-- end card-header -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <!-- Fecha -->
+                                        <div class="mb-3" id="data_1">
+                                            <label for="edt_fecha" class="form-label">
+                                                Fecha <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="input-group date">
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                <input type="text" name="edt_fecha" id="edt_fecha" class="form-control" required="" value="" disabled>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" id="edt_edit" name="edt_edit" value="" />
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <!-- Tipo de Operación -->
+                                        <div class="mb-3">
+                                            <label for="tipo_operacionid" class="form-label">
+                                                Tipo de operación <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-control" name="edt_toperacion" id="edt_toperacion" required="" disabled>
+                                                <option value="0">Tipo de operación...</option>
+                                                @Html.Action("_listoperaciontipo", "Parcial")
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <!-- Punto de Venta -->
+                                        <div class="mb-3">
+                                            <label for="punto_ventaid" class="form-label">
+                                                Punto de venta <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-control" name="edt_puntoid" id="edt_puntoid" required="" disabled>
+                                                <option value="0">Punto de venta...</option>
+                                                @Html.Action("_listapuntos", "Parcial")
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <!-- Categoria -->
+                                        <div class="mb-3">
+                                            <label for="categoria_id" class="form-label">
+                                                Categoría <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-control" name="edt_categoriaid" id="edt_categoriaid" required="" disabled>
+                                                @Html.Action("_listcategorias", "Parcial")
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card-->
+                    </div> <!-- end col-->
+                    <div class="col-xxl-12">
+                        <div class="card">
+                            <div class="card-header d-block p-3">
+                                <h4 class="card-title mb-1">Información del producto</h4>
+                            </div> <!-- end card-header -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <label for="productoid" class="form-label">
+                                                Producto <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-control" id="edt_productoid" name="edt_productoid" data-choices="" disabled>
+                                                @Html.Action("_listtproductos", "Parcial")
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="mb-3">
+                                            <label for="saldo" class="form-label">
+                                                Saldo <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" class="form-control decimalVAL" id="edt_saldo" name="edt_saldo" step="0.01" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="mb-3">
+                                            <label for="cantidad" class="form-label">
+                                                Cantidad <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" class="form-control decimalVAL" data-val-anterior="" id="edt_cantidad" name="edt_cantidad"
+                                                   step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="mb-3">
+                                            <label for="edt_cantidadres" class="form-label">
+                                                Cantidad restante <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" class="form-control decimalVAL" id="edt_cantidadres" name="edt_cantidadres" step="0.01" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="mb-3">
+                                            <label for="importe" class="form-label">
+                                                Importe <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" class="form-control decimalVAL" id="edt_importe" name="edt_importe" step="0.01" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                      
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="btnActualizarOperacion" class="btn btn-primary">Actualizar</button>
+            </div> <!-- end modal footer -->
+        </div> <!-- end modal content-->
+    </div> <!-- end modal dialog-->
+</div> <!-- end modal-->
+@section Styles {
+    <link href="~/Content/plugins/toastr/toastr.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+}
+
 @section Scripts {
+    <script src="~/Scripts/plugins/toastr/toastr.min.js"></script>
+    <script src="~/Scripts/plugins/moment/moment.min.js"></script>
+    <script src="~/Scripts/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/Scripts/plugins/choices/choices.min.js"></script>
+    <script src="~/Scripts/plugins/table2excel/table2excel.js"></script>
     <script src="~/Scripts/custom-table.js"></script>
+    <script>
+        let productoChoices;
+        $(document).ready(function () {
+            window.customTable = new CustomTable();
+            const selectProductos = document.getElementById('productoid');
+            const choicesProductos = new Choices(selectProductos, {
+                removeItemButton: true,
+                searchEnabled: true,
+                placeholderValue: 'Producto',
+            });
+            productoChoices = new Choices('#edt_productoid');
+            const formato = 'DD/MM/YYYY';
+
+            $('#fecha').daterangepicker({
+                startDate: moment().startOf('month'),
+                endDate: moment().endOf('month'),
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: true,
+                cancelClass: "btn-light",
+                applyButtonClasses: "btn-success",
+                opens: 'left',
+                locale: {
+                    format: formato,
+                    separator: ' - ',
+                    applyLabel: 'Aplicar',
+                    cancelLabel: 'Cancelar',
+                    fromLabel: 'Desde',
+                    toLabel: 'Hasta',
+                    customRangeLabel: 'Personalizado',
+                    daysOfWeek: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+                    monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                    firstDay: 1
+                }
+            }, function (start) {
+                $('#fecha').val(start.format(formato));
+            });
+
+            $('#tipo_operacionid').on('change', function () {
+                var tipo = document.getElementById("tipo_operacionid").value;
+                if (tipo == 2) {
+                    $('#tipPago').show();
+                } else {
+                    document.getElementById("tipo_pagoid").value = null;
+                    $('#tipPago').hide();
+                }
+            });
+
+            $('#filterOper').on('click', function () {
+                var url = '@Url.Action("listFilterOperacion", "Operacion")';
+                const bloqueID = '#bloque-Toperaciones';
+                var fecha = document.getElementById("fecha").value;
+                var tperacion = document.getElementById("tipo_operacionid").value;
+                var tpago = document.getElementById("tipo_pagoid").value;
+                var pventa = document.getElementById("punto_ventaid").value;
+                var categ = document.getElementById("categoriaid").value;
+                var prod = document.getElementById("productoid").value;
+                activarOverlayEnContenedor(bloqueID);
+                $.getJSON(url, { fecha: fecha, tperacion: tperacion, tpago: tpago, pventa: pventa, categ: categ, prod: prod }).done(data => {                  
+                    if (data.length > 0) {
+                        refreshTable(data); // 💡 Reemplaza con tu lógica actual de pintado en la tabla     
+                        return;
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Sin resultados',
+                            text: 'No se encontraron movimientos para los filtros seleccionados.'
+                        });
+                    }
+                }).fail(() => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de conexión',
+                        text: 'No se pudo consultar los datos. Verifica tu conexión o intenta nuevamente.'
+                    });
+                }).always(() => desactivarOverlayEnContenedor(bloqueID));
+            });
+
+            $('#btnActualizarOperacion').on('click', function (e) {
+                const hayError = $("form input.bg-danger").length > 0;
+                if (hayError) {
+                    e.preventDefault(); // ⛔ Evita el envío
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No puedes enviar el formulario: hay productos con cantidad restante negativa.'
+                    });
+                    return false;
+                }
+
+                $(".decimalVAL").each(function () {
+                    var valor = $(this).val().replace(".", ",");
+                    $(this).val(valor);
+                });
+
+                const datos = $('#formEditarOperacion').serialize();        
+                $.ajax({
+                    url: '@Url.Action("Actualizar", "Operacion")',
+                    type: 'POST',
+                    data: datos,
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Operación actualizada',
+                                text: 'Operación actualizada correctamente.',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                            $('#modalEditarOperacion').modal('hide');                        
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '¡Error!',
+                                text: response.message
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Hubo un problema al enviar el formulario.'
+                        });
+                    }
+                });
+            });
+
+            $(document).on('click', '.btn_edit', function (e) {
+                e.preventDefault();
+                if ($("#edt_cantidad").hasClass("bg-danger")) {
+                    $("#edt_cantidad").removeClass("bg-danger");
+                }
+                const id = $(this).closest('tr').data('id');         
+                $.getJSON(`/Operacion/ObtenerOperacion/${id}`, function (data) {
+
+                    activarOverlayEnContenedor('#formEditarOperacion');
+
+                    if (data[0].tipo_operacion_id == 5) {
+                        $("#btnActualizarOperacion").attr('disabled', true);
+                        $("#edt_cantidad").attr('disabled', true);
+                    } else {
+                        $("#btnActualizarOperacion").attr('disabled', false);
+                        $("#edt_cantidad").attr('disabled', false);
+                    }
+                    // Asignar valores al modal
+                    $('#edt_edit').val(data[0].id);
+                    $('#edt_fecha').val(data[0].FechaTexto);
+                    $('#edt_cantidad').val(data[0].cantidad);
+                    $('#edt_importe').val(data[0].importe);
+                    $('#edt_toperacion').val(data[0].tipo_operacion_id);
+                    $('#edt_puntoid').val(data[0].punto_venta_id);
+                    $('#edt_categoriaid').val(data[0].categoria_id);
+                    const url = '@Url.Action("_productoSaldoXpuntoXfechaXcateg", "Parcial")';
+                    $.getJSON(url, { idprod: data[0].prod_id, idpunto: data[0].punto_venta_id, fecha: data[0].FechaTexto, categ: data[0].categoria_id }, function (dataOpcion) {
+                        // Filtrar y validar opciones con ID válido
+                        const prodID = String(data[0].prod_id);
+                        const opciones = dataOpcion
+                            .filter(item => item.id && item.id !== "" && item.id !== "0")
+                            .map(item => {
+                                const idStr = String(item.id);
+                                $('#edt_saldo').val(item.cant_saldo);
+                                $('#edt_cantidadres').val(item.cant_saldo);
+                                $("#edt_cantidad").attr('data-val-anterior', data[0].cantidad);
+                                return {
+                                    value: idStr,
+                                    label: `( ${item.cod} ) - ${item.nombre}`,
+                                    selected: idStr === prodID,
+                                    customProperties: {
+                                        precio: item.precio,
+                                        cantidad: item.cant_saldo,
+                                    }
+                                };
+                            });
+                        productoChoices.clearChoices();
+                        productoChoices.setChoices(opciones, 'value', 'label', true);
+                        desactivarOverlayEnContenedor('#formEditarOperacion');
+                    });
+                    $('#modalEditarOperacion').modal('show');
+                    $("#edt_cantidad").on("input", function () {
+                        actualizarVal(this, data[0].tipo_operacion_id);
+                    });
+                }).fail(function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de conexión',
+                        text: 'No se pudo consultar los datos. Verifica tu conexión o intenta nuevamente.'
+                    });
+                });
+            });
+
+            function refreshTable(data) {
+                // 1. Localiza <table> y su instancia
+                const tableEl = document.querySelector('[data-table]');
+                const instance = window.customTable.tables.find(t => t.table === tableEl);
+                const tbody = tableEl.querySelector("tbody");
+                tbody.innerHTML = "";
+                const rows = data.map(item => {
+                    const tr = document.createElement('tr');
+                    tr.id = `${item.id}`;
+                    tr.dataset.id = item.id;
+                    tr.dataset.fecha = item.FechaTexto;
+                    tr.dataset.tipo = item.tipo_operacion;
+                    tr.dataset.categoria = item.categoria;
+                    tr.dataset.punto = item.punto_venta;
+                    tr.dataset.prodCod = item.prod_cod;
+                    tr.dataset.prodId = item.prod_id;
+                    tr.dataset.prodNombre = item.prod_nombre;
+                    tr.dataset.cantidad = item.cantidad;
+                    tr.dataset.unidad = item.unidad;
+                    tr.dataset.importe = item.importe;
+                    tr.innerHTML = `
+                    <td class="noExport">
+                    <input class="form-check-input form-check-input-light fs-14 product-item-check mt-0" type="checkbox" value="${item.id}">
+                    </td>
+                    <td>${item.FechaTexto}</td>
+                    <td>${item.tipo_operacion}</td>
+                    <td>${item.categoria} </td>
+                    <td>${item.punto_venta}</td>
+                    <td>${item.prod_cod}</td>
+                    <td>${item.prod_nombre}</td>
+                    <td>${formatearNumero(item.cantidad)}</td>
+                    <td>${item.unidad}</td>
+                    <td>${formatearNumero(item.importe)}</td>
+                    <td class="noExport">
+                    <div class="d-flex justify-content-center gap-1">
+                    <a href="#" class="btn btn-light btn-icon btn-sm rounded-circle btn_edit"><i class="ti ti-edit fs-lg"></i></a>
+                    </div>
+                    </td>`;
+                    return tr;
+                });
+                instance.fullRefresh(rows);
+                setupCheckboxListeners();
+            }
+
+            function setupCheckboxListeners() {
+                let tableEl = document.querySelector('[data-table]');
+                let btnDeleteSelected = document.querySelector('[data-table-delete-selected]');
+                let e = tableEl.querySelector("tbody");
+                let checkAllCheckBox = document.querySelector("#select-all-products");
+                let t = e.querySelectorAll('input[type="checkbox"]');
+                let rows = Array.from(e.querySelectorAll("tr"));
+                let filteredRows = [...rows];
+
+                checkAllCheckBox &&
+                    0 < t.length &&
+                    t.forEach((e) => {
+                        e.addEventListener("change", () => {
+                            var e = Array.from(t).some((e) => e.checked);
+                            btnDeleteSelected &&
+                                0 < filteredRows.length &&
+                                btnDeleteSelected.classList.toggle("d-none", !e);
+                        });
+                    });
+            }
+            function actualizarFilaOperacion(id, operacion) {
+                const fila = $(`#${id}`);
+
+                fila.find('td:eq(1)').text(operacion.fecha);
+                fila.find('td:eq(2)').text(operacion.tipo_operacion);
+                fila.find('td:eq(3)').text(operacion.categoria);
+                fila.find('td:eq(4)').text(operacion.punto_venta);
+                fila.find('td:eq(5)').text(operacion.prod_cod);
+                fila.find('td:eq(6)').text(operacion.prod_nombre);
+                fila.find('td:eq(7)').text(operacion.cantidad);
+                fila.find('td:eq(8)').text(operacion.unidad);
+                fila.find('td:eq(9)').text(operacion.importe.toFixed(2));
+
+                // Actualiza los atributos data-* para futuras ediciones
+                fila.data('fecha', operacion.fecha);
+                fila.data('tipo', operacion.tipo_operacion);
+                fila.data('categoria', operacion.categoria);
+                fila.data('punto', operacion.punto_venta);
+                fila.data('prodCod', operacion.prod_cod);
+                fila.data('prodNombre', operacion.prod_nombre);
+                fila.data('cantidad', operacion.cantidad);
+                fila.data('unidad', operacion.unidad);
+                fila.data('importe', operacion.importe);
+            }
+            document.getElementById("btnExportExcel").addEventListener("click", function () {
+                const exporter = new Table2Excel();
+                // Clona la tabla para no afectar el original
+                let tablaClonada = $("#OperacionTable").clone();
+                // Elimina las columnas que no deseas
+                tablaClonada.find("th:nth-child(1), td:nth-child(1)").remove(); // 1
+                tablaClonada.find("th:nth-child(10), td:nth-child(10)").remove(); // 10
+                // Export tabla
+                exporter.export(tablaClonada, "Operaciones", {
+                    exclude: ".noExport",
+                    name: "Exportación",
+                    filename: "Operaciones.xlsx",
+                    preserveColors: true
+                });
+
+            });
+            document.getElementById("btnPrint").addEventListener("click", function () {
+                let tablaClonada = $("#OperacionTable").clone();
+                tablaClonada.find(".noExport").remove();
+                const ventana = window.open('', '', 'height=1080,width=1920');
+                ventana.document.write(`
+                 <html>
+                 <head>
+                 <title>IMPRIMIR TABLA OPERACIONES</title>
+                 <style>
+                     body {
+                         font-family: Arial, sans-serif;
+                         margin: 20px;
+                         font-size: 12px;
+                         color: #333;
+                     }
+                     h3 {
+                         margin-bottom: 5px;
+                         color: #004080;
+                     }
+                     p {
+                         margin: 0 0 10px;
+                         font-weight: bold;
+                     }
+                     table {
+                         width: 100%;
+                         border-collapse: collapse;
+                         margin-top: 10px;
+                     }
+                     th, td {
+                         border: 1px solid #999;
+                         padding: 6px 4px;
+                         text-align: center;
+                     }
+                     thead {
+                         background-color: #004080;
+                         color: white;
+                         font-weight: bold;
+                     }
+                     tfoot td {
+                         background-color: #f0f0f0;
+                         font-weight: bold;
+                     }
+                     tr:nth-child(even) td {
+                         background-color: #f9f9f9;
+                     }
+                     media print {
+                         body {
+                             font-size: 12px;
+                         }
+                     }
+                 </style>
+                 </head>
+                 <body>
+                 <h3>📋 Listado de operaciones </h3>
+                 ${tablaClonada[0].outerHTML}
+                 </body>
+                 </html>
+                 `);
+                ventana.document.close();
+                ventana.focus();
+                ventana.print();
+            });
+        });
+        function activarOverlayEnContenedor(contenedorID) {
+            const contenedor = document.querySelector(contenedorID);
+            if (!contenedor) return;
+
+            const cards = contenedor.querySelectorAll('.card');
+            cards.forEach(card => {
+                let overlay = card.querySelector('.card-overlay');
+                if (!overlay) {
+                    overlay = document.createElement('div');
+                    overlay.classList.add(
+                        'card-overlay',
+                        'position-absolute',
+                        'top-0',
+                        'start-0',
+                        'w-100',
+                        'h-100',
+                        'd-flex',
+                        'justify-content-center',
+                        'align-items-center',
+                        'noExport'
+                    );
+
+                    overlay.style.zIndex = '10';
+                    const spinner = document.createElement('div');
+                    spinner.classList.add('spinner-border', 'text-primary');
+                    spinner.setAttribute('role', 'status');
+                    const label = document.createElement('span');
+                    label.classList.add('visually-hidden');
+                    label.textContent = 'Cargando...';
+                    spinner.appendChild(label);
+                    overlay.appendChild(spinner);
+                    card.appendChild(overlay);
+                }
+
+                overlay.style.display = 'flex';
+                $(overlay).hide().fadeIn(200);
+            });
+        }
+        function desactivarOverlayEnContenedor(contenedorID) {
+            const contenedor = document.querySelector(contenedorID);
+            if (!contenedor) return;
+            const overlays = contenedor.querySelectorAll('.card .card-overlay');
+            overlays.forEach(overlay => {
+                $(overlay).fadeOut(200, () => overlay.remove());
+            });
+        }
+        function formatearNumero(valor) {
+            if (valor == Math.floor(valor)) {
+                return valor;
+            } else {
+                return valor.toFixed(2);
+            }
+        }
+        function actualizarVal(elemento, tipo) {
+            const nuevoVal = elemento.value ? parseFloat(elemento.value) : 0;
+            const valAnterior = parseFloat(elemento.getAttribute('data-val-anterior')) || 0;
+            const cantSaldo = parseFloat($('#edt_saldo').val()) || 0;            
+            let total = 0;
+            if (tipo === 1) {
+                total = cantSaldo - valAnterior + nuevoVal;
+            } else {
+                total = cantSaldo + valAnterior - nuevoVal;
+            }
+            formatearNumero(total);
+            $('#edt_cantidadres').val(total);
+
+            if (total < 0) {
+                elemento.classList.add("bg-danger");
+            } else {
+                elemento.classList.remove("bg-danger");
+            }
+        }
+    </script>
 }

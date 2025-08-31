@@ -27,7 +27,7 @@ public class NotificacionesController : Controller
         var rolname = db.UserRoles.Where(u => u.Users.UserName == username).Select(u => u.Roles.RoleName).FirstOrDefault();
         DateTime? fechaActual = System.DateTime.Now;
         var notificaciones = db.Notifications
-            .Where(n => n.IsRead == false && n.Message.Contains("Nueva operación"))
+            .Where(n => n.IsRead == false)
             .OrderByDescending(n => n.CreatedAt)
             .Select(n => new { n.Id, n.Message, n.CreatedAt, n.Role })
             .ToList() // Ejecuta la consulta primero
@@ -37,7 +37,7 @@ public class NotificacionesController : Controller
                 CreatedAt = n.CreatedAt.Value.ToString("yyyy-MM-ddTHH:mm:ss"), // Formatear después de la ejecución
                 n.Role
             }).ToList();
-        if (rolname != "Administrador") notificaciones = notificaciones.Where(n => n.Role == rolname).ToList();    
+        if (rolname != "Admin") notificaciones = notificaciones.Where(n => n.Role == rolname).ToList();    
         return Json(notificaciones, JsonRequestBehavior.AllowGet);
     }
 

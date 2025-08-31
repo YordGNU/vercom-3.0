@@ -29,11 +29,12 @@ namespace vercom.Models
         public Nullable<int> categoriaid { get; set; }
         public Nullable<int> unidadid { get; set; }
         public Nullable<int> areaid { get; set; }
+        public Nullable<bool> activo { get; set; }
     
         public virtual area area { get; set; }
         public virtual categoria categoria { get; set; }
+        public virtual unidad unidad { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<operacion> operacion { get; set; }
-        public virtual unidad unidad { get; set; }
     }
 }

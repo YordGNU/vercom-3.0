@@ -1,677 +1,684 @@
 ﻿@model vercom.Models.operacion
 @{
     ViewBag.Title = "ANALISIS";
+    var date = DateTime.Now;
+    var oPrimerDiaDelMes = new DateTime(date.Year, date.Month, 1);
+    var oUltimoDiaDelMes = oPrimerDiaDelMes.AddMonths(1).AddDays(-1);
 }
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-        <h2>ANÁLISIS</h2>
-        <ol class="breadcrumb">
+<div class="page-title-head d-flex align-items-center">
+    <div class="flex-grow-1">
+        <h4 class="fs-sm text-uppercase fw-bold m-0">OPERACIONES</h4>
+    </div>
+    <div class="text-end">
+        <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item">
-                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <a href="javascript: void(0);">VERCOM</a>
             </li>
             <li class="breadcrumb-item">
-                <a href="#">Analisis</a>
+                <a href="javascript: void(0);">OPERACIONES</a>
             </li>
-            <li class="active breadcrumb-item">
-                <strong>Operaciones</strong>
-            </li>
+            <li class="breadcrumb-item active">LISTA</li>
         </ol>
     </div>
 </div>
-<div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row">
-        <div class="col-lg-4">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h5>FILTRAR</h5>
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            @Html.Action("_filterRangeOperacion", "Operacion")
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div id="ajaxLoader" style="display: none">
-                <div class="sk-cube-grid">
-                    <div class="sk-cube sk-cube1"></div>
-                    <div class="sk-cube sk-cube2"></div>
-                    <div class="sk-cube sk-cube3"></div>
-                    <div class="sk-cube sk-cube4"></div>
-                    <div class="sk-cube sk-cube5"></div>
-                    <div class="sk-cube sk-cube6"></div>
-                    <div class="sk-cube sk-cube7"></div>
-                    <div class="sk-cube sk-cube8"></div>
-                    <div class="sk-cube sk-cube9"></div>
-                </div>
-            </div>
-            <div class="ibox">
-                <div class="ibox-title">
-                    <h5>IMPORTE</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins">
-                        <label id="label_totalImporte"></label>
-                    </h1>
-                    <div class="stat-percent font-bold text-success">
-                        <label id="label_porcienImporte"></label>%
-                        <i class="fa fa-bolt"></i>
-                    </div>
-                    <small>importe total</small>
-                </div>
-            </div>
-            <div class="ibox">
-                <div class="ibox-title">
-                    <h5>COSTO</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins">
-                        <label id="label_totalCosto"></label>
-                    </h1>
-                    <div class="stat-percent font-bold text-info">
-                        <label id="label_porcienCosto"></label>%
-                        <i class="fa fa-level-up"></i>
-                    </div>
-                    <small>costo total</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="ibox">
-                <div class="ibox-title">
-                    <h5>UTILIDADES</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins">
-                        <label id="label_utilidades"></label>
-                    </h1>
-                    <div class="stat-percent font-bold text-info">
-                        <label id="label_porcienutilidades"></label>%
-                        <i class="fa fa-level-up"></i>
-                    </div>
-                    <small>utilidades</small>
-                </div>
-            </div>
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h5>TIPOS DE PAGO</h5>
-                </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h1 class="no-margins">
-                                <label id="label_cantEfectivo"></label>
-                            </h1>
-                            <div class="font-bold text-navy">
-                                <label id="label_porcientEfectivo"></label>%
-                                <i class="fa fa-level-up"></i>
-                                <small>Efectivo</small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <h1 class="no-margins">
-                                <label id="label_cantTransfer"></label>
-                            </h1>
-                            <div class="font-bold text-navy">
-                                <label id="label_porcientTransfer"></label>%
-                                <i class="fa fa-level-up"></i>
-                                <small>Transferencia</small>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card loader">
+            <div class="card-body">
+                <div class="row gy-2 gx-2 justify-content-between">
+                    <div class="col-3">
+                        <div class="input-group mb-2">
+                            <div class="input-daterange input-group" id="datePickerRange">
+                                <div class="input-group-text">
+                                    <i data-lucide="calendar"
+                                       class="app-search-icon text-muted"></i>
+                                </div>
+                                <input type="text" class="form-control date" id="start" name="start" placeholder="Desde"
+                                       value="@oPrimerDiaDelMes.ToString("d")" data-toggle="date-picker"
+                                       data-single-date-picker="true">
+                                <div class="input-group-text"> AL </div>
+                                <input type="text" class="form-control date" id="end" name="end" placeholder="Hasta"
+                                       data-toggle="date-picker" data-single-date-picker="true"
+                                       value="@oUltimoDiaDelMes.ToString("d")">
                             </div>
                         </div>
                     </div>
+                    <div class="col-auto">
+                        <div class="input-group mb-2">
+                            <div class="input-group-text"><i data-lucide="package"></i></div>
+                            <select class="form-control" name="tipo_operacionid" id="tipo_operacionid">
+                                <option value="0" selected>Tipo de operación</option>
+                                @Html.Action("_listoperaciontipo", "Parcial")
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="input-group mb-2" id="tipPago" style="display: none">
+                            <div class="input-group-text">
+                                <i data-lucide="package"
+                                   class="app-search-icon text-muted"></i>
+                            </div>
+                            <select class="form-control" name="tipo_pagoid" id="tipo_pagoid">
+                                <option value="0" selected>Tipo de pago</option>
+                                @Html.Action("_listtipopago", "Parcial")
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="input-group mb-2">
+                            <div class="input-group-text">
+                                <i data-lucide="store" class="app-search-icon text-muted"></i>
+                            </div>
+                            <select class="form-control" name="punto_ventaid" id="punto_ventaid" required="">
+                                <option value="0" selected>Punto de venta</option>
+                                @Html.Action("_listapuntos", "Parcial")
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="input-group mb-2">
+                            <div class="input-group-text">
+                                <i data-lucide="tag" class="app-search-icon text-muted"></i>
+                            </div>
+                            <select class="form-control" name="areaid" id="areaid" required="">
+                                <option value="0" selected>Área económica</option>
+                                @Html.Action("_listareas", "Parcial")
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="input-group mb-2">
+                            <div class="input-group-text">
+                                <i data-lucide="tag" class="app-search-icon text-muted"></i>
+                            </div>
+                            <select class="form-control" name="categoriaid" id="categoriaid" required="">
+                                <option value="0" selected>Categoría</option>
+                                @Html.Action("_listcategorias", "Parcial")
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="mb-2">
+                            <select class="form-control" name="productoid" id="productoid" required="">
+                                <option value="0" selected>Producto</option>
+                                @Html.Action("_listtproductos", "Parcial")
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-primary mb-2" id="BTNfilter">
+                            <i data-lucide="filter" class="fs-lg"></i>
+                        </button>
+                    </div>
                 </div>
+            </div> <!-- end card-body-->          
+        </div>
+        <!-- end card-->
+    </div>
+    <!-- end col -->
+</div>
+<div class="row row-cols-xxl-4 row-cols-md-3 align-items-center g-1">
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <h5 title="Total Products">Importe</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-primary rounded-circle fs-22">
+                            <i class="ti ti-cash-banknote"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0" id="label_totalImporte">0,00</h3>
+                    <span class="badge badge-soft-secondary fw-medium ms-2 fs-xs ms-auto"
+                          id="label_porcienImporte"></span>
+                </div>
+                <p class="mb-0">
+                    <span class="text-primary"><i class="ti ti-point-filled"></i></span>
+                    <span class="text-nowrap text-muted">Importe total</span>
+                </p>
+            </div>
+            <div class="card-overlay" style="display: none;">              
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h5>DISTRIBUCIÓN POR TIPO DE OPERACION</h5>
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="fullscreen-link">
-                            <i class="fa fa-expand"></i>
-                        </a>
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <h5 title="Customer Orders">Costo</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-secondary rounded-circle fs-22">
+                            <i class="ti ti-math-cos"></i>
+                        </span>
                     </div>
+                    <h3 class="mb-0" id="label_totalCosto">0,00</h3>
+                    <span class="badge badge-soft-secondary fw-medium ms-2 fs-xs ms-auto"
+                          id="label_porcienCosto"></span>
                 </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-sm-5 b-r">
-                            <div style="width: 100%; padding-left: -0px; ">
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-hover dt-responsive display nowrap DataTable" width="100%" id="dataTable1">
-                                        <thead>
-                                            <tr>
-                                                <th width="100%">OPERACIÓN</th>
-                                                <th>CANTIDAD</th>
-                                                <th>%</th>
-                                                <th>IMPORTE</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-sm-7">
-                            <div class="container" id="chartContainer5">
-                                <div id="spinner1" class="spinner-overlay" style="display:none">
-                                    <div class="sk-spinner sk-spinner-wave">
-                                        <div class="sk-rect1"></div>
-                                        <div class="sk-rect2"></div>
-                                        <div class="sk-rect3"></div>
-                                        <div class="sk-rect4"></div>
-                                        <div class="sk-rect5"></div>
-                                    </div>
-                                </div>
-                                <canvas style="width: 100%; padding-left: -0px;" id="canvaForVXoperacion"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <p class="mb-0">
+                    <span class="text-secondary"><i class="ti ti-point-filled"></i></span>
+                    <span class="text-nowrap text-muted">Costo total</span>
+                </p>
+            </div>
+            <div class="card-overlay" style="display: none;">             
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>DISTRIBUCIÓN DE OPERACIONES POR FECHA</h5>
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="fullscreen-link">
-                            <i class="fa fa-expand"></i>
-                        </a>
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <h5 title="Sales Today">Utilidad</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-success rounded-circle fs-22">
+                            <i class="ti ti-premium-rights"></i>
+                        </span>
                     </div>
+                    <h3 class="mb-0" id="label_utilidades">0,00</h3>
+                    <span class="badge badge-soft-success fw-medium ms-2 fs-xs ms-auto"
+                          id="label_porcienutilidades"></span>
                 </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-sm-5 b-r">
-                            <div style="width: 100%; padding-left: -0px; ">
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-hover dt-responsive display nowrap DataTable" width="100%" id="dataTable2">
-                                        <thead>
-                                            <tr>
-                                                <th>FECHA</th>
-                                                <th>T.OPERACION</th>
-                                                <th>CANTIDAD</th>
-                                                <th>%</th>
-                                                <th>IMPORTE</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-7">
-                            <div id="spinner2" class="spinner-overlay" style="display:none">
-                                <div class="sk-spinner sk-spinner-wave">
-                                    <div class="sk-rect1"></div>
-                                    <div class="sk-rect2"></div>
-                                    <div class="sk-rect3"></div>
-                                    <div class="sk-rect4"></div>
-                                    <div class="sk-rect5"></div>
-                                </div>
-                            </div>
-                            <canvas style="width: 100%; padding-left: -0px;" id="canvaForVXfecha"></canvas>
-                        </div>
-                    </div>
-                </div>
+                <p class="mb-0">
+                    <span class="text-success"><i class="ti ti-point-filled"></i></span>
+                    <span class="text-nowrap text-muted">Utilidad (b) total</span>
+                </p>
+            </div>
+            <div class="card-overlay" style="display: none;">           
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>DISTRIBUCIÓN DE OPERACIONES POR PUNTO DE VENTA</h5>
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="fullscreen-link">
-                            <i class="fa fa-expand"></i>
-                        </a>
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <h5 title="Customer Count">Tipo de pago</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-info rounded-circle fs-22">
+                            <i class="ti ti-cash"></i>
+                        </span>
                     </div>
-                </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-sm-7 b-r">
-                            <div style="width: 100%; padding-left: -0px; ">
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-hover dt-responsive display nowrap DataTable" width="100%" id="dataTable3">
-                                        <thead>
-                                            <tr>
-                                                <th>PUNTO DE VENTA</th>
-                                                <th>T.OPERACION</th>
-                                                <th>CANTIDAD</th>
-                                                <th>%</th>
-                                                <th>IMPORTE</th>
-                                                <th>COSTO</th>
-                                                <th>UTILIDAD</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-5">
-                            <div id="spinner3" class="spinner-overlay" style="display:none">
-                                <div class="sk-spinner sk-spinner-wave">
-                                    <div class="sk-rect1"></div>
-                                    <div class="sk-rect2"></div>
-                                    <div class="sk-rect3"></div>
-                                    <div class="sk-rect4"></div>
-                                    <div class="sk-rect5"></div>
-                                </div>
-                            </div>
-                            <canvas style="width: 100%; padding-left: -0px;" id="canvaForVXpunto"></canvas>
-                        </div>
+                    <h3 class="mb-0" id="label_cantEfectivo">0,00</h3>
+                    <span class="badge badge-soft-info fw-medium ms-2 fs-xs ms-auto" id="label_porcientEfectivo"></span>
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-info rounded-circle fs-22">
+                            <i class="ti ti-credit-card-pay"></i>
+                        </span>
                     </div>
+                    <h3 class="mb-0" id="label_cantTransfer">0,00</h3>
+                    <span class="badge badge-soft-warning fw-medium ms-2 fs-xs ms-auto"
+                          id="label_porcientTransfer"></span>
                 </div>
+                <p class="mb-0">
+                    <span class="text-info"><i class="ti ti-point-filled"></i></span>
+                    <span class="text-nowrap text-muted">Efectivo | Transferencia</span>
+                </p>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h5>DISTRIBUCIÓN DE OPERACIONES POR PRODUCTOS</h5>
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="fullscreen-link">
-                            <i class="fa fa-expand"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div style="width: 100%; padding-left: -0px; ">
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-hover dt-responsive display nowrap DataTable" width="100%" id="dataTable4">
-                                        <thead>
-                                            <tr>
-                                                <th>CÓDIGO</th>
-                                                <th width="30%">PRODUCTO</th>
-                                                <th>T.OPERACION</th>
-                                                <th>CANT.</th>
-                                                <th>UM</th>
-                                                <th>%</th>
-                                                <th>IMPORTE</th>
-                                                <th>COSTO</th>
-                                                <th>UTILIDAD</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-12">
-                            <div class="chart-container" style="height: 100%">
-                                <div id="spinner4" class="spinner-overlay" style="display:none">
-                                    <div class="sk-spinner sk-spinner-wave">
-                                        <div class="sk-rect1"></div>
-                                        <div class="sk-rect2"></div>
-                                        <div class="sk-rect3"></div>
-                                        <div class="sk-rect4"></div>
-                                        <div class="sk-rect5"></div>
-                                    </div>
-                                </div>
-                                <canvas style="width: 100%; padding-left: -0px;" id="canvaForVXproducto"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="card-overlay" style="display: none;">         
             </div>
         </div>
     </div>
 </div>
-@section Styles {
-    @Styles.Render("~/plugins/dateRangeStyles")
-    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
-    @Styles.Render("~/plugins/dataPickerStyles")
-    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
-    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-    <style>
-        div.dataTables_wrapper div.dataTables_filter input {
-            width: 500px;
-        }
+<!-- end row -->
+<div class="row">
+    <div class="col-12">
+        <div class="card" id="reporte-completo">
+            <div class="card-header border-light">
+                @*<div class="d-flex gap-1">
+                    <button class="btn btn-primary btn-icon" id="btnPrintReport">
+                        <i data-lucide="printer" class="fs-lg"></i>
+                    </button>
+                    <button class="btn btn-success" id="btnExportPDFReport" onclick="exportarReporteAgrupado()">
+                        <i class="ti ti-download me-1"></i> Exportar reporte
+                    </button>
+                </div>*@
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xl-6">
+                        <div data-table="" data-table-rows-per-page="5" class="card">
+                            <div class="card-header border-light justify-content-between">
+                                <div class="d-flex gap-2">
+                                    <div class="app-search">
+                                        <input data-table-search="" type="search" class="form-control"
+                                               placeholder="Buscar por nombre...">
+                                        <i data-lucide="search" class="app-search-icon text-muted"></i>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-1">                                
+                                    <button class="btn btn-primary btn-icon" id="btnExportExcel1">
+                                        <i data-lucide="file-spreadsheet" class="fs-lg"></i>
+                                    </button>
+                                    <button class="btn btn-primary btn-icon" id="btnPrint1">
+                                        <i data-lucide="printer" class="fs-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-custom table-centered table-select table-hover w-100 mb-0" id="TableDataForTipo">
+                                    <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                                        <tr>
+                                            <th data-table-sort data-column="toper">T.OPERACION</th>
+                                            <th data-table-sort data-column="cant">CANT</th>
+                                            <th data-table-sort data-column="porc">%</th>
+                                            <th data-table-sort data-column="imp">IMP</th>
+                                            <th data-table-sort data-column="cos">COS</th>
+                                            <th data-table-sort data-column="uti">UTI</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-footer border-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div data-table-pagination-info="entradas"></div>
+                                    <div data-table-pagination=""></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end card -->
+                    </div>
+                    <!-- end col-->
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div dir="ltr">
+                                    <div id="canvaForVXoperacion" class="apex-charts"></div>
+                                </div>
+                            </div>
+                            <!-- end card body-->
+                        </div>
+                        <!-- end card -->
+                    </div>
+                    <!-- end col-->
+                </div>
+                <div class="row">
+                    <div class="col-xl-6">
+                        <div data-table="" data-table-rows-per-page="31" class="card">
+                            <div class="card-header border-light justify-content-between">
+                                <div class="d-flex gap-2">
+                                    <div class="app-search">
+                                        <input data-table-search="" type="search" class="form-control"
+                                               placeholder="Buscar por nombre...">
+                                        <i data-lucide="search" class="app-search-icon text-muted"></i>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <!-- Records Per Page -->
+                                    <div class="input-group">
+                                        <div class="input-group-text"><i data-lucide="eye" class="app-search-icon text-muted"></i></div>
+                                        <select data-table-set-rows-per-page="" class="form-select form-control my-1 my-md-0">
+                                            <option value="7">7</option>
+                                            <option value="15">15</option>
+                                            <option value="31">31+</option>
+                                        </select>
+                                    </div>
 
-        .spinner-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-            display: none;
-        }
-    </style>
+                                </div>
+                                <div class="d-flex gap-1">                                    
+                                    <button class="btn btn-primary btn-icon" id="btnExportExcel2">
+                                        <i data-lucide="file-spreadsheet" class="fs-lg"></i>
+                                    </button>
+                                    <button class="btn btn-primary btn-icon" id="btnPrint2">
+                                        <i data-lucide="printer" class="fs-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-custom table-centered table-select table-hover w-100 mb-0" id="TableDataForFecha">
+                                    <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                                        <tr>
+                                            <th data-table-sort data-column="fecha">FECHA</th>
+                                            <th data-table-sort data-column="toper">T.OPERACION</th>
+                                            <th data-table-sort data-column="cant">CANT</th>
+                                            <th data-table-sort data-column="porc">%</th>
+                                            <th data-table-sort data-column="imp">IMP</th>
+                                            <th data-table-sort data-column="cos">COS</th>
+                                            <th data-table-sort data-column="uti">UTI</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-footer border-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div data-table-pagination-info="entradas"></div>
+                                    <div data-table-pagination=""></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end card -->
+                    </div>
+                    <!-- end col-->
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div dir="ltr">
+                                    <div id="canvaForVXfecha" class="apex-charts"></div>
+                                </div>
+                            </div>
+                            <!-- end card body-->
+                        </div>
+                        <!-- end card -->
+                    </div>
+                    <!-- end col-->
+                </div>
+                <div class="row">
+                    <div class="col-xl-6">
+                        <div data-table="" data-table-rows-per-page="10" class="card">
+                            <div class="card-header border-light justify-content-between">
+                                <div class="d-flex gap-2">
+                                    <div class="app-search">
+                                        <input data-table-search="" type="search" class="form-control"
+                                               placeholder="Buscar por nombre...">
+                                        <i data-lucide="search" class="app-search-icon text-muted"></i>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <!-- Records Per Page -->
+                                    <div class="input-group">
+                                        <div class="input-group-text"><i data-lucide="eye" class="app-search-icon text-muted"></i></div>
+                                        <select data-table-set-rows-per-page="" class="form-select form-control my-1 my-md-0">
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                            <option value="30">30</option>
+                                            <option value="30-50+">50+</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="d-flex gap-1">                                    
+                                    <button class="btn btn-primary btn-icon" id="btnExportExcel3">
+                                        <i data-lucide="file-spreadsheet" class="fs-lg"></i>
+                                    </button>
+                                    <button class="btn btn-primary btn-icon" id="btnPrint3">
+                                        <i data-lucide="printer" class="fs-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-custom table-centered table-select table-hover w-100 mb-0" id="TableDataForPunto">
+                                    <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                                        <tr>
+                                            <th data-table-sort data-column="punto">PUNTO</th>
+                                            <th data-table-sort data-column="toper">T.OPERACION</th>
+                                            <th data-table-sort data-column="cant">CANT</th>
+                                            <th data-table-sort data-column="porc">%</th>
+                                            <th data-table-sort data-column="imp">IMP</th>
+                                            <th data-table-sort data-column="cos">COS</th>
+                                            <th data-table-sort data-column="uti">UTI</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-footer border-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div data-table-pagination-info="entradas"></div>
+                                    <div data-table-pagination=""></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end card -->
+                    </div>
+                    <!-- end col-->
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div dir="ltr">
+                                    <div id="canvaForVXpunto" class="apex-charts"></div>
+                                </div>
+                            </div>
+                            <!-- end card body-->
+                        </div>
+                        <!-- end card -->
+                    </div>
+                    <!-- end col-->
+                </div>
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div data-table="" data-table-rows-per-page="100" class="card">
+                            <div class="card-header border-light justify-content-between">
+                                <div class="d-flex gap-2">
+                                    <div class="app-search">
+                                        <input data-table-search="" type="search" class="form-control"
+                                               placeholder="Buscar por nombre...">
+                                        <i data-lucide="search" class="app-search-icon text-muted"></i>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <!-- Records Per Page -->
+                                    <div class="input-group">
+                                        <div class="input-group-text"><i data-lucide="eye" class="app-search-icon text-muted"></i></div>
+                                        <select data-table-set-rows-per-page="" class="form-select form-control my-1 my-md-0">
+                                            <option value="100">100</option>
+                                            <option value="150">150</option>
+                                            <option value="200">200</option>
+                                            <option value="250-500+">250+</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="d-flex gap-1">                                 
+                                    <button class="btn btn-primary btn-icon" id="btnExportExcel4">
+                                        <i data-lucide="file-spreadsheet" class="fs-lg"></i>
+                                    </button>
+                                    <button class="btn btn-primary btn-icon" id="btnPrint4">
+                                        <i data-lucide="printer" class="fs-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-custom table-centered table-select table-hover w-100 mb-0" id="TableDataForProducto">
+                                    <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                                        <tr>
+                                            <th data-table-sort data-column="cod">COD</th>
+                                            <th data-table-sort data-column="producto">PRODUCTO</th>
+                                            <th data-table-sort data-column="toper">T.OPERACION</th>
+                                            <th data-table-sort data-column="cant">CANT</th>
+                                            <th data-table-sort data-column="um">UM</th>
+                                            <th data-table-sort data-column="porc">%</th>
+                                            <th data-table-sort data-column="imp">IMP</th>
+                                            <th data-table-sort data-column="cos">COS</th>
+                                            <th data-table-sort data-column="uti">UTI</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-footer border-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div data-table-pagination-info="entradas"></div>
+                                    <div data-table-pagination=""></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end card body-->
+                        <!-- end card -->
+                    </div>
+                    <!-- end col-->
+                </div>
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div dir="ltr">
+                                    <div id="canvaForVXproducto" class="apex-charts"></div>
+                                </div>
+                            </div>
+                            <!-- end card body-->
+                        </div>
+                        <!-- end card -->
+                    </div>
+                    <!-- end col-->
+                </div>
+            </div>
+            <div class="card-overlay" style="display: none;">              
+            </div>
+        </div>
+    </div><!-- end col -->
+</div>
+<!-- end row -->
+@section Styles {
+    <link href="~/Content/plugins/toastr/toastr.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chartist/chartist.min.css" rel="stylesheet" />
 }
 
 @section Scripts {
-    @Scripts.Render("~/plugins/dataPicker")
-    @Scripts.Render("~/plugins/ionRange")
-    @Scripts.Render("~/plugins/chosen")
-    @Scripts.Render("~/plugins/dateRange")
-    @Scripts.Render("~/plugins/dataTables")
-    <script src="@Url.Content("~/Scripts/plugins/chartJs/chart.js")"></script>
-    <script src="@Url.Content("~/Scripts/plugins/chartJs/chartjs-adapter-date-fns.bundle.min.js")"></script>
-    <script src="~/Scripts/decimal.js"></script>
+    <script src="~/Scripts/plugins/toastr/toastr.min.js"></script>
+    <script src="~/Scripts/plugins/moment/moment.min.js"></script>
+    <script src="~/Scripts/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/Scripts/plugins/choices/choices.min.js"></script>
+    <script src="~/Scripts/custom-table.js"></script>
+    <script src="~/Scripts/plugins/table2excel/table2excel.js"></script>
+    <script src="~/Scripts/plugins/SheetJs/xlsx.full.min.js"></script>
+    <script src="~/Scripts/plugins/chartJs/Chart.min.js"></script>
+    <script src="~/Scripts/plugins/apexcharts/apexcharts.min.js"></script>
+    <script src="~/Scripts/charts/custom-charts.js"></script>
+    <script src="~/Scripts/plugins/jsPdf/jspdf.umd.min.js"></script>
+    <script src="~/Scripts/plugins/htmlTocanvas/html2canvas.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-
-
-            $('#data_5 .input-daterange')
-                .datepicker({
-                    locale: 'es',
-                    keyboardNavigation: false,
-                    forceParse: false,
-                    format: 'dd/mm/yyyy'
-                });
-
-            $('#productoid').chosen({ width: "100%" });
-
-            function getRandomRgb() {
-                var num = Math.round(0xffffff * Math.random());
-                var r = num >> 10 & 250 ;
-                var g = num >> 35 & 250;
-                var b = num & 250;
-                return 'rgb(' + r + ', ' + g + ', ' + b + ', ' + 0.2 +  ')';
-            }
-
-            let graf1;
-            let graf2;
-            let graf3;
-            let graf4;
-            let graf5;
-
-           // Base genérico para botones
-            const crearBotones = (title, columnas) => [
-                {
-                    extend: 'excel',
-                    text: 'EXP.EXCEL',
-                    title,
-                },
-                {
-                    extend: 'print',
-                    text: 'IMPRIMIR',
-                    title,
-                    exportOptions: {
-                        orientation: 'landscape',
-                        columns: columnas
-                    },                   
+            const formato = 'DD/MM/YYYY';
+            $('#datePickerRange').daterangepicker({
+                startDate: moment().startOf('month'),
+                endDate: moment().endOf('month'),
+                singleDatePicker: false,
+                showDropdowns: true,
+                autoUpdateInput: true,
+                cancelClass: "btn-light",
+                applyButtonClasses: "btn-success",
+                opens: 'center',
+                locale: {
+                    format: formato,
+                    separator: ' - ',
+                    applyLabel: 'Aplicar',
+                    cancelLabel: 'Cancelar',
+                    fromLabel: 'Desde',
+                    toLabel: 'Hasta',
+                    customRangeLabel: 'Personalizado',
+                    daysOfWeek: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+                    monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                    firstDay: 1
                 }
-            ];
-
-            // Lenguaje común
-            const lenguajeTabla = {
-                "sProcessing": "Procesando...",
-                "sLengthMenu": "Mostrar _MENU_ registros",
-                "sZeroRecords": "No se encontraron resultados",
-                "sEmptyTable": "Ningún dato disponible en esta tabla",
-                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                "sSearch": "Buscar:",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst": "Primero",
-                    "sLast": "Último",
-                    "sNext": "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                }
-            };
-
-            // Configuración base
-            const opcionesTabla = (orden, title, columnas) => ({
-                pageLength: 25,
-                dom: '<"html5buttons"B>lTfgitp',
-                header: false,
-                info: false,
-                paginate: false,
-                order: [orden],
-                buttons: crearBotones(title, columnas),
-                language: lenguajeTabla
+            }, function (start, end) {
+                $('#start').val(start.format(formato));
+                $('#end').val(end.format(formato));
             });
 
+            const choicesProductoid = new Choices('#productoid', {
+                searchEnabled: true,
+                itemSelectText: '',
+                shouldSort: false
+            });
 
-            $('#punto_ventaid').on('change',
-                function () {
-                    var url = '@Url.Action("_productosXpuntoFTdate", "Analisis")';
+            $('#tipo_operacionid').on('change', function () {
+                var tipo = document.getElementById("tipo_operacionid").value;
+                if (tipo == 2) {
+                    $('#tipPago').show();
+                } else {
+                    document.getElementById("tipo_pagoid").value = null;
+                    $('#tipPago').hide();
+                }
+            });
 
-                    var fechainicio = $('#star').val();
-                    var fechafin = $('#end').val();
-                    var pventaid = $("#punto_ventaid").val();
-                    var categ_prod = $("#cat").val();
+            $('#punto_ventaid').on('change', function () {
+                const url = '@Url.Action("_productosXpuntoFTdate", "Analisis")';
+                const fechainicio = $('#star').val();
+                const fechafin = $('#end').val();
+                const pventaid = $('#punto_ventaid').val();
+                const categ_prod = $('#cat').val();
 
-                    $('#productoid').empty();
-                    $('#productoid').append("<option></option>");
-                    $.getJSON(url,
-                        { inicio: fechainicio, fin: fechafin, pventa: pventaid, tipo: categ_prod },
-                        function (data) {
-                            $.each(data,
-                                function (i, item) {
-                                    $("#productoid").append("<option value=" + item.id + ">" + item.nombre + '- (' + item.cod + ')' + "</option>");
-                                });
-                            $("#productoid").trigger("chosen:updated");
-                        });
+                $.getJSON(url, {
+                    inicio: fechainicio,
+                    fin: fechafin,
+                    pventa: pventaid,
+                    tipo: categ_prod
+                }, function (data) {
+                    const formattedOptions = data.map(item => ({
+                        value: item.id,
+                        label: `${item.nombre} - (${item.cod})`
+                    }));
+                    choicesProductoid.clearChoices();
+                    choicesProductoid.setChoices(formattedOptions, 'value', 'label', true);
                 });
+            });
 
-            $('#cat').on('change',
-                function () {
-                    var url = '@Url.Action("_productosXpuntoFTdate", "Analisis")';
-                    var fechainicio = $('#star').val();
-                    var fechafin = $('#end').val();
-                    var pventaid = $("#punto_ventaid").val();
-                    var categ_prod = $("#cat").val();
+            $('#cat').on('change', function () {
+                const url = '@Url.Action("_productosXpuntoFTdate", "Analisis")';
+                const fechainicio = $('#star').val();
+                const fechafin = $('#end').val();
+                const pventaid = $('#punto_ventaid').val();
+                const categ_prod = $('#cat').val();
 
-                    $('#productoid').empty();
-                    $('#productoid').append("<option></option>");
-                    $.getJSON(url,
-                        { inicio: fechainicio, fin: fechafin, pventa: pventaid, tipo: categ_prod },
-                        function (data) {
-                            $.each(data,
-                                function (i, item) {
-                                    $("#productoid").append("<option value=" + item.id + ">" + item.nombre + '- (' + item.cod + ')' + "</option>");
-                                });
-                            $("#productoid").trigger("chosen:updated");
-                        });
+                $.getJSON(url, {
+                    inicio: fechainicio,
+                    fin: fechafin,
+                    pventa: pventaid,
+                    tipo: categ_prod
+                }, function (data) {
+                    const opciones = data.map(item => ({
+                        value: item.id,
+                        label: `${item.nombre} - (${item.cod})`
+                    }));
+
+                    choicesProductoid.clearChoices();
+                    choicesProductoid.setChoices(opciones, 'value', 'label', true);
                 });
+            });
 
-            $('#filterOper').click(async function () {
+            $('#BTNfilter').on('click', async () => {              
                 try {
-                    // Obtener valores de entrada en un solo objeto
-                    var parametros = {
-                        inicio: $('#star').val(),
+                    mostrarCardLoader();
+                    const parametros = {
+                        inicio: $('#start').val(),
                         fin: $('#end').val(),
                         toper: $("#tipo_operacionid").val(),
                         pventa: $("#punto_ventaid").val(),
-                        categ: $("#cat").val(),
+                        categ: $("#categoriaid").val(),
                         producto: $("#productoid").val(),
                         tpago: $("#tipo_pagoid").val(),
                         area: $("#areaid").val()
                     };
-
-                    // Opciones del gráfico 1
-                    var barOptions1 = {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: {
-                            mode: 'index',
-                            intersect: false,
-                        },
-                        stacked: false,
-                        plugins: {
-                            title: {
-                            display: true,
-                            text: 'Gráfico.1 Distribución por operación(s)'
-                        }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                type: 'linear',
-                                display: true,
-                                position: 'left',
-                            },
-                            y1: {
-                                type: 'linear',
-                                display: true,
-                                position: 'right',
-                                beginAtZero: true,
-                                // grid line settings
-                                grid: {
-                                    drawOnChartArea: false, // only want the grid ines for one axis to show up
-                                    },
-                                 },
-                             },
-                        };
-
-                    // Opciones del gráfico 2
-                    var barOptions2 = {
-                    responsive: true,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
-                    stacked: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Gráfico.2 Distribución por fecha(s)'
-                        }
-                    },
-                    scales: {
-                        x: {
-                            type: 'time',
-                            beginAtZero: true,
-                            time: {
-                                unit: 'month',
-                                displayFormats: {
-                                    quarter: 'MMM YYYY'
-                                }
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            type: 'linear',
-                            display: true,
-                            position: 'left',
-                        },
-                        y1: {
-                            type: 'linear',
-                            display: true,
-                            position: 'right',
-                            beginAtZero: true,
-                            // grid line settings
-                            grid: {
-                                drawOnChartArea: false, // only want the grid lines for one axis to show up
-                            },
-                        },
-
-                    },
-                };
-
-                    // Opciones del gráfico 3
-                    var barOptions3 = {
-                         responsive: true,
-                         maintainAspectRatio: false,
-                         scaleBeginAtZero: true,
-                         plugins: {
-                             legend: {
-                                 position: 'top',
-                                 },
-                                 title: {
-                            display: true,
-                            text: 'Gráfico.3 Distribución por punto(s) de venta'
-                          }
-                      }
-                   };
-
-
-                    // Opciones del gráfico 4
-                    var pieOptions4 = {
-                        layout: {
-                            padding: {
-                                left: 20,
-                                right: 20,
-                                top: 0,
-                                bottom: 50
-                            }
-                        },
-                        responsive: true,
-                        maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Gráfico.4 Distribución por producto(s)'
-                        }
-                      }
-                    };
-
                     // URLs de los servicios
-                    var url1 = '@Url.Action("ChartSxiGeneralData", "Analisis")';
-                    var url2 = '@Url.Action("ChartSxTipoOperacionFTdate", "Analisis")';
-                    var url3 = '@Url.Action("ChartSxiOperacionXFecha", "Analisis")';
-                    var url4 = '@Url.Action("ChartSxiOperacionXpuntoFTdate", "Analisis")';
-                    var url5 = '@Url.Action("ChartSxiOperacionXproductoFTdate", "Analisis")';
-
+                    const url1 = '@Url.Action("iGeneralData", "Analisis")';
+                    const url2 = '@Url.Action("ChartDxTOperacion", "Analisis")';
+                    const url3 = '@Url.Action("ChartDxFecha", "Analisis")';
+                    const url4 = '@Url.Action("ChartDxPunto", "Analisis")';
+                    const url5 = '@Url.Action("ChartDxProducto", "Analisis")';
                     async function obtenerDatos(url, parametros) {
                         const queryParams = new URLSearchParams(parametros).toString();
+                        const fullUrl = `${url}?${queryParams}`;
+
                         try {
-                            let response = await fetch(`${url}?${queryParams}`, { method: "GET" }); // Agregar parámetros a la URL
-                            if (!response.ok) throw new Error(`Error en ${url}: ${response.status}`);
+                            const response = await fetch(fullUrl, { method: "GET" });
 
-                            // Mostrar spinners
-                            $("#spinner1").show();
-                            $("#spinner2").show();
-                            $("#spinner3").show();
-                            $("#spinner4").show();
+                            const tipo = response.headers.get("content-type") || "";
+                            if (!response.ok) {
+                                console.warn(`⚠️ Error HTTP ${response.status} en ${url}`);
+                                const texto = await response.text();
+                                console.log("Contenido devuelto:", texto.slice(0, 200));
+                                return null;
+                            }
 
-                            // Ocultar canvas si se desea
-                            $("#canvaForVXoperacion").hide();
-                            $("#canvaForVXfecha").hide();
-                            $("#canvaForVXpunto").hide();
-                            $("#canvaForVXproducto").hide();
+                            if (!tipo.includes("application/json")) {
+                                const texto = await response.text();
+                                console.error("❌ Respuesta no es JSON válida:", texto.slice(0, 200));
+                                return null;
+                            }
 
                             return await response.json();
                         } catch (error) {
-                            console.error(`Error al obtener datos de ${url}:`, error);
+                            console.error(`❌ Error de red o fetch en ${url}:`, error);
                             return null;
                         }
                     }
-
-
-                    // Obtener datos en paralelo con async/await
+                    // Obtener datos en paralelo
                     const [data1, data2, data3, data4, data5] = await Promise.all([
                         obtenerDatos(url1, parametros),
                         obtenerDatos(url2, parametros),
@@ -679,16 +686,31 @@
                         obtenerDatos(url4, parametros),
                         obtenerDatos(url5, parametros),
                     ]);
-
-
-
+                    // Actualizar contenido
                     actualizarEtiquetas(data1);
-                    actualizarTablaYGrafico(data2, barOptions1, data3, barOptions2, data4, barOptions3, data5, pieOptions4);
-
+                    actualizarTablasYGraficos(data2, data3, data4, data5);
                 } catch (error) {
                     console.error("Error al obtener los datos:", error);
+                } finally {
+                    // Ocultar overlay cuando todo esté listo
+                    $('.card-overlay').fadeOut();
                 }
             });
+
+            function getRandomRgb() {
+                var num = Math.round(0xffffff * Math.random());
+                var r = num >> 10 & 250;
+                var g = num >> 35 & 250;
+                var b = num & 250;
+                return 'rgb(' + r + ', ' + g + ', ' + b + ', ' + 0.2 + ')';
+            }
+
+            function formatearNumero(valor) {
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                }).format(valor || 0);
+            }
 
             // Función para actualizar etiquetas
             function actualizarEtiquetas(data) {
@@ -705,265 +727,562 @@
 
                 $.each(data,
                     function (i, item) {
-
-                        $('#label_totalImporte').append(item.importe_venta.toFixed(2));
-                        $('#label_porcienImporte').append(item.pcien_importe);
-
-                        $('#label_totalCosto').append(item.costo_venta.toFixed(2));
-                        $('#label_porcienCosto').append(item.pcien_costo);
-
-                        $('#label_utilidades').append(item.utilidades.toFixed(2));
-                        $('#label_porcienutilidades').append(item.pcien_utilidad);
-
-                        $('#label_cantEfectivo').append(item.tipo_pago[0].cantidad);
-                        $('#label_porcientEfectivo').append(item.tipo_pago[0].porciento);
-
-
-                        $('#label_cantTransfer').append(item.tipo_pago[1].cantidad);
-                        $('#label_porcientTransfer').append(item.tipo_pago[1].porciento);
+                        $('#label_totalImporte').append(formatearNumero(item.importe_venta));
+                        $('#label_porcienImporte').append(formatearNumero(item.pcien_importe) + '%');
+                        $('#label_totalCosto').append(formatearNumero(item.costo_venta));
+                        $('#label_porcienCosto').append(formatearNumero(item.pcien_costo) + '%');
+                        $('#label_utilidades').append(formatearNumero(item.utilidades));
+                        $('#label_porcienutilidades').append(formatearNumero(item.pcien_utilidad) + '%');
+                        $('#label_cantEfectivo').append(formatearNumero(item.tipo_pago[0].cantidad));
+                        $('#label_porcientEfectivo').append(formatearNumero(item.tipo_pago[0].porciento) + '%');
+                        $('#label_cantTransfer').append(formatearNumero(item.tipo_pago[1].cantidad));
+                        $('#label_porcientTransfer').append(formatearNumero(item.tipo_pago[1].porciento) + '%');
                     });
             }
 
-            // Función para actualizar la tabla y el gráfico
-            function actualizarTablaYGrafico(data2, barOptions1, data3, barOptions2, data4, barOptions3, data5, pieOptions4) {
+            // Función para exportar las tablas a xlsx
+            function exportarTablaFormateada(idTabla, nombreArchivo = "Reporte.xlsx") {
+                const tabla = document.getElementById(idTabla);
+                if (!tabla) {
+                    console.warn("❌ Tabla no encontrada:", idTabla);
+                    return;
+                }
 
+                // Clonamos y removemos columnas no exportables
+                const tablaClonada = tabla.cloneNode(true);
+                tablaClonada.querySelectorAll(".noExport").forEach(el => el.remove());
 
-                const exportTitle2 = data2.titulo;
-                const exportTitle3 = data3.titulo;
-                const exportTitle4 = data4.titulo;
-                const exportTitle5 = data5.titulo;
+                const ws = XLSX.utils.table_to_sheet(tablaClonada);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
 
-                // Preparar datos para el gráfico 1
-                var barData1 = {
-                    labels: [],
-                    datasets: [
-                        {
-                            label: "IMPORTE",
-                            backgroundColor: [],
-                            borderColor: "rgba(47,64,80,0.7)",
-                            pointBackgroundColor: "rgba(128,225,127,1)",
-                            pointBorderColor: "#fff",
-                            data: [],
-                            yAxisID: 'y',
-                        }, {
-                            label: "CANTIDAD",
-                            type: 'bar',
-                            backgroundColor: [],
-                            borderColor: "rgba(35,198,200,0.7)",
-                            pointBackgroundColor: "rgba(28,132,198,1)",
-                            pointBorderColor: "#fff",
-                            data: [],
-                            yAxisID: 'y1',
-                        }
-                        ]
-                    };
+                // Detectar índice de cada columna por el texto del <th>
+                const cabeceras = Array.from(tabla.querySelectorAll("thead th"))
+                    .map(th => th.textContent.trim());
 
-                // Preparar datos para el gráfico 2
-                var barData2 = {
-                    labels: [],
-                    datasets: [
-                        {
-                            label: "IMPORTE",
-                            backgroundColor: [],
-                            borderColor: "rgba(47,64,80,0.7)",
-                            pointBackgroundColor: "rgba(128,225,127,1)",
-                            pointBorderColor: "#fff",
-                            data: [],
-                            yAxisID: 'y',
-                        }, {
-                            label: "CANTIDAD",
-                            type: 'bar',
-                            backgroundColor: [],
-                            borderColor: "rgba(35,198,200,0.7)",
-                            pointBackgroundColor: "rgba(28,132,198,1)",
-                            pointBorderColor: "#fff",
-                            data: [],
-                            yAxisID: 'y1',
-                        }                        ]
-                    };
+                const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-                // Preparar datos para el gráfico 3
-                var barData3 = {
-                    labels: [],
-                    datasets: [
-                        {
-                            label: "IMPORTE",
-                            backgroundColor: [],
-                            pointBorderColor: "#fff",
-                            data: []
-                        }
-                    ]
+                const formatoPorColumna = {
+                    "%": "0.00%",
+                    "IMP": "$#,##0.00",
+                    "COS": "$#,##0.00",
+                    "UTI": "$#,##0.00"
                 };
 
-                // Preparar datos para el gráfico 4
-                var pieData4 = {
-                    labels: [],
-                    datasets: [
-                        {
-                            label: "PORCIENTO",
-                            backgroundColor: [],
-                            pointBorderColor: "#fff",
-                            data: []
+                const totalFilas = XLSX.utils.decode_range(ws["!ref"]).e.r + 1;
+
+                cabeceras.forEach((textoColumna, index) => {
+                    const letra = letras[index];
+                    const formato = formatoPorColumna[textoColumna];
+
+                    if (formato) {
+                        for (let i = 2; i <= totalFilas; i++) {
+                            const celdaRef = `${letra}${i}`;
+                            if (ws[celdaRef]) {
+                                ws[celdaRef].t = "n"; // aseguramos que se trate como número
+                                ws[celdaRef].s = { numFmt: formato };
+                            }
                         }
-                    ]
-                };
-
-                // Inicializar tabla 1
-               const tabla1 = reinicializarDataTable('#dataTable1', [3, "desc"], 'DIST. POR OPERACIÓN(s) ' + exportTitle2, [0, 1, 2, 3]);
-
-                // Inicializar tabla 2
-
-                const tabla2 = reinicializarDataTable('#dataTable2', [0, "desc"], 'DIST. POR FECHA(s) ' + exportTitle3, [0, 1, 2, 3, 4]); 
-
-                // Inicializar tabla 3
-                const tabla3 = reinicializarDataTable('#dataTable3', [3, "desc"], 'DIST. POR PUNTO(s) ' + exportTitle4, [0, 1, 2, 3, 4, 5, 6]);                 
-
-                // Inicializar tabla 4
-                const tabla4 = reinicializarDataTable('#dataTable4', [3, "desc"], 'DIST. POR PRODUCTO(s) ' + exportTitle5, [0, 1, 2, 3, 4, 5, 6, 7]);                  
-
-
-                $.each(data2.iData, function (i, item) {
-                    var color = getRandomRgb();
-                    barData1.labels.push(item.tipo);
-                    barData1.datasets[0].data.push(item.importe);
-                    barData1.datasets[0].backgroundColor.push(color);
-                    barData1.datasets[1].data.push(item.cantidad);
-                    barData1.datasets[1].backgroundColor.push(color);
-                    tabla1.row.add([
-                        `<span style="background-color: ${color}">${item.tipo}</span>`,
-                        item.cantidad,
-                        `${item.porciento}%`,
-                        item.importe
-                    ]);
+                    }
                 });
-                $("#spinner1").hide();
-                $("#canvaForVXoperacion").fadeIn();
+                XLSX.writeFile(wb, nombreArchivo);
+            }
 
-                $.each(data3.iData, function (i, item) {
-                    var color = getRandomRgb();
-                    barData2.labels.push(item.fechaLabel);
-                    barData2.datasets[0].data.push(item.importe);
-                    barData2.datasets[0].backgroundColor.push(color);
-                    barData2.datasets[1].data.push(item.cantidad);
-                    barData2.datasets[1].backgroundColor.push(color);
-                    tabla2.row.add([
-                        `<span style="background-color: ${color}">${item.fecha}</span>`,
-                        item.tipo,
-                        item.cantidad,
-                        `${item.porciento}%`,
-                        item.importe
-                    ]);
+            // Función para actualizar las tablas y gráficos
+            function actualizarTablasYGraficos(data2, data3, data4, data5) {
+                window.customTable = new CustomTable();
+                const color = getRandomRgb();
+                const tabla1 = window.customTable.tables[0];
+                const tabla2 = window.customTable.tables[1];
+                const tabla3 = window.customTable.tables[2];
+                const tabla4 = window.customTable.tables[3];
+
+
+                const rows1 = data2.iData.map(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                                <td><span style = "background-color: ${color}" > ${item.tipo}</span ></td>
+                                <td>${formatearNumero(item.cantidad)}</td>
+                                <td>${formatearNumero(item.porciento)}</td>
+                                <td>${formatearNumero(item.importe)}</td>
+                                <td>${formatearNumero(item.costo)}</td>
+                                <td>${formatearNumero(item.utilidad)}</td>
+                                `;
+                    return tr;
                 });
-                $("#spinner2").hide();
-                $("#canvaForVXfecha").fadeIn();
-
-                $.each(data4.iData, function (i, item) {
-                    var color = getRandomRgb();
-                    barData3.labels.push(item.punto);
-                    barData3.datasets[0].backgroundColor.push(color);
-                    barData3.datasets[0].data.push(item.importe);
-                    tabla3.row.add([
-                        `<span style="background-color: ${color}">${item.punto}</span>`,
-                        item.tipo,
-                        item.cantidad,
-                        `${item.porciento}%`,
-                        item.importe,
-                        item.costo,
-                        item.utilidad
-                    ]);
+                const rows2 = data3.iData.map(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                                <td><span style = "background-color: ${color}" > ${item.FechaTexto}</span ></td>
+                                <td>${item.TipoOperacion}</td>
+                                <td>${formatearNumero(item.Cantidad)}</td>
+                                <td>${formatearNumero(item.Porciento)}</td>
+                                <td>${formatearNumero(item.Importe)}</td>
+                                <td>${formatearNumero(item.Costo)}</td>
+                                <td>${formatearNumero(item.Utilidad)}</td>
+                                `;
+                    return tr;
                 });
-                $("#spinner3").hide();
-                $("#canvaForVXpunto").fadeIn();
-
-                $.each(data5.iData, function (i, item) {
-                    var color = getRandomRgb();
-
-                    // Convierte y formatea los valores
-                    var porciento = parseFloat(item.porciento);
-                    porciento = isNaN(porciento) ? 0 : porciento;
-
-                    var importe = parseFloat(item.importe);
-                    importe = isNaN(importe) ? 0 : importe;
-
-                    var cantidad = parseFloat(item.cantidad);
-                    cantidad = isNaN(cantidad) ? 0 : cantidad;
-
-                    var costo = parseFloat(item.costo);
-                    costo = isNaN(costo) ? 0 : costo;
-
-                    var utilidad = parseFloat(item.utilidad);
-                    utilidad = isNaN(utilidad) ? 0 : utilidad;
-
-                    // Agregar datos al gráfico y la tabla
-                    pieData4.labels.push(item.producto + '(' + porciento.toFixed(2) + '%)');
-                    pieData4.datasets[0].backgroundColor.push(color);
-                    pieData4.datasets[0].data.push(porciento);
-
-                    tabla4.row.add([
-                        `<span style="background-color: ${color}">${item.cod}</span>`,
-                        item.producto,
-                        item.tipo || 'N/A',
-                        cantidad.toFixed(2),
-                        item.unidad,
-                        `${porciento.toFixed(2)}%`,
-                        importe.toFixed(2),
-                        costo.toFixed(2),
-                        utilidad.toFixed(2)
-                    ]);
+                const rows3 = data4.iData.map(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                                <td><span style = "background-color: ${color}" > ${item.PuntoVenta}</span ></td>
+                                <td>${item.TipoOperacion}</td>
+                                <td>${formatearNumero(item.cantidad)}</td>
+                                <td>${formatearNumero(item.porciento)}</td>
+                                <td>${formatearNumero(item.importe)}</td>
+                                <td>${formatearNumero(item.costo)}</td>
+                                <td>${formatearNumero(item.utilidad)}</td>
+                                `;
+                    return tr;
                 });
-                $("#spinner4").hide();
-                $("#canvaForVXproducto").fadeIn();
+                const rows4 = data5.iData.map(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                                <td><span style = "background-color: ${color}" > ${item.Cod}</span ></td>
+                                <td>${item.Producto}</td>
+                                <td>${item.TipoOperacion}</td>
+                                <td>${formatearNumero(item.cantidad)}</td>
+                                <td>${item.Unidad}</td>
+                                <td>${formatearNumero(item.porciento)}</td>
+                                <td>${formatearNumero(item.importe)}</td>
+                                <td>${formatearNumero(item.costo)}</td>
+                                <td>${formatearNumero(item.utilidad)}</td>
+                                `;
+                    return tr;
+                });
 
-                tabla1.draw(); // Redibujar la tabla1 con los nuevos datos
-                tabla2.draw(); // Redibujar la tabla2 con los nuevos datos
-                tabla3.draw(); // Redibujar la tabla3 con los nuevos datos
-                tabla4.draw(); // Redibujar la tabla4 con los nuevos datos
+                tabla1.fullRefresh(rows1);
+                tabla1.fullRefresh(rows1);
+                tabla2.fullRefresh(rows2);
+                tabla3.fullRefresh(rows3);
+                tabla4.fullRefresh(rows4);
 
-                // Crear gráfico
-                var ctx1 = document.getElementById("canvaForVXoperacion").getContext("2d");
-                var ctx2 = document.getElementById("canvaForVXfecha").getContext("2d");
-                var ctx3 = document.getElementById("canvaForVXpunto").getContext("2d");
-                var ctx4 = document.getElementById("canvaForVXproducto").getContext("2d");
+                // Renderizar gráficos con ApexCharts     
+                let ChartByTipo;
+                let ChartByFecha;
+                let ChartByPunto;
+                let ChartByProducto;
 
-                // Verificar si `graf1` está definido antes de destruirlo
-                if (window.graf1) {
-                    window.graf1.destroy();
+                if (typeof ChartByTipo?.update === "function") {                   
+                    ChartByTipo.update(data2.iData, 'Gráfico.1 Distribución por operación(s)');
+                } else {
+                    // Si no existe, lo creamos por primera vez
+                    ChartByTipo = new OperChartByTipo({
+                        containerId: '#canvaForVXoperacion',
+                        titulo: 'Gráfico.1 Distribución por operación(s)',
+                        iData: data2.iData
+                    });
+                    ChartByTipo.render();
                 }
 
-                // Verificar si `graf2` está definido antes de destruirlo
-                if (window.graf2) {
-                    window.graf2.destroy();
+                if (typeof ChartByFecha?.update === "function") {
+                    ChartByFecha.update(data3.iData, 'Gráfico.2 Distribución por fecha(s)');
+                } else {
+                    // Si no existe, lo creamos por primera vez
+                    ChartByFecha = new OperChartByFecha({
+                        containerId: '#canvaForVXfecha',
+                        titulo: 'Gráfico.2 Distribución por fecha(s)',
+                        iData: data3.iData
+                    });
+                    ChartByFecha.render();
                 }
 
-                // Verificar si `graf3` está definido antes de destruirlo
-                if (window.graf3) {
-                    window.graf3.destroy();
-                }
+                if (typeof ChartByPunto?.update === "function") {
+                    ChartByPunto.update(data4.iData, 'Gráfico.3 Distribución por punto(s)');
+                } else {
+                    // Si no existe, lo creamos por primera vez
+                    ChartByPunto = new OperChartByPunto({
+                        containerId: '#canvaForVXpunto',
+                        titulo: 'Gráfico.3 Distribución por punto(s)',
+                        iData: data4.iData
+                    });
+                    ChartByPunto.render();
+                }                              
 
-                // Verificar si `graf4` está definido antes de destruirlo
-                if (window.graf4) {
-                    window.graf4.destroy();
+                if (typeof ChartByProducto?.update === "function") {
+                    ChartByProducto.update(data5.iData, 'Gráfico.4 Distribución por producto(s)');
+                } else {
+                    // Si no existe, lo creamos por primera vez
+                    ChartByProducto = new OperChartByProducto({
+                        containerId: '#canvaForVXproducto',
+                        titulo: 'Gráfico.4 Distribución por producto(s)',
+                        iData: data5.iData
+                    });
+                    ChartByProducto.render();
                 }
-               
-                window.graf1 = new Chart(ctx1, { type: 'line', data: barData1, options: barOptions1 });
-                window.graf2 = new Chart(ctx2, { type: 'line', data: barData2, options: barOptions2 });
-                window.graf3 = new Chart(ctx3, { type: 'bar', data: barData3, options: barOptions3 });
-                window.graf4 = new Chart(ctx4, { type: 'pie', data: pieData4, options: pieOptions4 });
 
             }
 
-            function reinicializarDataTable(idTabla, orden, titulo, columnas) {
-                if ($.fn.DataTable.isDataTable(idTabla)) {
-                    $(idTabla).DataTable().clear().destroy();
+            function mostrarCardLoader() {
+                $('.card-overlay').fadeIn();
+                let loader = document.querySelector('.loader');
+                if (!loader) return;                
+                let overlay = loader.querySelector(".card-overlay");
+
+                if (!overlay) {
+                    overlay = document.createElement("div");
+                    overlay.classList.add(
+                        "card-overlay",
+                        "position-absolute",
+                        "top-0",
+                        "start-0",
+                        "w-100",
+                        "h-100",                                              
+                        "justify-content-center",
+                        "align-items-center",
+                        "noExport"
+                    );
+                    overlay.style.zIndex = "10";
+
+                    const spinner = document.createElement("div");
+                    spinner.classList.add("spinner-border", "text-primary");
+                    spinner.setAttribute("role", "status");
+
+                    const label = document.createElement("span");
+                    label.classList.add("visually-hidden");
+                    label.textContent = "Cargando...";
+
+                    spinner.appendChild(label);
+                    overlay.appendChild(spinner);
+                    loader.appendChild(overlay);
                 }
-                return $(idTabla).DataTable(opcionesTabla(orden, titulo, columnas));
+
+                overlay.style.display = "flex";
+            }            
+
+            document.getElementById("btnExportExcel1").addEventListener("click", function () {
+                exportarTablaFormateada("TableDataForTipo", "Distribución por operación(s).xlsx");
+            });
+            document.getElementById("btnExportExcel2").addEventListener("click", function () {
+                exportarTablaFormateada("TableDataForFecha", "Distribución por fecha(s).xlsx");
+            });
+            document.getElementById("btnExportExcel3").addEventListener("click", function () {
+                exportarTablaFormateada("TableDataForPunto", "Distribución por punto(s).xlsx");
+            });
+            document.getElementById("btnExportExcel4").addEventListener("click", function () {
+                exportarTablaFormateada("TableDataForProducto", "Distribución por producto(s).xlsx");
+            });
+
+            document.getElementById("btnPrint1").addEventListener("click", function () {
+                let tablaClonada = $("#TableDataForTipo").clone();
+                tablaClonada.find(".noExport").remove();
+                const ventana = window.open('', '', 'height=800,width=1200');
+                ventana.document.write(`
+                     <html>
+                     <head>
+                     <title>Imprimir</title>
+                     <style>
+                     body {
+                         font-family: Arial, sans-serif;
+                         margin: 20px;
+                         font-size: 11px;
+                         color: #333;
+                     }
+                     h3 {
+                         margin-bottom: 5px;
+                         color: #004080;
+                     }
+                     p {
+                       margin: 0 0 10px;
+                       font-weight: bold;
+                   }
+                   table {
+                       width: 100%;
+                       border-collapse: collapse;
+                       margin-top: 10px;
+                   }
+                   th, td {
+                       border: 1px solid #999;
+                       padding: 6px 4px;
+                       text-align: center;
+                   }
+                   thead {
+                       background-color: #004080;
+                       color: white;
+                       font-weight: bold;
+                   }
+                   tfoot td {
+                       background-color: #f0f0f0;
+                       font-weight: bold;
+                   }
+                   tr:nth-child(even) td {
+                       background-color: #f9f9f9;
+                   }
+                   media print {
+                       body {
+                           font-size: 12px;
+                       }
+                   }
+                   </style>
+                   </head>
+                   <body>
+
+                   ${tablaClonada[0].outerHTML}
+                   </body>
+                   </html>
+                   `);
+                ventana.document.close();
+                ventana.focus();
+                ventana.print();
+            });
+            document.getElementById("btnPrint2").addEventListener("click", function () {
+                let tablaClonada = $("#TableDataForFecha").clone();
+                tablaClonada.find(".noExport").remove();
+                const ventana = window.open('', '', 'height=800,width=1200');
+                ventana.document.write(`
+                      <html>
+                      <head>
+                      <title>Imprimir</title>
+                      <style>
+                      body {
+                          font-family: Arial, sans-serif;
+                          margin: 20px;
+                          font-size: 11px;
+                          color: #333;
+                      }
+                      h3 {
+                          margin-bottom: 5px;
+                          color: #004080;
+                      }
+                      p {
+                        margin: 0 0 10px;
+                        font-weight: bold;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 10px;
+                    }
+                    th, td {
+                        border: 1px solid #999;
+                        padding: 6px 4px;
+                        text-align: center;
+                    }
+                    thead {
+                        background-color: #004080;
+                        color: white;
+                        font-weight: bold;
+                    }
+                    tfoot td {
+                        background-color: #f0f0f0;
+                        font-weight: bold;
+                    }
+                    tr:nth-child(even) td {
+                        background-color: #f9f9f9;
+                    }
+                    media print {
+                        body {
+                            font-size: 12px;
+                        }
+                    }
+                    </style>
+                    </head>
+                    <body>
+
+                    ${tablaClonada[0].outerHTML}
+                    </body>
+                    </html>
+                    `);
+                ventana.document.close();
+                ventana.focus();
+                ventana.print();
+            });
+            document.getElementById("btnPrint3").addEventListener("click", function () {
+                let tablaClonada = $("#TableDataForPunto").clone();
+                tablaClonada.find(".noExport").remove();
+                const ventana = window.open('', '', 'height=800,width=1200');
+                ventana.document.write(`
+                            <html>
+                            <head>
+                            <title>Imprimir</title>
+                            <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                margin: 20px;
+                                font-size: 11px;
+                                color: #333;
+                            }
+                            h3 {
+                                margin-bottom: 5px;
+                                color: #004080;
+                            }
+                            p {
+                              margin: 0 0 10px;
+                              font-weight: bold;
+                          }
+                          table {
+                              width: 100%;
+                              border-collapse: collapse;
+                              margin-top: 10px;
+                          }
+                          th, td {
+                              border: 1px solid #999;
+                              padding: 6px 4px;
+                              text-align: center;
+                          }
+                          thead {
+                              background-color: #004080;
+                              color: white;
+                              font-weight: bold;
+                          }
+                          tfoot td {
+                              background-color: #f0f0f0;
+                              font-weight: bold;
+                          }
+                          tr:nth-child(even) td {
+                              background-color: #f9f9f9;
+                          }
+                          media print {
+                              body {
+                                  font-size: 12px;
+                              }
+                          }
+                          </style>
+                          </head>
+                          <body>
+
+                          ${tablaClonada[0].outerHTML}
+                          </body>
+                          </html>
+                          `);
+                ventana.document.close();
+                ventana.focus();
+                ventana.print();
+            });
+            document.getElementById("btnPrint4").addEventListener("click", function () {             
+                let tablaClonada = $("#TableDataForProducto").clone();
+                tablaClonada.find(".noExport").remove();
+                const ventana = window.open('', '', 'height=800,width=1200');
+                ventana.document.write(`
+                            <html>
+                            <head>
+                            <title>Imprimir</title>
+                            <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                margin: 20px;
+                                font-size: 11px;
+                                color: #333;
+                            }
+                            h3 {
+                                margin-bottom: 5px;
+                                color: #004080;
+                            }
+                            p {
+                              margin: 0 0 10px;
+                              font-weight: bold;
+                          }
+                          table {
+                              width: 100%;
+                              border-collapse: collapse;
+                              margin-top: 10px;
+                          }
+                          th, td {
+                              border: 1px solid #999;
+                              padding: 6px 4px;
+                              text-align: center;
+                          }
+                          thead {
+                              background-color: #004080;
+                              color: white;
+                              font-weight: bold;
+                          }
+                          tfoot td {
+                              background-color: #f0f0f0;
+                              font-weight: bold;
+                          }
+                          tr:nth-child(even) td {
+                              background-color: #f9f9f9;
+                          }
+                          media print {
+                              body {
+                                  font-size: 12px;
+                              }
+                          }
+                          </style>
+                          </head>
+                          <body>
+
+                          ${tablaClonada[0].outerHTML}
+                          </body>
+                          </html>
+                          `);
+                ventana.document.close();
+                ventana.focus();
+                ventana.print();
+            });          
+        });
+
+        async function exportarReporteAgrupado() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margen = 10;
+            const fecha = new Date().toLocaleString();
+
+            const conjuntos = [
+                { tabla: 'TableDataForTipo', grafico: 'canvaForVXoperacion', titulo: 'Tipo' },
+                { tabla: 'TableDataForFecha', grafico: 'canvaForVXfecha', titulo: 'Fecha' },
+                { tabla: 'TableDataForPunto', grafico: 'canvaForVXpunto', titulo: 'Punto' },
+                { tabla: 'TableDataForProducto', grafico: 'canvaForVXproducto', titulo: 'Producto' }
+            ];
+
+            for (let i = 0; i < conjuntos.length; i++) {
+                const { tabla, grafico, titulo } = conjuntos[i];
+                const imgData = await capturarBloqueConjunto(tabla, grafico);
+                if (!imgData) continue;
+
+                if (i > 0) doc.addPage();
+
+                doc.setFontSize(12);
+                doc.text(`📌 Reporte por ${titulo}`, margen, 10);
+                doc.setFontSize(8);
+                doc.text(`Fecha: ${fecha}`, pageWidth - 60, 10);
+
+                const imgProps = doc.getImageProperties(imgData);
+                const imgRatio = (pageWidth - 2 * margen) / imgProps.width;
+                const imgHeight = imgProps.height * imgRatio;
+
+                doc.addImage(imgData, 'PNG', margen, 20, pageWidth - 2 * margen, imgHeight);
             }
 
-        });
+            doc.save('ReporteBloquesUnificados.pdf');
+        }
 
-        $(document).ajaxStart(function () {
-            $('#ajaxLoader').show();
-        });
-        $(document).ajaxComplete(function () { $('#ajaxLoader').hide(); });
+        async function capturarBloqueConjunto(idTabla, idGrafico) {
+            const tabla = document.getElementById(idTabla);
+            const grafico = document.getElementById(idGrafico);
+
+            if (!tabla || !grafico) {
+                console.warn(`Elementos no encontrados: ${idTabla}, ${idGrafico}`);
+                return null;
+            }
+
+            // Crear contenedor temporal para combinar
+            const contenedor = document.createElement("div");
+            contenedor.style.display = "block";
+            contenedor.style.padding = "15px";
+            contenedor.style.background = "#fff";
+            contenedor.style.border = "1px solid #ccc";
+            contenedor.style.width = "fit-content";
+            contenedor.style.position = "absolute";
+            contenedor.style.top = "-9999px"; // oculto fuera de pantalla
+
+            const tablaClon = tabla.cloneNode(true);
+            const graficoClon = grafico.cloneNode(true);
+
+            contenedor.appendChild(tablaClon);
+            contenedor.appendChild(document.createElement("hr"));
+            contenedor.appendChild(graficoClon);
+
+            document.body.appendChild(contenedor);
+
+            const canvas = await html2canvas(contenedor, { scale: 2, useCORS: true });
+            document.body.removeChild(contenedor);
+
+            return canvas.toDataURL("image/png");
+        }     
+        
     </script>
 }

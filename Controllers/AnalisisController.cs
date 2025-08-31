@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using vercom.Interfaces;
@@ -27,343 +29,219 @@ namespace vercom.Controllers
 
         public ContentResult _productosXpuntoFTdate(string inicio, string fin, int toper = 0, int pventa = 0, int categ = 0, int producto = 0, int tpago = 0, int area = 0)
         {
-            List<producto> iData = new List<producto>();
+            List<iProductosXpunto> iData = new List<iProductosXpunto>();
             var cvDateINI = Convert.ToDateTime(inicio);
             var cvDateFIN = Convert.ToDateTime(fin);
-            var ftdata = (from r in db.operacion where (r.fecha >= cvDateINI & r.fecha <= cvDateFIN) select r);
 
-            if (toper != 0) { ftdata = ftdata.Where(x => x.tipo_operacionid == toper); }
-            if (pventa != 0) { ftdata = ftdata.Where(x => x.punto_ventaid == pventa); }
-            if (categ != 0) { ftdata = ftdata.Where(x => x.producto.categoriaid == categ); }
-            if (producto != 0) { ftdata = ftdata.Where(x => x.productoid == producto); }
-            if (tpago != 0) { ftdata = ftdata.Where(x => x.tipo_pagoid == tpago); }
-            if (area != 0) { ftdata = ftdata.Where(x => x.producto.areaid == area); }
-
-            var ftgroup = (from r in ftdata group r by r.producto.id into rp select new { grp = rp.Key, cod = rp.Select(x => x.producto.cod).FirstOrDefault(), nombre = rp.Select(x => x.producto.nombre).FirstOrDefault() }).OrderBy(x => x.grp).ToList();
-
-            foreach (var item in ftgroup)
-            {
-                producto iVal = new producto
-                {
-                    id = item.grp,
-                    cod = item.cod,
-                    nombre = item.nombre,
-                };
-                iData.Add(iVal);
-            }
+            var resultado = db.Database.SqlQuery<iProductosXpunto>(
+                "EXEC productosXpunto @p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7",
+                cvDateINI, cvDateFIN, toper, pventa, categ, producto, tpago, area
+            );
+            iData = resultado.ToList();
             return Content(JsonConvert.SerializeObject(iData), "application/json");
         }
-        [HttpGet]
-        public ContentResult ChartSxTipoOperacionFTdate(string inicio, string fin, int toper = 0, int pventa = 0, int categ = 0, int producto = 0, int tpago = 0, int area = 0)
-        {
-            List<iOperacionXtipo> iData = new List<iOperacionXtipo>();
-            var cvDateINI = Convert.ToDateTime(inicio);
-            var cvDateFIN = Convert.ToDateTime(fin);
-
-            var ftdata = (from d in db.operacion where (d.fecha >= cvDateINI & d.fecha <= cvDateFIN) select d);
-
-            if (toper != 0) { ftdata = ftdata.Where(x => x.tipo_operacionid == toper); }
-            if (pventa != 0) { ftdata = ftdata.Where(x => x.punto_ventaid == pventa); }
-            if (categ != 0) { ftdata = ftdata.Where(x => x.producto.categoriaid == categ); }
-            if (producto != 0) { ftdata = ftdata.Where(x => x.productoid == producto); }
-            if (tpago != 0) { ftdata = ftdata.Where(x => x.tipo_pagoid == tpago); }
-            if (area != 0) { ftdata = ftdata.Where(x => x.producto.areaid == area); }
-
-            double total_cant = ftdata.Count();
-            double total_importe = 0;
-            decimal porcent = 0;
-
-            if (total_cant > 0) total_importe = (double)ftdata.Sum(i => i.cantidad * i.producto.precio);
-
-            var ftgroup = (from r in ftdata group r by r.tipo_operacion.tipo into rp select new { grp = rp.Key, Count = rp.Select(x => x.cantidad).Sum(), Importe = rp.Select(x => x.cantidad * x.producto.precio).Sum() }).OrderBy(x => x.grp).ToList();
-
-            // Obtener el título dinámico
-            string puntoVentaNombre = db.punto_venta.Where(p => p.id == pventa).Select(p => p.nombre).FirstOrDefault() ?? "";
-            string categoriaNombre = db.categoria.Where(c => c.id == categ).Select(c => c.clave).FirstOrDefault() ?? "";
-            string tipoPago = db.tipo_pago.Where(c => c.id == tpago).Select(c => c.tipo).FirstOrDefault() ?? "";
-            string titulo = $"PUNTO: {puntoVentaNombre}, FECHA: {cvDateINI.ToString("d")} AL {cvDateFIN.ToString("d")}, CATEGORIA: {categoriaNombre},  T.PAGO: {tipoPago}";
-
-            foreach (var item in ftgroup)
-            {
-                porcent = (decimal)((item.Importe / total_importe) * 100);
-                porcent = Convert.ToDecimal(String.Format($"{porcent:F3}"));
-
-                iOperacionXtipo iVal = new iOperacionXtipo
-                {
-                    tipo = item.grp,
-                    cantidad = Convert.ToDouble(String.Format("{0:#,##0.00}", item.Count)),
-                    porciento = porcent,
-                    importe = Convert.ToDouble(String.Format("{0:#,##0.00}", item.Importe)),
-                };
-                iData.Add(iVal);
-            }
-
-            return Content(JsonConvert.SerializeObject(new { iData, titulo }), "application/json");
-        }
-        [HttpGet]
-        public ContentResult ChartSxiOperacionXpuntoFTdate(string inicio, string fin, int toper = 0, int pventa = 0, int categ = 0, int producto = 0, int tpago = 0, int area = 0)
-        {
-            List<iOperacionXpunto> iData = new List<iOperacionXpunto>();
-            var cvDateINI = Convert.ToDateTime(inicio);
-            var cvDateFIN = Convert.ToDateTime(fin);
-            var ftdata = (from d in db.operacion where (d.fecha >= cvDateINI & d.fecha <= cvDateFIN) select d);
-
-            if (toper != 0) { ftdata = ftdata.Where(x => x.tipo_operacionid == toper); }
-            if (pventa != 0) { ftdata = ftdata.Where(x => x.punto_ventaid == pventa); }
-            if (categ != 0) { ftdata = ftdata.Where(x => x.producto.categoriaid == categ); }
-            if (producto != 0) { ftdata = ftdata.Where(x => x.productoid == producto); }
-            if (tpago != 0) { ftdata = ftdata.Where(x => x.tipo_pagoid == tpago); }
-            if (area != 0) { ftdata = ftdata.Where(x => x.producto.areaid == area); }
-
-            double total_cant = ftdata.Count();
-            double total_importe = 0;
-            decimal porcent = 0;
-
-            if (total_cant > 0) total_importe = (double)ftdata.Sum(i => i.cantidad * i.producto.precio);
-
-            var ftgroup = ftdata
-                .GroupBy(r => new { r.punto_venta.nombre, r.tipo_operacion.tipo })
-                .Select(rp => new
-                {
-                    Punto = rp.Key.nombre,
-                    TipoOperacion = rp.Key.tipo,
-                    Count = rp.Sum(x => x.cantidad),
-                    Importe = rp.Sum(x => x.cantidad * x.producto.precio),
-                    Costo = rp.Sum(x => x.cantidad * x.producto.costo)
-                })
-                .OrderBy(x => x.Punto)
-                .ThenBy(x => x.TipoOperacion)
-                .ToList();
-
-            // Obtener el título dinámico
-            string puntoVentaNombre = db.punto_venta.Where(p => p.id == pventa).Select(p => p.nombre).FirstOrDefault() ?? "";
-            string categoriaNombre = db.categoria.Where(c => c.id == categ).Select(c => c.clave).FirstOrDefault() ?? "";
-            string tipoPago = db.tipo_pago.Where(c => c.id == tpago).Select(c => c.tipo).FirstOrDefault() ?? "";
-            string titulo = $"PUNTO: {puntoVentaNombre}, FECHA: {cvDateINI.ToString("d")} AL {cvDateFIN.ToString("d")}, CATEGORIA: {categoriaNombre},  T.PAGO: {tipoPago}";
-
-            foreach (var item in ftgroup)
-            {
-                porcent = (decimal)((item.Importe / total_importe) * 100);
-                porcent = Convert.ToDecimal(String.Format($"{porcent:F2}"));
-                double? utilidad = item.Importe - item.Costo;
-
-                iOperacionXpunto iVal = new iOperacionXpunto
-                {
-                    punto = item.Punto,
-                    tipo = item.TipoOperacion,
-                    cantidad = Convert.ToDouble(String.Format("{0:#,##0.00}", item.Count)),
-                    porciento = porcent,
-                    importe = Convert.ToDouble(String.Format("{0:#,##0.00}", item.Importe)),
-                    costo = Convert.ToDouble(String.Format("{0:#,##0.00}", item.Costo)),
-                    utilidad = Convert.ToDouble(String.Format("{0:#,##0.00}", utilidad)),
-
-                };
-                iData.Add(iVal);
-            }
-            return Content(JsonConvert.SerializeObject(new { iData, titulo }), "application/json");
-        }
 
         [HttpGet]
-        public ContentResult ChartSxiOperacionXproductoFTdate(string inicio, string fin, int toper = 0, int pventa = 0, int categ = 0, int producto = 0, int tpago = 0, int area = 0)
+        public JsonResult iGeneralData(string inicio, string fin, int toper = 0, int pventa = 0, int categ = 0, int producto = 0, int tpago = 0, int area = 0)
         {
-            List<iOperacionXproducto> iData = new List<iOperacionXproducto>();
-            var cvDateINI = Convert.ToDateTime(inicio);
-            var cvDateFIN = Convert.ToDateTime(fin);
-            var ftdata = (from d in db.operacion where (d.fecha >= cvDateINI & d.fecha <= cvDateFIN) select d);
+            DateTime.TryParse(inicio, out DateTime cvDateINI);
+            DateTime.TryParse(fin, out DateTime cvDateFIN);
+            db.Database.CommandTimeout = 120;
+            var resultado = db.Database.SqlQuery<iGeneralSPResult>(
+                "EXEC sp_ObtenerDatosGenerales @FechaInicio, @FechaFin, @TipoOperacionID, @PuntoVentaID, @CategoriaID, @ProductoID, @TipoPagoID, @AreaID",
+                new SqlParameter("@FechaInicio", cvDateINI),
+                new SqlParameter("@FechaFin", cvDateFIN),
+                new SqlParameter("@TipoOperacionID", toper),
+                new SqlParameter("@PuntoVentaID", pventa),
+                new SqlParameter("@CategoriaID", categ),
+                new SqlParameter("@ProductoID", producto),
+                new SqlParameter("@TipoPagoID", tpago),
+                new SqlParameter("@AreaID", area)
+            ).FirstOrDefault();
 
-            if (toper != 0) { ftdata = ftdata.Where(x => x.tipo_operacionid == toper); }
-            if (pventa != 0) { ftdata = ftdata.Where(x => x.punto_ventaid == pventa); }
-            if (categ != 0) { ftdata = ftdata.Where(x => x.producto.categoriaid == categ); }
-            if (producto != 0) { ftdata = ftdata.Where(x => x.productoid == producto); }
-            if (tpago != 0) { ftdata = ftdata.Where(x => x.tipo_pagoid == tpago); }
-            if (area != 0) { ftdata = ftdata.Where(x => x.producto.areaid == area); }
+            var imp = resultado?.ImporteVentas ?? 0;
+            var cost = resultado?.CostoVentas ?? 0;
+            var util = imp - cost;
+            var total = resultado?.CantidadVentas ?? 0;
 
-            double? total_cant = ftdata.Count();
+            decimal tEfe = resultado?.VentasEfectivo ?? 0;
+            decimal tTra = resultado?.VentasTransferencia ?? 0;
 
-            double? total_importe = 0;
-            double? porcent = 0;
+            var porcEfe = (total > 0) ? (tEfe / total) * 100 : 0;
+            var porcTra = (total > 0) ? (tTra / total) * 100 : 0;
+            var porcImp = (imp > 0) ? 100 : 0;
+            var porcCost = (imp > 0) ? Math.Round((cost / imp) * 100, 2) : 0;
+            var porcUtil = (imp > 0) ? Math.Round((util / imp) * 100, 2) : 0;
 
-
-            if (total_cant > 0)
+            var iTipos = new List<iTipoPago>
             {
-                total_importe = ftdata.Sum(i => i.cantidad * i.producto.precio);
-            }
-
-            var ftgroup = ftdata
-                .GroupBy(r => new { r.producto.id, r.tipo_operacion.tipo })
-                .Select(rp => new
-                {
-                    Cod = rp.Select(x => x.producto.cod).FirstOrDefault(),
-                    Producto = rp.Select(x => x.producto.nombre).FirstOrDefault(),
-                    Unidad = rp.Select(x => x.producto.unidad.unidad1).FirstOrDefault(),
-                    Count = rp.Count(),
-                    TipoOperacion = rp.Key.tipo,
-                    Cant = rp.Sum(x => x.cantidad),
-                    Importe = rp.Sum(x => x.cantidad * x.producto.precio),
-                    Costo = rp.Sum(x => x.cantidad * x.producto.costo)
-                })
-                .OrderBy(x => x.Producto)
-                .ThenBy(x => x.TipoOperacion)
-                .ToList();
-
-            // Obtener el título dinámico            
-            string puntoVentaNombre = db.punto_venta.Where(p => p.id == pventa).Select(p => p.nombre).FirstOrDefault() ?? "";
-            string categoriaNombre = db.categoria.Where(c => c.id == categ).Select(c => c.clave).FirstOrDefault() ?? "";
-            string tipoPago = db.tipo_pago.Where(c => c.id == tpago).Select(c => c.tipo).FirstOrDefault() ?? "";
-            string titulo = $"PUNTO: {puntoVentaNombre}, FECHA: {cvDateINI.ToString("d")} AL {cvDateFIN.ToString("d")}, CATEGORIA: {categoriaNombre},  T.PAGO: {tipoPago}";           
-
-            foreach (var item in ftgroup)
-            {
-                porcent = (item.Importe / total_importe) * 100;  
-                double? utilidad = item.Importe - item.Costo;
-
-                iOperacionXproducto iVal = new iOperacionXproducto
-                {
-                    cod = item.Cod,
-                    producto = item.Producto,
-                    tipo = item.TipoOperacion,
-                    cantidad = item.Cant,
-                    unidad = item.Unidad,
-                    porciento = porcent,
-                    importe =item.Importe,
-                    costo =  item.Costo,
-                    utilidad = utilidad
-                };
-                iData.Add(iVal);
-            }
-            return Content(JsonConvert.SerializeObject(new { iData, titulo }), "application/json");
-        }
-
-        [HttpGet]
-        public ContentResult ChartSxiOperacionXFecha(string inicio, string fin, int toper = 0, int pventa = 0, int categ = 0, int producto = 0, int tpago = 0, int area = 0)
-        {
-            List<iOperacionXfecha> iData = new List<iOperacionXfecha>();
-            var cvDateINI = Convert.ToDateTime(inicio);
-            var cvDateFIN = Convert.ToDateTime(fin);
-            var ftdata = (from d in db.operacion where (d.fecha >= cvDateINI & d.fecha <= cvDateFIN) select d);
-
-            if (toper != 0) { ftdata = ftdata.Where(x => x.tipo_operacionid == toper); }
-            if (pventa != 0) { ftdata = ftdata.Where(x => x.punto_ventaid == pventa); }
-            if (categ != 0) { ftdata = ftdata.Where(x => x.producto.categoriaid == categ); }
-            if (producto != 0) { ftdata = ftdata.Where(x => x.productoid == producto); }
-            if (tpago != 0) { ftdata = ftdata.Where(x => x.tipo_pagoid == tpago); }
-            if (area != 0) { ftdata = ftdata.Where(x => x.producto.areaid == area); }
-
-            double total_cant = ftdata.Count();
-            double total_importe = 0;
-            decimal porcent = 0;
-
-            if (total_cant > 0) total_importe = (double)ftdata.Sum(i => i.cantidad * i.producto.precio);
-
-            var ftgroup = ftdata
-                .GroupBy(r => new { r.fecha, r.tipo_operacion.tipo })
-                .Select(rp => new
-                {
-                    Fecha = rp.Key.fecha,
-                    TipoOperacion = rp.Key.tipo,
-                    Count = rp.Sum(x => x.cantidad),
-                    Importe = rp.Sum(x => x.cantidad * x.producto.precio),
-                    Costo = rp.Sum(x => x.cantidad * x.producto.precio)
-                })
-                .OrderBy(x => x.Fecha)
-                .ThenBy(x => x.TipoOperacion)
-                .ToList();
-
-            // Obtener el título dinámico
-            string puntoVentaNombre = db.punto_venta.Where(p => p.id == pventa).Select(p => p.nombre).FirstOrDefault() ?? "";
-            string categoriaNombre = db.categoria.Where(c => c.id == categ).Select(c => c.clave).FirstOrDefault() ?? "";
-            string tipoPago = db.tipo_pago.Where(c => c.id == tpago).Select(c => c.tipo).FirstOrDefault() ?? "";
-            string titulo = $"PUNTO: {puntoVentaNombre}, FECHA: {cvDateINI.ToString("d")} AL {cvDateFIN.ToString("d")}, CATEGORIA: {categoriaNombre},  T.PAGO: {tipoPago}";
-
-            foreach (var item in ftgroup)
-            {
-
-                porcent = (decimal)((item.Importe / total_importe) * 100);
-                porcent = Convert.ToDecimal(String.Format($"{porcent:F2}"));
-                double? utilidad = (item.Importe - item.Costo);
-
-                iOperacionXfecha iVal = new iOperacionXfecha
-                {
-                    fecha = item.Fecha.Value.ToString("d"),
-                    tipo = item.TipoOperacion,
-                    fechaLabel = (DateTime)item.Fecha,
-                    cantidad = Convert.ToDouble(String.Format("{0:#,##0.00}", item.Count)),
-                    porciento = porcent,
-                    importe = Convert.ToDouble(String.Format("{0:#,##0.00}", item.Importe)),
-                    costo = Convert.ToDouble(String.Format("{0:#,##0.00}", item.Costo)),
-                    utilidad = Convert.ToDouble(String.Format("{0:#,##0.00}", utilidad)),
-                };
-                iData.Add(iVal);
-            }
-
-            return Content(JsonConvert.SerializeObject(new { iData, titulo }), "application/json");
-        }
-        [HttpGet]
-        public ContentResult ChartSxiGeneralData(string inicio, string fin, int toper = 0, int pventa = 0, int categ = 0, int producto = 0, int tpago = 0, int area = 0)
-        {
-            List<iGeneralData> iData = new List<iGeneralData>();
-
-            DateTime cvDateINI = Convert.ToDateTime(inicio);
-            DateTime cvDateFIN = Convert.ToDateTime(fin);
-
-            var ftdata = db.operacion.Where(d => d.fecha >= cvDateINI && d.fecha <= cvDateFIN);
-
-            if (toper != 0) ftdata = ftdata.Where(x => x.tipo_operacionid == toper);
-            if (pventa != 0) ftdata = ftdata.Where(x => x.punto_ventaid == pventa);
-            if (categ != 0) ftdata = ftdata.Where(x => x.producto.categoriaid == categ);
-            if (producto != 0) ftdata = ftdata.Where(x => x.productoid == producto);
-            if (tpago != 0) ftdata = ftdata.Where(x => x.tipo_pagoid == tpago);
-            if (area != 0) ftdata = ftdata.Where(x => x.producto.areaid == area);
-
-            var dataList = ftdata.ToList();
-
-            var TotalImpVentas = dataList.Where(i => i.tipo_operacionid == 2).Sum(i => i.cantidad * i.producto.precio);
-            var TotalCostVentas = dataList.Where(i => i.tipo_operacionid == 2).Sum(i => i.cantidad * i.producto.costo);
-            var TotalUtilidades = TotalImpVentas - TotalCostVentas;
-            var total_cantventas = dataList.Count;
-
-            double impventas = (double)TotalImpVentas;
-            double costventas = (double)TotalCostVentas;
-            double? utilidad = impventas - costventas;
-
-            decimal tVefectivo = dataList.Count(sx => sx.tipo_pagoid == 1);
-            decimal tVtransfer = dataList.Count(sx => sx.tipo_pagoid == 2);
-
-            decimal porciento_efe = 0;
-            decimal porciento_tra = 0;
-            decimal porciento_imp = 0;
-            decimal porciento_cost = 0;
-            decimal porciento_util = 0;
-
-            if (TotalImpVentas != 0 && total_cantventas != 0)
-            {
-                porciento_efe = Math.Round((tVefectivo / total_cantventas) * 100, 2);
-                porciento_tra = Math.Round((tVtransfer / total_cantventas) * 100, 2);
-                porciento_imp = (decimal)Math.Round((impventas / (double)TotalImpVentas) * 100, 2);
-                porciento_cost = (decimal)Math.Round((costventas / (double)TotalImpVentas) * 100, 2);
-                porciento_util = (decimal)Math.Round((double)((utilidad / (double)TotalImpVentas) * 100), 2);
-            }
-
-            List<iTipoPago> iTipos = new List<iTipoPago>
-            {
-                new iTipoPago { tipo = "Efectivo", cantidad = (double?)tVefectivo, porciento = (double?)porciento_efe },
-                new iTipoPago { tipo = "Transferencia", cantidad = (double?)tVtransfer, porciento = (double?)porciento_tra }
+                new iTipoPago { tipo = "Efectivo", cantidad = (double?) tEfe, porciento = (double?) porcEfe },
+                new iTipoPago { tipo = "Transferencia", cantidad = (double?) tTra, porciento = (double?) porcTra }
             };
 
-            iData.Add(new iGeneralData
+            var iData = new iGeneralData
             {
-                importe_venta = impventas,
-                costo_venta = costventas,
-                utilidades = utilidad,
-                pcien_importe = (double?)porciento_imp,
-                pcien_costo = (double?)porciento_cost,
-                pcien_utilidad = (double?)porciento_util,
+                importe_venta = imp,
+                costo_venta = cost,
+                utilidades = util,
+                pcien_importe = porcImp,
+                pcien_costo = porcCost,
+                pcien_utilidad = porcUtil,
                 tipo_pago = iTipos
-            });
+            };
 
-            return Content(JsonConvert.SerializeObject(iData), "application/json");
+            return Json(new { iData }, JsonRequestBehavior.AllowGet);
+        }
+       
+        [HttpGet]    
+        public JsonResult GetProductosRecientes(int cantidad = 20)
+        {
+            try
+            {
+                var productos = db.Database.SqlQuery<iProductoRecientes>(
+                    "EXEC sp_ObtenerProductosRecientes @Cantidad",
+                    new SqlParameter("@Cantidad", cantidad)
+                ).ToList();
+                return Json(productos, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                // 🛠️ Loguear el error si tienes sistema de logs
+                return Json(new { error = true, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
         }
 
+        [HttpGet]
+        public JsonResult GetOperacionesRecientes(int cantidad = 20)
+        {
+            try
+            {
+                var operaciones = db.Database.SqlQuery<iOperacionesRecientes>(
+                    "EXEC sp_ObtenerOperacionesRecientes @Cantidad",
+                    new SqlParameter("@Cantidad", cantidad)
+                ).ToList();
+                return Json(operaciones, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                // 🛠️ Loguear el error si tienes sistema de logs
+                return Json(new { error = true, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult ChartDxTOperacion(string inicio, string fin, int toper = 0, int pventa = 0, int categ = 0, int producto = 0, int tpago = 0, int area = 0)
+        {
+            DateTime.TryParse(inicio, out DateTime cvDateINI);
+            DateTime.TryParse(fin, out DateTime cvDateFIN);
+            db.Database.CommandTimeout = 120;
+            var datos = db.Database.SqlQuery<iOperacionXtipo>(
+                "EXEC sp_ObtenerDistribucionPorOperacion @FechaInicio, @FechaFin, @TipoOperacionID, @PuntoVentaID, @CategoriaID, @ProductoID, @TipoPagoID, @AreaID",
+                new SqlParameter("@FechaInicio", cvDateINI),
+                new SqlParameter("@FechaFin", cvDateFIN),
+                new SqlParameter("@TipoOperacionID", toper),
+                new SqlParameter("@PuntoVentaID", pventa),
+                new SqlParameter("@CategoriaID", categ),
+                new SqlParameter("@ProductoID", producto),
+                new SqlParameter("@TipoPagoID", tpago),
+                new SqlParameter("@AreaID", area)
+            ).ToList();
+
+            double? totalImporte = datos.Sum(x => x.importe);
+            foreach (var item in datos)
+            {
+                item.porciento = (totalImporte > 0) ? (item.importe / totalImporte) * 100 : 0;
+            }
+
+            return Json(new { iData = datos }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ChartDxFecha(string inicio, string fin, int toper = 0, int pventa = 0, int categ = 0, int producto = 0, int tpago = 0, int area = 0)
+        {
+            DateTime.TryParse(inicio, out DateTime cvDateINI);
+            DateTime.TryParse(fin, out DateTime cvDateFIN);
+            db.Database.CommandTimeout = 120;
+            var datos = db.Database.SqlQuery<iOperacionXFecha>(
+                "EXEC sp_ObtenerDistribucionPorFecha @FechaInicio, @FechaFin, @TipoOperacionID, @PuntoVentaID, @CategoriaID, @ProductoID, @TipoPagoID, @AreaID",
+                new SqlParameter("@FechaInicio", cvDateINI),
+                new SqlParameter("@FechaFin", cvDateFIN),
+                new SqlParameter("@TipoOperacionID", toper),
+                new SqlParameter("@PuntoVentaID", pventa),
+                new SqlParameter("@CategoriaID", categ),
+                new SqlParameter("@ProductoID", producto),
+                new SqlParameter("@TipoPagoID", tpago),
+                new SqlParameter("@AreaID", area)
+            ).ToList();
+
+            double? totalImporte = datos.Sum(x => x.Importe);
+            foreach (var item in datos)
+            {
+                item.Porciento = (totalImporte > 0) ? (item.Importe / totalImporte) * 100 : 0;              
+            }
+
+            string puntoVentaNombre = db.punto_venta.Where(p => p.id == pventa).Select(p => p.nombre).FirstOrDefault() ?? "";
+            string categoriaNombre = db.categoria.Where(c => c.id == categ).Select(c => c.clave).FirstOrDefault() ?? "";
+            string tipoPago = db.tipo_pago.Where(p => p.id == tpago).Select(p => p.tipo).FirstOrDefault() ?? "";
+
+            string titulo = $"PUNTO: {puntoVentaNombre}, FECHA: {cvDateINI:d} AL {cvDateFIN:d}, CATEGORIA: {categoriaNombre}, T.PAGO: {tipoPago}";
+
+            return Json(new { iData = datos, titulo }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ChartDxPunto(string inicio, string fin, int toper = 0, int pventa = 0, int categ = 0, int producto = 0, int tpago = 0, int area = 0)
+        {
+            DateTime.TryParse(inicio, out DateTime cvDateINI);
+            DateTime.TryParse(fin, out DateTime cvDateFIN);
+            db.Database.CommandTimeout = 120;
+            var datos = db.Database.SqlQuery<iOperacionXPunto>(
+                "EXEC sp_ObtenerDistribucionPorPunto @FechaInicio, @FechaFin, @TipoOperacionID, @PuntoVentaID, @CategoriaID, @ProductoID, @TipoPagoID, @AreaID",
+                new SqlParameter("@FechaInicio", cvDateINI),
+                new SqlParameter("@FechaFin", cvDateFIN),
+                new SqlParameter("@TipoOperacionID", toper),
+                new SqlParameter("@PuntoVentaID", pventa),
+                new SqlParameter("@CategoriaID", categ),
+                new SqlParameter("@ProductoID", producto),
+                new SqlParameter("@TipoPagoID", tpago),
+                new SqlParameter("@AreaID", area)
+            ).ToList();
+
+            double? totalImporte = datos.Sum(x => x.importe);
+            foreach (var item in datos)
+            {
+                item.porciento = (totalImporte > 0) ? (item.importe / totalImporte) * 100 : 0;
+            }
+
+            return Json(new { iData = datos }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ChartDxProducto(string inicio, string fin, int toper = 0, int pventa = 0, int categ = 0, int producto = 0, int tpago = 0, int area = 0)
+        {
+            DateTime.TryParse(inicio, out DateTime cvDateINI);
+            DateTime.TryParse(fin, out DateTime cvDateFIN);
+            db.Database.CommandTimeout = 120;
+            var datos = db.Database.SqlQuery<iOperacionXproducto>(
+                "EXEC sp_ObtenerDistribucionPorProducto @FechaInicio, @FechaFin, @TipoOperacionID, @PuntoVentaID, @CategoriaID, @ProductoID, @TipoPagoID, @AreaID",
+                new SqlParameter("@FechaInicio", cvDateINI),
+                new SqlParameter("@FechaFin", cvDateFIN),
+                new SqlParameter("@TipoOperacionID", toper),
+                new SqlParameter("@PuntoVentaID", pventa),
+                new SqlParameter("@CategoriaID", categ),
+                new SqlParameter("@ProductoID", producto),
+                new SqlParameter("@TipoPagoID", tpago),
+                new SqlParameter("@AreaID", area)
+            ).ToList();
+
+            double? totalImporte = datos.Sum(x => x.importe);
+            foreach (var item in datos)
+            {
+                item.porciento = (totalImporte > 0) ? (item.importe / totalImporte) * 100 : 0;
+            }
+
+            return Json(new { iData = datos }, JsonRequestBehavior.AllowGet);
+        }
 
         public ContentResult incremetoProduccion(string inicio, string fin, int producto = 0, double gastoOperativo = 0, int numTraba = 0, int prodProTrab = 0, decimal meta = 0)
         {

@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "AGREGAR PRODUCTO";
 }
-<iv class="page-title-head d-flex align-items-center">
+<div class="page-title-head d-flex align-items-center">
     <div class="flex-grow-1">
         <h4 class="fs-sm text-uppercase fw-bold m-0">PRODUCTO</h4>
     </div>
@@ -17,102 +17,171 @@
             <li class="breadcrumb-item active">AGREGAR</li>
         </ol>
     </div>
-</iv>
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">AGREGAR PRODUCTO</h4>
-            </div>
-            <div class="card-body">
-                <div class="row g-4 align-items-center">
-                    <div class="col-sm-6 border-end border-dashed">
-                        <div class="p-4">
-                            <form role="form" method="post" action="@Url.Action("Create", "Producto")">
-                                @Html.AntiForgeryToken()
-                                @Html.ValidationSummary()
-                                <div class="mb-3">
-                                    <label for="cod" class="form-label">CÓDIGO <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="cod" name="cod" required="">
-                                        @Html.ValidationMessageFor(model => model.cod)
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="nombre" class="form-label">NOMBRE <span class="text-danger">*</span></label>
-                                    <div class="editor-field">
-                                        <input type="text" class="form-control" id="nombre" name="nombre" required="">
-                                        @Html.ValidationMessageFor(model => model.nombre)
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="precio" class="form-label">PRECIO <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="precio" name="precio" required="">
-                                        @Html.ValidationMessageFor(model => model.precio)
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="costo" class="form-label">COSTO <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="costo" name="costo" required="">
-                                        @Html.ValidationMessageFor(model => model.costo)
-                                    </div>
-                                </div>
-                                <div class="form-group" id="data_1">
-                                    <label for="fecha" class="form-label">FECHA <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" name="fecha" id="fecha" class="form-control" required="">
-                                    </div>
-                                    @Html.ValidationMessageFor(model => model.fecha)
-                                </div>
-                                <div class="mb-3">
-                                    <label for="categoriaid" class="form-label">CATEGORIA <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <select class="form-control" name="categoriaid" id="categoriaid">                                  
-                                            @Html.Action("_listcategorias", "Parcial")
-                                            @Html.ValidationMessageFor(model => model.categoriaid)
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="unidadid" class="form-label">UNIDAD <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <select class="form-control" name="unidadid" id="unidadid">                                  
-                                            @Html.Action("_listunidades", "Parcial")
-                                            @Html.ValidationMessageFor(model => model.unidadid)
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="areaid" class="form-label">ÁREA ECONÓMICA <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <select class="form-control" name="areaid" id="areaid">                                          
-                                            @Html.Action("_listareas", "Parcial")
-                                            @Html.ValidationMessageFor(model => model.areaid)
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="d-flex flex-wrap justify-content-between">
-                                    <a href="@Url.Action("Index")" class="btn btn-default float-left m-t-n-xs"><i class="fa fa-arrow-left"></i> REGRESAR</a>
-                                    <button class="btn btn-primary" type="submit"><strong>AGREGAR</strong></button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 text-center">
-                        <div class="avatar avatar-xl mx-auto">
-                            <span class="avatar-title bg-purple-subtle text-purple rounded-circle fw-bold">
-                            </span>
-                        </div>
-                        <h4 class="mt-3">Don't Have an Account Yet?</h4>
-                        <p class="text-muted mb-3">Join us today and unlock access to personalized features, updates, and more!</p>
-                        <a href="auth-sign-up.html" class="link-primary text-decoration-underline fw-semibold link-offset-3">Create Your Account</a>
-                    </div>
-                </div> <!-- end row-->
-            </div> <!-- end card-body-->
-        </div> <!-- end card-->
-    </div> <!-- end col -->
 </div>
+<div class="row justify-content-center">
+    <div class="col-xxl-10">
+        <form id="formProducto">
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <div class="col-xxl-8">
+                    <div class="card">
+                        <div class="card-header d-block p-3">
+                            <h4 class="card-title mb-1">Información del producto</h4>
+                            <p class="text-muted mb-0">
+                                Para agregar un nuevo producto, proporcione los detalles necesarios en los campos a continuación.
+                            </p>
+                        </div> <!-- end card-header -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="mb-3">
+                                        <label for="nombre" class="form-label">Nombre del producto <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Entre el nombre del producto" required="">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="cod" class="form-label">Código <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="cod" name="cod" placeholder="SOFA-10058" required="">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="unidadid" class="form-label">Unidad <span class="text-danger">*</span></label>
+                                        <div class="app-search">
+                                            <select class="form-select form-control my-1 my-md-0" id="unidadid" name="unidadid">
+                                                @Html.Action("_listunidades", "Parcial")
+                                            </select>
+                                            <i data-lucide="box" class="app-search-icon text-muted"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- end card-body-->
+                    </div> <!-- end card-->
+                </div> <!-- end col-->
+                <div class="col-xxl-4">
+                    <div class="card">
+                        <div class="card-header d-block p-3">
+                            <h4 class="card-title mb-1">Precios</h4>
+                            <p class="text-muted mb-0">
+                                Establezca el precio y el costo del producto.
+                            </p>
+                        </div> <!-- end card-header -->
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="precio" class="form-label">Precio <span class="text-danger">*</span></label>
+                                <div class="app-search">
+                                    <input type="text" class="form-control decimalVAL" id="precio" name="precio" step="0.01" placeholder="Precio (Ejemplo, 199,99)" required="">
+                                    <i data-lucide="dollar-sign" class="app-search-icon text-muted"></i>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="costo" class="form-label">Costo <span class="text-danger">*</span></label>
+                                <div class="app-search">
+                                    <input type="text" class="form-control decimalVAL" id="costo" name="costo" step="0.01" placeholder="Costo (Ejemplo, 99,99)" required="">
+                                    <i data-lucide="hand-coins" class="app-search-icon text-muted"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-12">
+                    <div class="card">
+                        <div class="card-header d-block p-3">
+                            <h4 class="card-title mb-1">Organizar</h4>
+                            <p class="text-muted mb-0">
+                                Organice su producto, seleccionando categoría y subcategoría adecuadas.
+                            </p>
+                        </div> <!-- end card-header -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="category" class="form-label">Categoría <span class="text-danger">*</span></label>
+                                        <div class="app-search">
+                                            <select class="form-select form-control my-1 my-md-0" id="categoriaid" name="categoriaid" required="">
+                                                @Html.Action("_listcategorias", "Parcial")
+                                            </select>
+                                            <i data-lucide="tag" class="app-search-icon text-muted"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="subCategory" class="form-label">Sub Categoría<span class="text-danger"></span></label>
+                                        <div class="app-search">
+                                            <select class="form-select form-control my-1 my-md-0" id="areaid" name="areaid">
+                                                @Html.Action("_listareas", "Parcial")
+                                            </select>
+                                            <i data-lucide="tag" class="app-search-icon text-muted"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="mt-2 mb-2 d-flex gap-2 justify-content-end">
+                                <a href="@Url.Action("Index")" class="btn btn-soft-dark">
+                                    <i data-lucide="arrow-big-left-dash" class="fs-xxl me-2"></i> Regresar
+                                </a>
+                                <button type="submit" class="btn btn-success">
+                                    <i data-lucide="save" class="fs-sm me-2"></i> Guardar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- end row-->
+        </form>        
+    </div> <!-- end col-->
+</div>
+@section Styles {
+    <link href="~/Content/plugins/toastr/toastr.min.css" rel="stylesheet" />
+}
+
+
 @section Scripts {
+    <script src="~/Scripts/plugins/toastr/toastr.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("form").on("submit", function (e) {
+                $(".decimalVAL").each(function () {
+                    var valor = $(this).val().replace(".", ",");
+                    $(this).val(valor);
+                });
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("Create", "Producto")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title:'Producto agregado',
+                                text: 'Producto agregado correctamente, redireccionando a la lista.',
+                                timer: 1500,
+                                showConfirmButton: false                             
+                            });
+                            window.location.href = response.redirectUrl;
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '¡Error!',
+                                text: response.message
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Hubo un problema al enviar el formulario.'
+                        });
+                    }
+                });
+            });         
+        });
+    </script>
 }

@@ -8,8 +8,11 @@ using vercom.Models;
 public class RBACUser
 {
     public int User_Id { get; set; }
+
     public Nullable<bool> IsSysAdmin { get; set; }
+
     public string Username { get; set; }
+
     private List<UserRole> Roles = new List<UserRole>();
 
     public RBACUser(string _username)

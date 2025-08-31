@@ -1,5 +1,4 @@
-﻿@model IEnumerable<vercom.Models.punto_venta>
-@{
+﻿@{
     ViewBag.Title = "PUNTO DE VENTA";
 }
 <div class="page-title-head d-flex align-items-center">
@@ -18,134 +17,20 @@
         </ol>
     </div>
 </div>
-<div class="row row-cols-xxl-5 row-cols-md-3 row-cols-1 align-items-center g-1">
-    <div class="col">
-        <div class="card mb-1">
-            <div class="card-body">
-                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
-                <h5 title="Total Products">Products</h5>
-                <div class="d-flex align-items-center gap-2 my-3">
-                    <div class="avatar-md flex-shrink-0">
-                        <span class="avatar-title text-bg-primary rounded-circle fs-22">
-                            <i class="ti ti-package"></i>
-                        </span>
-                    </div>
-                    <h3 class="mb-0">1,240</h3>
-                    <span class="badge badge-soft-primary fw-medium ms-2 fs-xs ms-auto">+24 New</span>
-                </div>
-                <p class="mb-0">
-                    <span class="text-primary"><i class="ti ti-point-filled"></i></span>
-                    <span class="text-nowrap text-muted">Active Listings</span>
-                    <span class="float-end"><b>980</b></span>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col">
-        <div class="card mb-1">
-            <div class="card-body">
-                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
-                <h5 title="Customer Orders">Orders</h5>
-                <div class="d-flex align-items-center gap-2 my-3">
-                    <div class="avatar-md flex-shrink-0">
-                        <span class="avatar-title text-bg-secondary rounded-circle fs-22">
-                            <i class="ti ti-shopping-cart"></i>
-                        </span>
-                    </div>
-                    <h3 class="mb-0">8,540</h3>
-                    <span class="badge badge-soft-secondary fw-medium ms-2 fs-xs ms-auto">+120 New</span>
-                </div>
-                <p class="mb-0">
-                    <span class="text-secondary"><i class="ti ti-point-filled"></i></span>
-                    <span class="text-nowrap text-muted">Total Orders</span>
-                    <span class="float-end"><b>105K</b></span>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col">
-        <div class="card mb-1">
-            <div class="card-body">
-                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
-                <h5 title="Sales Today">Sales</h5>
-                <div class="d-flex align-items-center gap-2 my-3">
-                    <div class="avatar-md flex-shrink-0">
-                        <span class="avatar-title text-bg-success rounded-circle fs-22">
-                            <i class="ti ti-currency-dollar"></i>
-                        </span>
-                    </div>
-                    <h3 class="mb-0">$9,860</h3>
-                    <span class="badge badge-soft-success fw-medium ms-2 fs-xs ms-auto">+8.2%</span>
-                </div>
-                <p class="mb-0">
-                    <span class="text-success"><i class="ti ti-point-filled"></i></span>
-                    <span class="text-nowrap text-muted">Today's Sales</span>
-                    <span class="float-end"><b>$156K</b></span>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col">
-        <div class="card mb-1">
-            <div class="card-body">
-                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
-                <h5 title="Customer Count">Customers</h5>
-                <div class="d-flex align-items-center gap-2 my-3">
-                    <div class="avatar-md flex-shrink-0">
-                        <span class="avatar-title text-bg-info rounded-circle fs-22">
-                            <i class="ti ti-users"></i>
-                        </span>
-                    </div>
-                    <h3 class="mb-0">2,945</h3>
-                    <span class="badge badge-soft-info fw-medium ms-2 fs-xs ms-auto">+36 New</span>
-                </div>
-                <p class="mb-0">
-                    <span class="text-info"><i class="ti ti-point-filled"></i></span>
-                    <span class="text-nowrap text-muted">Total Customers</span>
-                    <span class="float-end"><b>58,320</b></span>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col">
-        <div class="card mb-1">
-            <div class="card-body">
-                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
-                <h5 title="Total Revenue">Revenue</h5>
-                <div class="d-flex align-items-center gap-2 my-3">
-                    <div class="avatar-md flex-shrink-0">
-                        <span class="avatar-title text-bg-warning rounded-circle fs-22">
-                            <i class="ti ti-chart-bar"></i>
-                        </span>
-                    </div>
-                    <h3 class="mb-0">$1.2M</h3>
-                    <span class="badge badge-soft-warning fw-medium ms-2 fs-xs ms-auto">+4.5%</span>
-                </div>
-                <p class="mb-0">
-                    <span class="text-warning"><i class="ti ti-point-filled"></i></span>
-                    <span class="text-nowrap text-muted">Total Revenue</span>
-                    <span class="float-end"><b>$12.8M</b></span>
-                </p>
-            </div>
-        </div>
-    </div>
-</div><!-- end row -->
 <div class="row">
     <div class="col-12">
-        <div data-table="" data-table-rows-per-page="100" class="card">
+        <div data-table="" data-table-rows-per-page="100" class="card" id="bloque-Tpuntos">
             <div class="card-header border-light justify-content-between">
                 <div class="d-flex gap-2">
                     <div class="app-search">
                         <input data-table-search="" type="search" class="form-control" placeholder="Buscar por nombre...">
                         <i data-lucide="search" class="app-search-icon text-muted"></i>
                     </div>
-                    <button data-table-delete-selected="" class="btn btn-danger d-none">Delete</button>
+                    <button data-table-delete-selected="" data-table-delete-url="@Url.Action("EliminarMultiples","Punto")" type="button" class="btn btn-danger btn-icon d-none">
+                        <i class="ti ti-trash fs-xl"></i>
+                    </button>
                 </div>
-                <div class="d-flex align-items-center gap-2">                    
+                <div class="d-flex align-items-center gap-2">
                     <!-- Records Per Page -->
                     <div>
                         <select data-table-set-rows-per-page="" class="form-select form-control my-1 my-md-0">
@@ -157,53 +42,269 @@
                     </div>
                 </div>
                 <div class="d-flex gap-1">
-                    <a href="@Url.Action("Create")" class="btn btn-danger ms-1">
-                        <i data-lucide="plus" class="fs-sm me-2"></i> Agregar Punto
+                    <a href="@Url.Action("Create","Punto")" class="btn btn-secondary btn-icon">
+                        <i class="ti ti-plus fs-xxl"></i>
                     </a>
+                    <button class="btn btn-primary btn-icon" id="btnExportExcel">
+                        <i data-lucide="file-spreadsheet" class="fs-lg"></i>
+                    </button>
+                    <button class="btn btn-info btn-icon" id="btnPrint">
+                        <i data-lucide="printer" class="fs-lg"></i>
+                    </button>
                 </div>
             </div>
             <div class="table-responsive">
-                <table class="table table-custom table-centered table-select table-hover w-100 mb-0">
+                <table class="table table-custom table-centered table-select table-hover w-100 mb-0" id="tablaPuntos">
                     <thead class="bg-light align-middle bg-opacity-25 thead-sm">
                         <tr class="text-uppercase fs-xxs">
-                            <th class="ps-3" style="width: 1%;">
+                            <th class="ps-3 noExport" style="width: 1%;">
                                 <input data-table-select-all="" class="form-check-input form-check-input-light fs-14 mt-0" type="checkbox" id="select-all-products" value="option">
                             </th>
                             <th data-table-sort="" data-column="ID">ID</th>
-                            <th data-table-sort="" data-column="NOMBRE">NOMBRE</th>                       
-                            <th class="text-center" style="width: 1%;">ACCIONES</th>
+                            <th data-table-sort="" data-column="NOMBRE">NOMBRE</th>
+                            <th class="text-center noExport" style="width: 1%;">ACCIONES</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr id="row_@item.id">
-                                <td class="ps-3">
-                                    <input class="form-check-input form-check-input-light fs-14 product-item-check mt-0" type="checkbox" value="option">
-                                </td>
-                                <td>@Html.DisplayFor(modelItem => item.id)</td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.nombre)
-                                </td>                               
-                                <td>
-                                    <div class="d-flex justify-content-center gap-1">
-                                        <a href="@Url.Action("Edit", "Punto", new {id = item.id})" class="btn btn-light btn-icon btn-sm rounded-circle"><i class="ti ti-edit fs-lg"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
                     </tbody>
                 </table>
             </div>
             <div class="card-footer border-0">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div data-table-pagination-info="products"></div>
+                    <div data-table-pagination-info="entradas"></div>
                     <div data-table-pagination=""></div>
                 </div>
             </div>
         </div>
     </div><!-- end col -->
 </div><!-- end row -->
+@section Styles {
+    <link href="~/Content/plugins/toastr/toastr.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+}
+
 @section Scripts {
+    <script src="~/Scripts/plugins/toastr/toastr.min.js"></script>
+    <script src="~/Scripts/plugins/table2excel/table2excel.js"></script>
     <script src="~/Scripts/custom-table.js"></script>
+    <script>
+     $(document).ready(function () {
+         window.customTable = new CustomTable();
+         iniciarVista();
+
+         function iniciarVista() {
+             // 🧠 Ejecutar en cascada sin dependencia entre ellas
+             try { cargarTablaPuntos(); } catch (e) { console.error("Error al optener listado:", e.message); }
+         }
+
+         async function cargarTablaPuntos() {
+             const url = '@Url.Action("GetPuntos", "Punto")';
+             const bloqueID = '#bloque-Tpuntos';
+             const datos = await OptenerData(url, bloqueID);
+             if (datos) {
+                 refreshTable(datos, bloqueID);
+             }
+         }
+
+         async function OptenerData(url, bloqueID) {
+             activarOverlayEnContenedor(bloqueID);
+             try {
+                 const response = await fetch(url, { method: "GET" });
+
+                 const tipo = response.headers.get("content-type") || "";
+                 if (!response.ok) {
+                     console.warn(`⚠️ Error HTTP ${response.status} en ${url}`);
+                     const texto = await response.text();
+                     console.log("Contenido devuelto:", texto.slice(0, 200));
+                     return null;
+                 }
+
+                 if (!tipo.includes("application/json")) {
+                     const texto = await response.text();
+                     console.error("❌ Respuesta no es JSON válida:", texto.slice(0, 200));
+                     return null;
+                 }
+
+                 return await response.json();
+             } catch (error) {
+                 console.error(`❌ Error de red o fetch en ${url}:`, error);
+                 return null;
+             }
+         }
+
+         function refreshTable(data, bloqueID) {
+             const tableEl = document.querySelector('[data-table]');
+             const instance = window.customTable.tables.find(t => t.table === tableEl);
+
+             const tbody = tableEl.querySelector("tbody");
+             tbody.innerHTML = "";
+
+             const rows = data.map(item => {
+                 const tr = document.createElement('tr');
+                 tr.id = `${item.id}`;
+                 tr.innerHTML = `
+                 <td class="noExport">                
+                 <input class="form-check-input form-check-input-light fs-14 product-item-check mt-0" type="checkbox" value="${item.id}">
+                 </td>
+                 <td>${item.id}</td>
+                 <td>${item.nombre}</td>
+                 <td class="noExport">
+                 <div class="d-flex justify-content-center gap-1">
+                 <a href="@Url.Action("Edit", "Punto")/${item.id}" class="btn btn-light btn-icon btn-sm rounded-circle"><i class="ti ti-edit fs-lg"></i></a>
+                 </div>
+                 </td>`;
+                 return tr;
+             });
+             instance.fullRefresh(rows);
+             setupCheckboxListeners();
+             desactivarOverlayEnContenedor(bloqueID);
+         }
+
+         function setupCheckboxListeners() {
+             let tableEl = document.querySelector('[data-table]');
+             let btnDeleteSelected = document.querySelector('[data-table-delete-selected]');
+             let e = tableEl.querySelector("tbody");
+             let checkAllCheckBox = document.querySelector("#select-all-products");
+             let t = e.querySelectorAll('input[type="checkbox"]');
+             let rows = Array.from(e.querySelectorAll("tr"));
+             let filteredRows = [...rows];
+
+             checkAllCheckBox &&
+                 0 < t.length &&
+                 t.forEach((e) => {
+                     e.addEventListener("change", () => {
+                         var e = Array.from(t).some((e) => e.checked);
+                         btnDeleteSelected &&
+                             0 < filteredRows.length &&
+                             btnDeleteSelected.classList.toggle("d-none", !e);
+                     });
+                 });
+         }
+
+         function activarOverlayEnContenedor(contenedorID) {
+             const contenedor = document.querySelector(contenedorID);
+             if (!contenedor) return;
+
+             const cards = contenedor.querySelectorAll('.card');
+             cards.forEach(card => {
+                 let overlay = card.querySelector('.card-overlay');
+                 if (!overlay) {
+                     overlay = document.createElement('div');
+                     overlay.classList.add(
+                         'card-overlay',
+                         'position-absolute',
+                         'top-0',
+                         'start-0',
+                         'w-100',
+                         'h-100',
+                         'd-flex',
+                         'justify-content-center',
+                         'align-items-center',
+                         'noExport'
+                     );
+
+                     overlay.style.zIndex = '10';
+                     const spinner = document.createElement('div');
+                     spinner.classList.add('spinner-border', 'text-primary');
+                     spinner.setAttribute('role', 'status');
+                     const label = document.createElement('span');
+                     label.classList.add('visually-hidden');
+                     label.textContent = 'Cargando...';
+                     spinner.appendChild(label);
+                     overlay.appendChild(spinner);
+                     card.appendChild(overlay);
+                 }
+
+                 overlay.style.display = 'flex';
+                 $(overlay).hide().fadeIn(200);
+             });
+         }
+         function desactivarOverlayEnContenedor(contenedorID) {
+             const contenedor = document.querySelector(contenedorID);
+             if (!contenedor) return;
+             const overlays = contenedor.querySelectorAll('.card .card-overlay');
+             overlays.forEach(overlay => {
+                 $(overlay).fadeOut(200, () => overlay.remove());
+             });
+         }        
+
+         document.getElementById("btnExportExcel").addEventListener("click", function () {
+             const exporter = new Table2Excel();
+             // Clona la tabla para no afectar el original
+             let tablaClonada = $("#tablaPuntos").clone();
+             // Elimina las columnas que no deseas
+             tablaClonada.find("th:nth-child(1), td:nth-child(1)").remove(); // 1
+             tablaClonada.find("th:nth-child(3), td:nth-child(3)").remove(); // 4
+             // Export tabla
+             exporter.export(tablaClonada, "Puntos", {
+                 exclude: ".noExport",
+                 name: "Exportación",
+                 filename: "Puntos.xlsx",
+                 preserveColors: true
+             });
+
+         });
+         document.getElementById("btnPrint").addEventListener("click", function () {
+             let tablaClonada = $("#tablaPuntos").clone();
+             tablaClonada.find(".noExport").remove();
+             const ventana = window.open('', '', 'height=800,width=1200');
+             ventana.document.write(`
+             <html>
+             <head>
+             <title>Imprimir</title>
+             <style>
+             body {
+              font-family: Arial, sans-serif;
+              margin: 20px;
+              font-size: 11px;
+              color: #333;
+          }             h3 {
+              margin-bottom: 5px;
+              color: #004080;
+          }
+          p {
+            margin: 0 0 10px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #999;
+            padding: 6px 4px;
+            text-align: center;
+        }
+        thead {
+            background-color: #004080;
+            color: white;
+            font-weight: bold;
+        }
+        tfoot td {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        tr:nth-child(even) td {
+            background-color: #f9f9f9;
+        }
+        media print {
+            body {
+                font-size: 12px;
+            }
+        }
+        </style>
+        </head>
+        <body>
+        ${tablaClonada[0].outerHTML}
+        </body>
+        </html>
+        `);
+             ventana.document.close();
+             ventana.focus();
+             ventana.print();
+         });
+
+     });
+    </script>
 }

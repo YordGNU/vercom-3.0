@@ -1,0 +1,8 @@
+﻿@model List<vercom.Models.SubMayor>
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <option value="@item.SubMayorID">@item.Nombre</option>
+    }
+}

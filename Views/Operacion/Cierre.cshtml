@@ -18,464 +18,817 @@
         </ol>
     </div>
 </div>
+<div class="row">
+    <div class="col-12">
+        <!-- Simple card -->
+        <div class="card">
+            <div class="card-body">
+                <form>
+                    <div class="row gy-2 gx-2 align-items-center">
+                        <div class="col-auto">
+                            <div class="input-group mb-2">
+                                <div class="input-group-text"><i data-lucide="calendar"></i></div>
+                                <input type="text" name="fecha" id="fecha" value="@DateTime.Now.ToString("d")" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="input-group mb-2">
+                                <div class="input-group-text"><i data-lucide="store" class="app-search-icon text-muted"></i></div>
+                                <select class="form-select form-control" id="pventa" name="pventa">
+                                    @Html.Action("_listapuntos", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="input-group mb-2">
+                                <div class="input-group-text"><i data-lucide="tag"></i></div>
+                                <select class="form-select form-control" id="categ" name="categ">
+                                    @Html.Action("_listcategorias", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-icon btn-primary mb-2" id="BTNfilter">
+                                <i data-lucide="filter" class="fs-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- end card-body-->
+        </div>
+        <!-- end card-->
+    </div>
+    <!-- end col -->
+</div>
 <div class="row row-cols-xxl-5 row-cols-md-3 row-cols-1 align-items-center g-1">
     <div class="col">
         <div class="card mb-1">
             <div class="card-body">
-                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
-                <h5 title="Total Products">Products</h5>
+                <h5 title="Total Products">Saldo inicial</h5>
                 <div class="d-flex align-items-center gap-2 my-3">
                     <div class="avatar-md flex-shrink-0">
                         <span class="avatar-title text-bg-primary rounded-circle fs-22">
                             <i class="ti ti-package"></i>
                         </span>
                     </div>
-                    <h3 class="mb-0">1,240</h3>
-                    <span class="badge badge-soft-primary fw-medium ms-2 fs-xs ms-auto">+24 New</span>
+                    <h3 class="mb-0" id="dataSaldo">0,00</h3>
                 </div>
-                <p class="mb-0">
-                    <span class="text-primary"><i class="ti ti-point-filled"></i></span>
-                    <span class="text-nowrap text-muted">Active Listings</span>
-                    <span class="float-end"><b>980</b></span>
-                </p>
             </div>
         </div>
     </div>
     <div class="col">
         <div class="card mb-1">
             <div class="card-body">
-                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
-                <h5 title="Customer Orders">Orders</h5>
+                <h5 title="Customer Orders">Entradas</h5>
                 <div class="d-flex align-items-center gap-2 my-3">
                     <div class="avatar-md flex-shrink-0">
                         <span class="avatar-title text-bg-secondary rounded-circle fs-22">
-                            <i class="ti ti-shopping-cart"></i>
+                            <i class="ti ti-shopping-bag-plus"></i>
                         </span>
                     </div>
-                    <h3 class="mb-0">8,540</h3>
-                    <span class="badge badge-soft-secondary fw-medium ms-2 fs-xs ms-auto">+120 New</span>
+                    <h3 class="mb-0" id="dataEntradas">0,00</h3>
+                    <span class="badge badge-soft-secondary fw-medium ms-2 fs-xs ms-auto" id="dataPorcE"></span>
                 </div>
-                <p class="mb-0">
-                    <span class="text-secondary"><i class="ti ti-point-filled"></i></span>
-                    <span class="text-nowrap text-muted">Total Orders</span>
-                    <span class="float-end"><b>105K</b></span>
-                </p>
             </div>
         </div>
     </div>
-
     <div class="col">
         <div class="card mb-1">
             <div class="card-body">
-                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
-                <h5 title="Sales Today">Sales</h5>
+                <h5 title="Sales Today">Ventas</h5>
                 <div class="d-flex align-items-center gap-2 my-3">
                     <div class="avatar-md flex-shrink-0">
                         <span class="avatar-title text-bg-success rounded-circle fs-22">
                             <i class="ti ti-currency-dollar"></i>
                         </span>
                     </div>
-                    <h3 class="mb-0">$9,860</h3>
-                    <span class="badge badge-soft-success fw-medium ms-2 fs-xs ms-auto">+8.2%</span>
+                    <h3 class="mb-0" id="dataVentas">0,00</h3>
+                    <span class="badge badge-soft-success fw-medium ms-2 fs-xs ms-auto" id="dataPorcV"></span>
                 </div>
-                <p class="mb-0">
-                    <span class="text-success"><i class="ti ti-point-filled"></i></span>
-                    <span class="text-nowrap text-muted">Today's Sales</span>
-                    <span class="float-end"><b>$156K</b></span>
-                </p>
             </div>
         </div>
     </div>
-
     <div class="col">
         <div class="card mb-1">
             <div class="card-body">
-                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
-                <h5 title="Customer Count">Customers</h5>
+                <h5 title="Customer Count">Devoluciones</h5>
                 <div class="d-flex align-items-center gap-2 my-3">
                     <div class="avatar-md flex-shrink-0">
                         <span class="avatar-title text-bg-info rounded-circle fs-22">
-                            <i class="ti ti-users"></i>
+                            <i class="ti ti-arrow-back-up-double"></i>
                         </span>
                     </div>
-                    <h3 class="mb-0">2,945</h3>
-                    <span class="badge badge-soft-info fw-medium ms-2 fs-xs ms-auto">+36 New</span>
+                    <h3 class="mb-0" id="dataDevol">0,00</h3>
+                    <span class="badge badge-soft-info fw-medium ms-2 fs-xs ms-auto" id="dataPorcD"></span>
                 </div>
-                <p class="mb-0">
-                    <span class="text-info"><i class="ti ti-point-filled"></i></span>
-                    <span class="text-nowrap text-muted">Total Customers</span>
-                    <span class="float-end"><b>58,320</b></span>
-                </p>
             </div>
         </div>
     </div>
-
     <div class="col">
         <div class="card mb-1">
             <div class="card-body">
-                <a href="#!" class="text-muted float-end mt-n1 fs-xl"><i class="ti ti-external-link"></i></a>
-                <h5 title="Total Revenue">Revenue</h5>
+                <h5 title="Total Revenue">Saldo final</h5>
                 <div class="d-flex align-items-center gap-2 my-3">
                     <div class="avatar-md flex-shrink-0">
                         <span class="avatar-title text-bg-warning rounded-circle fs-22">
-                            <i class="ti ti-chart-bar"></i>
+                            <i class="ti ti-package-export"></i>
                         </span>
                     </div>
-                    <h3 class="mb-0">$1.2M</h3>
-                    <span class="badge badge-soft-warning fw-medium ms-2 fs-xs ms-auto">+4.5%</span>
+                    <h3 class="mb-0" id="dataSaldoF">0,00</h3>
+                    <span class="badge badge-soft-warning fw-medium ms-2 fs-xs ms-auto"></span>
                 </div>
-                <p class="mb-0">
-                    <span class="text-warning"><i class="ti ti-point-filled"></i></span>
-                    <span class="text-nowrap text-muted">Total Revenue</span>
-                    <span class="float-end"><b>$12.8M</b></span>
-                </p>
             </div>
         </div>
     </div>
 </div><!-- end row -->
-<div class="row">
-                <h5 class="modal-title" id="detalleOperacionLabel">Detalles de la Operación</h5>
+<!-- end row -->
+<div class="row" id="bloque-Toperaciones">
     <div class="col-12">
-        <div data-table="" data-table-rows-per-page="100" class="card">
+        <div data-table="" data-table-rows-per-page="100" class="card" id="dtableCierre">
             <div class="card-header border-light justify-content-between">
-                <div class="d-flex align-items-center gap-2">
-                    <span class="me-2 fw-semibold">Generar de:</span>
+                <div class="d-flex gap-2">
                     <div class="app-search">
-                        <div class="input-group date">
-                            <input type="text" name="fecha" id="data_1" class="form-control" value="@DateTime.Now.ToString("d")" placeholder="fecha">
-                            <i data-lucide="calendar" class="app-search-icon text-muted"></i>
-                        </div>
-                        @Html.ValidationMessageFor(model => model.fecha)
-                    </div>
-                    <!-- Punto Filter -->
-                    <div class="app-search">
-                        <select data-table-filter="PUNTO" class="form-select form-control my-1 my-md-0" id="punto_ventaid" name="punto_ventaid">
-                            <option value="All">Punto de venta</option>
-                            @Html.Action("_listapuntos", "Parcial")
-                        </select>
-                        <i data-lucide="tag" class="app-search-icon text-muted"></i>
-                    </div>
-                    <!-- Category Filter -->
-                    <div class="app-search">
-                        <select data-table-filter="CATEGORIA" class="form-select form-control my-1 my-md-0" id="categoriaid" name="categoriaid">
-                            <option value="All">Categoría</option>
-                            @Html.Action("_listcategorias", "Parcial")
-                        </select>
-                        <i data-lucide="tag" class="app-search-icon text-muted"></i>
+                        <input data-table-search="" type="search" class="form-control"
+                               placeholder="Buscar por nombre...">
+                        <i data-lucide="search" class="app-search-icon text-muted"></i>
                     </div>
                 </div>
-                <div class="d-flex gap-1">                   
-                    <button type="button" class="btn btn-success  float-left" id="BTNfilter"><span class="ti ti-filter"></span> GENERAR</button>
-                    <button class="btn btn-outline-primary float-right" id="BTNCierre" type="button" style="display:none"><strong>CERRAR OPERACIONES</strong></button>
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Records Per Page -->
+                    <div class="input-group">
+                        <div class="input-group-text"><i data-lucide="eye" class="app-search-icon text-muted"></i></div>
+                        <select data-table-set-rows-per-page="" class="form-select form-control my-1 my-md-0">
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                            <option value="250-500+">250+</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex gap-1">
+                    <button class="btn btn-warning btn-icon"  style="display:none;" id="btnCerrarOperacion">
+                        <i data-lucide="book-key" class="fs-xxl"></i>
+                    </button>
+                    <button class="btn btn-primary btn-icon" id="btnExportExcel">
+                        <i data-lucide="file-spreadsheet" class="fs-xxl"></i>
+                    </button>
+                    <button class="btn btn-info btn-icon" id="btnPrint">
+                        <i data-lucide="printer" class="fs-xxl"></i>
+                    </button>
                 </div>
             </div>
             <div class="table-responsive">
                 <table class="table table-custom table-centered table-select table-hover w-100 mb-0" id="ipv">
-                    <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                    <thead class="bg-light-subtle align-middle thead-sm">
+                        <!-- fila de agrupación, no sortable -->
                         <tr>
-                            <td colspan="12"> Sociedad Mercantil “Tierra Prometida” S.U.R.L </td>
-                            <td colspan="3">FECHA </td>
+                            <th colspan="12"> IPV CIERRE PUNTO DE VENTA: <label id="puntoIPV"></label></th>
+                            <th colspan="3">FECHA: <label id="fechaIPV"></label></th>
                         </tr>
                         <tr>
-                            <td colspan="15"> IPV Punto de Venta </td>
+                            <th colspan="3">PRODUCTO</th>
+                            <th colspan="2">SALDO INICIAL</th>
+                            <th colspan="2">ENTRADAS</th>
+                            <th colspan="3">VENTAS</th>
+                            <th colspan="2">DEVOLUCIÓN</th>
+                            <th>MERMAS</th>
+                            <th colspan="2">SALDO FINAL</th>
                         </tr>
                         <tr>
-                            <td rowspan="2">CÓDIGO</td>
-                            <td rowspan="2">PRODUCTO</td>
-                            <td rowspan="2">U/M</td>
-                            <td colspan="2">SALDO INICIAL</td>
-                            <td colspan="2">ENTRADAS</td>
-                            <td colspan="3">VENTAS</td>
-                            <td colspan="2">DEVOLUCIÓN</td>
-                            <td>MERMAS</td>
-                            <td colspan="2">SALDO FINAL</td>
-                        </tr>
-                        <tr>
-                            <td>CANT.</td>
-                            <td>IMP.</td>
-                            <td>CANT.</td>
-                            <td>IMP.</td>
-                            <td>CANT.</td>
-                            <td>PRECIO</td>
-                            <td>IMP.</td>
-                            <td>CANT.</td>
-                            <td>IMP.</td>
-                            <td>CANT</td>
-                            <td>CANT.</td>
-                            <td>IMP.</td>
+                            <th data-table-sort="" data-column="cod">CÓDIGO</th>
+                            <th data-table-sort="" data-column="nombre">NOMBRE</th>
+                            <th data-table-sort="" data-column="unidad">U/M</th>
+                            <th data-table-sort="" data-column="cantS">CANT.</th>
+                            <th data-table-sort="" data-column="importeS">IMP.</th>
+                            <th data-table-sort="" data-column="cantE">CANT.</th>
+                            <th data-table-sort="" data-column="importE">IMP.</th>
+                            <th data-table-sort="" data-column="cantV">CANT.</th>
+                            <th data-table-sort="" data-column="precioV">PRECIO</th>
+                            <th data-table-sort="" data-column="importeV">IMP.</th>
+                            <th data-table-sort="" data-column="cantD">CANT.</th>
+                            <th data-table-sort="" data-column="importeD">IMP.</th>
+                            <th data-table-sort="" data-column="cantM">CANT</th>
+                            <th data-table-sort="" data-column="cantSF">CANT.</th>
+                            <th data-table-sort="" data-column="importeSF">IMP.</th>
                         </tr>
                     </thead>
                     <tbody>
                     </tbody>
                 </table>
             </div>
+            <div class="card-overlay" style="display: none;">
+                <div class="d-flex justify-content-center mt-3">
+                    <div class="spinner-border" role="status"></div>
+                </div>
+            </div>
             <div class="card-footer border-0">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div data-table-pagination-info="products"></div>
+                    <div data-table-pagination-info="entradas"></div>
                     <div data-table-pagination=""></div>
                 </div>
             </div>
         </div>
     </div><!-- end col -->
 </div><!-- end row -->
+<div class="modal fade" id="modalDetalles" aria-labelledby="modalDetallesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDetallesLabel">Detalles de la operacón</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-1" id="bloque-resumen">
+                    <div class="col-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 title="Sales Today">Cantidad</h5>
+                                <div class="d-flex align-items-center gap-2 my-3">
+                                    <div class="avatar-md flex-shrink-0">
+                                        <span class="avatar-title text-bg-success rounded-circle fs-22">
+                                            <i class="ti ti-premium-rights"></i>
+                                        </span>
+                                    </div>
+                                    <h3 class="mb-0" id="label_cantidad">0,00</h3>                                   
+                                </div>
+                                <p class="mb-0">
+                                    <span class="text-success"><i class="ti ti-point-filled"></i></span>
+                                    <span class="text-nowrap text-muted">Cantidad (u) total</span>
+                                    <span class="float-end"><b id="tlabel_cantidad"></b></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 title="Total Products">Importe</h5>
+                                <div class="d-flex align-items-center gap-2 my-3">
+                                    <div class="avatar-md flex-shrink-0">
+                                        <span class="avatar-title text-bg-primary rounded-circle fs-22">
+                                            <i class="ti ti-cash-banknote"></i>
+                                        </span>
+                                    </div>
+                                    <h3 class="mb-0" id="label_totalImporte">0,00</h3>
+                                </div>
+                                <p class="mb-0">
+                                    <span class="text-primary"><i class="ti ti-point-filled"></i></span>
+                                    <span class="text-nowrap text-muted">Importe total</span>
+                                    <span class="float-end"><b id="tlabel_totalImporte"></b></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 title="Customer Count">Tipo de pago</h5>
+                                <div class="d-flex align-items-center gap-2 my-3">
+                                    <div class="avatar-md flex-shrink-0">
+                                        <span class="avatar-title text-bg-info rounded-circle fs-22">
+                                            <i class="ti ti-cash"></i>
+                                        </span>
+                                    </div>
+                                    <h3 class="mb-0" id="label_impEfectivo">0,00</h3>
+                                    <div class="avatar-md flex-shrink-0">
+                                        <span class="avatar-title text-bg-info rounded-circle fs-22">
+                                            <i class="ti ti-credit-card-pay"></i>
+                                        </span>
+                                    </div>
+                                    <h3 class="mb-0" id="label_impTransferencia">0,00</h3>
+                                </div>
+                                <p class="mb-0">
+                                    <span class="text-info"><i class="ti ti-point-filled"></i></span>
+                                    <span class="text-nowrap text-muted"> Efectivo </span>
+                                    <span class="badge badge-soft-info fw-medium ms-2 fs-xs ms-auto" id="label_cantEfectivo"></span>
+                                    <span class="text-nowrap text-muted"> Transferencia </span>
+                                    <span class="badge badge-soft-warning fw-medium ms-2 fs-xs ms-auto" id="label_cantTransferencia"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div data-table="" data-table-rows-per-page="10" class="card" id="dtableDetails">
+                    <div class="card-header border-light justify-content-between">
+                        <div class="d-flex gap-2">
+                            <div class="app-search">
+                                <input data-table-search="" type="search" class="form-control" placeholder="Buscar por nombre...">
+                                <i data-lucide="search" class="app-search-icon text-muted"></i>
+                            </div>
+                            <button data-table-delete-selected="" data-table-delete-url="@Url.Action("EliminarMultiples","Operacion")" type="button" class="btn btn-danger btn-icon d-none">
+                                <i class="ti ti-trash fs-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-custom table-centered table-select table-hover w-100 mb-0" id="OperacionTable">
+                            <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                                <tr class="text-uppercase fs-xxs">
+                                    <th class="ps-3 noExport" style="width: 1%;" data-exclude="true">
+                                        <input data-table-select-all="" class="form-check-input form-check-input-light fs-14 mt-0" type="checkbox" id="select-all-products" value="option">
+                                    </th>
+                                    <th data-table-sort="" data-column="CANTIDAD">CANTIDAD</th>
+                                    <th data-table-sort="" data-column="U">U</th>
+                                    <th data-table-sort="" data-column="IMPORTE">IMPORTE</th>
+                                    <th data-table-sort="" data-column="TPAGO">TIPO DE PAGO</th>
+                                    <th class="text-center noExport" style="width: 1%;" data-exclude="true">ACCIONES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer border-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div data-table-pagination-info="entradas"></div>
+                            <div data-table-pagination=""></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @section Styles {
-    @Styles.Render("~/plugins/dateRangeStyles")
-   <link href="~/Content/plugins/choices/choices.min.css" rel="stylesheet" />
-    @Styles.Render("~/plugins/dataPickerStyles")
-    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
-    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-    <link href="~/Content/plugins/datapicker/datepicker3.css" rel="stylesheet" />
-    <style>
-        div.dataTables_wrapper div.dataTables_filter input {
-            width: 500px;
-        }
-    </style>
+    <link href="~/Content/plugins/toastr/toastr.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
 }
 
+
 @section Scripts {
-    @Scripts.Render("~/plugins/dataPicker")
-    @Scripts.Render("~/plugins/ionRange")
+    <script src="~/Scripts/plugins/toastr/toastr.min.js"></script>
+    <script src="~/Scripts/plugins/moment/moment.min.js"></script>
+    <script src="~/Scripts/plugins/daterangepicker/daterangepicker.js"></script>
     <script src="~/Scripts/plugins/choices/choices.min.js"></script>
-    @Scripts.Render("~/plugins/dateRange")
-    @Scripts.Render("~/plugins/dataTables")
-    <script src="~/Scripts/plugins/datapicker/bootstrap-datepicker.js"></script>
-    <script src="~/Scripts/decimal.js"></script>
+    <script src="~/Scripts/plugins/table2excel/table2excel.js"></script>
+    <script src="~/Scripts/custom-table.js"></script>
     <script>
-          $(document).ready(function () {
-              $('#data_1 .input-group.date').datepicker({
-                  todayBtn: "linked",
-                  locale: 'es',
-                  keyboardNavigation: false,
-                  format: "dd/mm/yyyy",
-                  forceParse: false,
-                  calendarWeeks: true,
-                  autoclose: true
-              });
+        $(document).ready(function () {
+            window.customTable = new CustomTable();
+            const formato = 'DD/MM/YYYY';
+            $('#fecha').daterangepicker({
+                startDate: moment().startOf('month'),
+                endDate: moment().endOf('month'),
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: true,
+                cancelClass: "btn-light",
+                applyButtonClasses: "btn-success",
+                opens: 'left',
+                locale: {
+                    format: formato,
+                    separator: ' - ',
+                    applyLabel: 'Aplicar',
+                    cancelLabel: 'Cancelar',
+                    fromLabel: 'Desde',
+                    toLabel: 'Hasta',
+                    customRangeLabel: 'Personalizado',
+                    daysOfWeek: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+                    monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                    firstDay: 1
+                }
+            }, function (start) {
+                $('#fecha').val(start.format(formato));
+            });
+            function crearEnlaceOperacion(cantidad, id, tipo = 0)
+            {
+                if (cantidad == 0 && tipo !== 5) return cantidad;
+                const fecha = document.getElementById("fecha").value;
+                const pventa = document.getElementById("pventa").value;
+                const categ = document.getElementById("categ").value;  
+                // Construir parámetros para la consulta
+                const params = new URLSearchParams();
+                params.append("id", id);
+                if (tipo) params.append("tipo", tipo);
+                if (fecha) params.append("fecha", fecha);
+                if (pventa) params.append("pventa", pventa);
+                if (categ) params.append("categ", categ);        
+                // Enlace que dispara el modal
+                return `<a href="#" data-id="${id}" data-tipo="${tipo}" data-fechainicio="${fecha}"  data-fechafin="${fecha}" data-pventa="${pventa}" data-categ="${categ}" data-bs-toggle="modal" data-bs-target="#modalDetalles" data-bs-whatever="${cantidad}" onclick="abrirModalOperacion(this)">${formatearNumero(cantidad)}</a>`;
+            }
+            function renderFilaIPV(item) {
 
-              var table =  $('#ipv').DataTable({
-                  pageLength: 250,
-                  dom: '<"html5buttons"B>lTfgitp',
-                  header: true,
-                  order: [[3, "desc"]],
-                  buttons: [
-                      { extend: 'excel', title: 'CIERRE' },
-                      {
-                          extend: 'print',
-                          title: '',
-                          orientation: 'landscape',
-                          customize: function (win) {
-                              $(win.document.body).addClass('white-bg');
-                              $(win.document.body).css('font-size', 'inherit');
-                              $(win.document.body).find('thead').empty();
-                              $(win.document.body).find('thead').append('<tr>< td colspan = "12" ></td ><td colspan="3">FECHA:</td></tr ><tr><td colspan="15"> IPV PUNTO DE VENTA: </td></tr><tr><td rowspan="2">CÓDIGO</td><td rowspan="2">PRODUCTO</td><td rowspan="2">U/M</td><td colspan="2">SALDO INICIAL</td><td colspan="2">ENTRADAS</td><td colspan="3">VENTAS</td><td colspan="2">DEVOLUCIÓN</td><td>MERMAS</td><td colspan="2">SALDO FINAL</td></tr><tr><td> CANT.</td><td>IMP.</td><td>CANT.</td><td>IMP.</td><td>CANT.</td><td>PRECIO</td><td>IMP.</td><td>CANT.</td><td>IMP.</td><td>CANT</td><td>CANT.</td><td>IMP.</td></tr >');
-                              $(win.document.body).find('table').addClass('compact').css('font-size', 'inherit');
+                const lnk_entrada = crearEnlaceOperacion(item.cantidad_entrada, item.id, 1);
+                const lnk_venta = crearEnlaceOperacion(item.cantidad_venta, item.id, 2);
+                const lnk_devolucion = crearEnlaceOperacion(item.cantidad_devolucion, item.id, 3);
+                const lnk_merma = crearEnlaceOperacion(item.cantidad_merma, item.id, 4);
+                const lnk_saldo = crearEnlaceOperacion(item.cantidad_saldo, item.id, 5);
 
-                              // Asegurar que se selecciona una sola página para imprimir por defecto
-                              $(win.document.body).css('page-break-after', 'always');
-
-                              // Añadir bordes inferiores a las filas de la tabla
-                              $(win.document.body).find('table tr').css('border-bottom', '1px solid black');
-                          }
-                      },
-                  ], language: {
-                      info: "Mostrando _START_ de _TOTAL_ registros",
-                      infoFiltered: '(filtrado de _MAX_ registros totales)',
-                      search: "Buscar:",
-                      paginate: {
-                          first: "Primero",
-                          last: "Último",
-                          next: "Siguiente",
-                          previous: "Anterior",
-                      },
-                  }
-              });
-
-              $('.chosen-select').chosen({ width: "100%" });
-
-              $('#BTNfilter').on('click',
-                  function () {
-
-                      $('#ipv').DataTable().clear().destroy();
-
-                      const url = '@Url.Action("CierreJsonConsultResult", "Operacion")';
-
-                      const fecha = document.getElementById("fecha").value;
-                      const puntoId = document.getElementById("punto_ventaid").value;
-                      const categid = document.getElementById("categoriaid").value;
-
-                      var tSimport = 0;
-                      var tEimport = 0;
-                      var tVimport = 0;
-                      var tDimport = 0;
-                      var tMimport = 0;
-                      var tFimport = 0;
-
-                      var lnk_entrada = "" + 0;
-                      var lnk_venta = "" + 0;
-                      var lnk_devol = "" + 0;
-                      var lnk_merma = "" + 0;
-
-                      $.getJSON(url,
-                          { fecha: fecha, pventa: puntoId, categ: categid },
-                          function (data) {
-                              if (data.length > 0) {
-                                  if (data[0].producto !== "CIERRE") {
-                                      $('#BTNCierre').show();
-                                  } else {
-                                      $('#BTNCierre').hide();
-                                  }
-                              }
-                              $.each(data,
-                                  function (i, item) {
-
-                                      if (item.cantidad_entrada == 0) { lnk_entrada = item.cantidad_entrada } else { lnk_entrada = '<a class="" href="Edit/' + item.lnk_entrada + '">' + item.cantidad_entrada + '</a>' }
-                                      if (item.cantidad_venta == 0) { lnk_venta = item.cantidad_venta } else { lnk_venta = '<a class="" href="Edit/' + item.lnk_venta + '">' + item.cantidad_venta + '</a>' }
-                                      if (item.cantidad_devolucion == 0) { lnk_devol = item.cantidad_devolucion } else { lnk_devol = '<a class="" href="Edit/' + item.lnk_devol + '">' + item.cantidad_devolucion + '</a>' }
-                                      if (item.cantidad_merma == 0) { lnk_merma = item.cantidad_merma } else { lnk_merma = '<a class="" href="Edit/' + item.lnk_merma + '">' + item.cantidad_merma + '</a>' }
-
-
-                                      $('#ipv').append('<tr><td>' + item.cod + '</td>' + '<td>' + '<a class="" href="Edit/' + item.id + '">' + item.producto + '</a>' + '</td>' + '<td>' + item.unidad + '</td>' + '<td>' + item.cantidad_saldo + '</td>' + '<td>' + item.importe_saldo + '</td>' + '<td>' + lnk_entrada + '</td>' + '<td>' + item.importe_entrada + '</td>' + '<td>' + lnk_venta + '</td>' + '<td>' + item.precio_venta + '</td>' + '<td>' + item.importe_venta + '</td>' + '<td>' + lnk_devol + '</td>' + '<td>' + item.importe_devolucion + '</td>' + '<td>' + lnk_merma + '</td>' + '<td>' + item.final_saldo + '</td>' + '<td>' + item.final_importe + '</td></tr>');
-
-                                      tSimport = tSimport + item.importe_saldo;
-                                      tEimport = tEimport + item.importe_entrada;
-                                      tVimport = tVimport + item.importe_venta;
-                                      tDimport = tDimport + item.importe_devolucion;
-                                      tMimport = tMimport + item.importe_merma;
+                  return `
+                   <tr>
+                   <td>${item.cod}</td>
+                   <td>${item.producto}</td>
+                   <td>${item.unidad}</td>
+                   <td>${lnk_saldo}</td>
+                   <td>${formatearNumero(item.importe_saldo)}</td>
+                   <td>${lnk_entrada}</td>
+                   <td>${formatearNumero(item.importe_entrada)}</td>
+                   <td>${lnk_venta}</td>
+                   <td>${item.precio_venta}</td>
+                   <td>${formatearNumero(item.importe_venta)}</td>
+                   <td>${lnk_devolucion}</td>
+                   <td>${formatearNumero(item.importe_devolucion)}</td>
+                   <td>${lnk_merma}</td>
+                   <td>${formatearNumero(item.final_saldo)}</td>
+                   <td>${formatearNumero(item.final_importe)}</td>
+                   </tr>`;
+              }
+            $("#btnCerrarOperacion").on("click", function () {
+                  Swal.fire({
+                      title: "¿Cerrar operaciones?",
+                      text: "Esto generará los saldos en base a los movimientos del punto de venta y la categoría seleccionada.",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonText: "Sí, cerrar ahora",
+                      cancelButtonText: "Cancelar"
+                  }).then((result) => {
+                      if (result.isConfirmed) {
+                          $.ajax({
+                              type: "GET",
+                              url: "/Operacion/CierreJsonResult",
+                              data: {
+                                  fecha: $("#fecha").val(),
+                                  pventa: $("#pventa").val(),
+                                  categ: $("#categ").val(),
+                              },
+                              success: function (response) {
+                                  $('#btnCerrarOperacion').hide();
+                                  Swal.fire({
+                                      title: "Cierre completado",
+                                      html: `<strong>${response.length}</strong> productos fueron cerrados correctamente.`,
+                                      icon: "success"
                                   });
-
-                              if (data.length > 0) {
-                                  tFimport = (tSimport + tEimport) - (tVimport + tDimport + tMimport);
-                                  $('#ipv').append('<tr style="background-color: aquamarine;"><td></td><td></td><td></td><td></td><td><strong>' + (tSimport.toFixed(2)) + '</strong></td><td></td><td>' + (tEimport.toFixed(2)) + '</td><td></td><td></td><td>' + (tVimport.toFixed(2)) + '</td><td></td><td>' + (tDimport.toFixed(2)) + '</td><td></td><td></td><td>' + (tFimport.toFixed(2)) + '</td></tr>');
+                                  limpiarContenido();
+                              },
+                              error: function () {
+                                  Swal.fire({
+                                      title: "Error",
+                                      text: "No se pudo realizar el cierre. Intenta nuevamente.",
+                                      icon: "error"
+                                  });
                               }
-                              $('#ipv').DataTable({
-                                  pageLength: 250,
-                                  dom: '<"html5buttons"B>lTfgitp',
-                                  header: true,
-                                  order: [[3, "desc"]],
-                                  buttons: [
-                                      { extend: 'excel', title: 'CIERRE' },
-                                      {
-                                          extend: 'print',
-                                          title: '',
-                                          orientation: 'landscape',
-                                          customize: function (win) {
-                                              $(win.document.body).addClass('white-bg');
-                                              $(win.document.body).css('font-size', 'inherit');
-                                              $(win.document.body).find('thead').empty();
-                                              $(win.document.body).find('thead').append('<tr>< td colspan = "12" ></td ><td colspan="3">FECHA:' + fecha + '</td></tr ><tr><td colspan="15"> IPV CIERRE PUNTO DE VENTA: ' + puntoId + '</td></tr><tr><td rowspan="2">CÓDIGO</td><td rowspan="2">PRODUCTO</td><td rowspan="2">U/M</td><td colspan="2">SALDO INICIAL</td><td colspan="2">ENTRADAS</td><td colspan="3">VENTAS</td><td colspan="2">DEVOLUCIÓN</td><td>MERMAS</td><td colspan="2">SALDO FINAL</td></tr><tr><td> CANT.</td><td>IMP.</td><td>CANT.</td><td>IMP.</td><td>CANT.</td><td>PRECIO</td><td>IMP.</td><td>CANT.</td><td>IMP.</td><td>CANT</td><td>CANT.</td><td>IMP.</td></tr >');
-                                              $(win.document.body).find('table').addClass('compact').css('font-size', 'inherit');
-
-                                              // Asegurar que se selecciona una sola página para imprimir por defecto
-                                              $(win.document.body).css('page-break-after', 'always');
-
-                                              // Añadir bordes inferiores a las filas de la tabla
-                                              $(win.document.body).find('table tr').css('border-bottom', '1px solid black');
-                                          }
-                                      },
-                                  ], language: {
-                                      info: "Mostrando _START_ de _TOTAL_ registros",
-                                      infoFiltered: '(filtrado de _MAX_ registros totales)',
-                                      search: "Buscar:",
-                                      paginate: {
-                                          first: "Primero",
-                                          last: "Último",
-                                          next: "Siguiente",
-                                          previous: "Anterior",
-                                      },
-                                  }
-                              });
                           });
+                      }
+                  });
+              });
+            $('#BTNfilter').on('click', function (e) {
+                  e.preventDefault();
+                  const tableEl = document.querySelector('[data-table]');
+                  const instance = window.customTable.tables.find(t => t.table === tableEl);
+
+                  $('#ipv tbody').empty();
+                  const url = '@Url.Action("CierreJsonConsultResult", "Operacion")';
+                  const fecha = document.getElementById("fecha").value;
+                  const puntoId = document.getElementById("pventa").value;
+                  const categid = document.getElementById("categ").value;
+                  const bloqueID = '#bloque-Toperaciones';
+
+                  activarOverlayEnContenedor(bloqueID);
+                  $.getJSON(url, { fecha: fecha, pventa: puntoId, categ: categid }).done(data => {
+                      refreshTable(data); // 💡 Reemplaza con tu lógica actual de pintado en la tabla
+
+                      // ✅ Lógica para mostrar u ocultar el botón de cierre
+                      if (data.length > 0) {
+                          const cierreHecho = data.some(d => d.producto === "CIERRE");
+                          if (cierreHecho) {
+                              $('#btnCerrarOperacion').hide();
+                              Swal.fire({
+                                  icon: 'info',
+                                  title: 'Cierre ya realizado',
+                                  text: 'Este punto ya tiene operaciones de cierre registradas para esa fecha y categoría.'
+                              });
+                          } else {
+                              $('#btnCerrarOperacion').show();
+                          }
+                      } else {
+                          $('#btnCerrarOperacion').hide();
+                          Swal.fire({
+                              icon: 'warning',
+                              title: 'Sin resultados',
+                              text: 'No se encontraron movimientos para los filtros seleccionados.'
+                          });
+                      }
+                  }).fail(() => {
+                      Swal.fire({
+                          icon: 'error',
+                          title: 'Error de conexión',
+                          text: 'No se pudo consultar los datos de cierre. Verifica tu conexión o intenta nuevamente.'
+                      });
+                  }).always(() => desactivarOverlayEnContenedor(bloqueID));
+            });          
+            function limpiarContenido() {
+                document.getElementById("dataSaldo").textContent = "0,00";
+                document.getElementById("dataEntradas").textContent = "0,00";
+                document.getElementById("dataPorcE").textContent = "";
+                document.getElementById("dataVentas").textContent = "0,00";
+                document.getElementById("dataPorcV").textContent = "";
+                document.getElementById("dataDevol").textContent = "0,00";
+                document.getElementById("dataSaldoF").textContent = "0,00";
+                document.getElementById("fechaIPV").textContent = "";
+                document.getElementById("puntoIPV").textContent = "";
+                const tableEl = document.querySelector('[data-table]');
+                const instance = window.customTable.tables.find(t => t.table === tableEl);
+                const tbody = tableEl.querySelector("tbody");
+                tbody.innerHTML = "";
+                const allRows = Array.from(tbody.querySelectorAll("tr"));
+                instance.fullRefresh(allRows);
+            };
+            function refreshTable(data) {
+                  // 1. Localiza <table> y su instancia
+                  const tableEl = document.querySelector('#dtableCierre');
+                  const instance = window.customTable.tables.find(t => t.table === tableEl);
+                  const tbody = tableEl.querySelector("tbody");
+                  tbody.innerHTML = "";
+
+                  // 2. Obtiene rangos de fechas para el encabezado
+                  const fecha = document.getElementById("fecha").value;
+                  var punto = "";
+
+                  let tS = 0, tE = 0, tV = 0, tD = 0, tM = 0, pE = 0, pV = 0, pD = 0;
+
+                  if (data.length) {
+                      if (data[0].producto === "CIERRE") {
+                          const newRows = Array.from(tbody.querySelectorAll("tr"));
+                          instance.fullRefresh(newRows);
+                          return;
+                      }
+                  }
+
+                 data.forEach(item => {
+                      tbody.insertAdjacentHTML("beforeend", renderFilaIPV(item));
+                      tS += item.importe_saldo;
+                      tE += item.importe_entrada;
+                      tV += item.importe_venta;
+                      tD += item.importe_devolucion;
+                      tM += item.importe_merma;
+                      punto = item.punto_nombre;
+                      if (item.cantidad_entrada > 0) { pE += 1; }
                   });
 
-              $('#BTNCierre').on('click',
-                  function () {
-                      $('#BTNCierre').hide();
-                      $('#ipv').DataTable().clear().destroy();
-                      const url = '@Url.Action("CierreJsonResult", "Operacion")';
-                      const fecha = document.getElementById("fecha").value;
-                      const puntoId = document.getElementById("punto_ventaid").value;
-                      const categid = document.getElementById("categoriaid").value;
-                      var tSimport = 0;
-                      var tEimport = 0;
-                      var tVimport = 0;
-                      var tDimport = 0;
-                      var tMimport = 0;
-                      var tFimport = 0;
-                            $.getJSON(url,
-                                { fecha: fecha, pventa: puntoId, categ: categid },
-                                function (data) {
-                                    $.each(data,
-                                        function (i, item) {
-                                            $('#ipv').append('<tr><td>' + item.cod + '</td>' + '<td>' + item.producto + '</td>' + '<td>' + item.unidad + '</td>' + '<td>' + item.final_saldo + '</td>' + '<td>' + item.final_importe + '</td>' + '<td>' + item.cantidad_entrada + '</td>' + '<td>' + item.importe_entrada + '</td>' + '<td>' + item.cantidad_venta + '</td>' + '<td>' + item.precio_venta + '</td>' + '<td>' + item.importe_venta + '</td>' + '<td>' + item.cantidad_devolucion + '</td>' + '<td>' + item.importe_devolucion + '</td>' + '<td>' + item.cantidad_merma + '</td>' + '<td>' + item.final_saldo + '</td>' + '<td>' + item.final_importe + '</td></tr>');
-                                            tSimport = tSimport + item.importe_saldo;
-                                            tEimport = tEimport + item.importe_entrada;
-                                            tVimport = tVimport + item.importe_venta;
-                                            tDimport = tDimport + item.importe_devolucion;
-                                            tMimport = tMimport + item.importe_merma;
-                                        });
-                                    tFimport = (tSimport + tEimport) - (tVimport + tDimport + tMimport);
-                                    $('#ipv').append('<tr><td></td><td></td><td></td><td></td><td>' + (tFimport.toFixed(2)) + '</td><td></td><td>' + (tEimport.toFixed(2)) + '</td><td></td><td></td><td>' + (tVimport.toFixed(2)) + '</td><td></td><td>' + (tDimport.toFixed(2)) + '</td><td></td><td></td><td>' + (tFimport.toFixed(2)) + '</td></tr>');
-                                    $('#ipv').DataTable({
-                                        pageLength: 250,
-                                        dom: '<"html5buttons"B>lTfgitp',
-                                        header: true,
-                                        order: [[3, "desc"]],
-                                        buttons: [
-                                            { extend: 'excel', title: 'CIERRE' },
-                                            {
-                                                extend: 'print',
-                                                title: '',
-                                                orientation: 'landscape',
-                                                customize: function (win) {
-                                                    $(win.document.body).addClass('white-bg');
-                                                    $(win.document.body).css('font-size', 'inherit');
-                                                    $(win.document.body).find('thead').empty();
-                                                    $(win.document.body).find('thead').append('<tr>< td colspan = "12" ></td ><td colspan="3">FECHA:' + fecha + '</td></tr ><tr><td colspan="15"> IPV PUNTO DE VENTA: ' + puntoId + '</td></tr><tr><td rowspan="2">CÓDIGO</td><td rowspan="2">PRODUCTO</td><td rowspan="2">U/M</td><td colspan="2">SALDO INICIAL</td><td colspan="2">ENTRADAS</td><td colspan="3">VENTAS</td><td colspan="2">DEVOLUCIÓN</td><td>MERMAS</td><td colspan="2">SALDO FINAL</td></tr><tr><td> CANT.</td><td>IMP.</td><td>CANT.</td><td>IMP.</td><td>CANT.</td><td>PRECIO</td><td>IMP.</td><td>CANT.</td><td>IMP.</td><td>CANT</td><td>CANT.</td><td>IMP.</td></tr >');
-                                                    $(win.document.body).find('table').addClass('compact').css('font-size', 'inherit');
+                  // 4. Agrega fila de resumen y datos generales si hay datos
+                  if (data.length) {
 
-                                                    // Asegurar que se selecciona una sola página para imprimir por defecto
-                                                    $(win.document.body).css('page-break-after', 'always');
+                      const tF = (tS + tE) - (tV + tD + tM);
+                      const fechaTxt = fecha;
 
-                                                    // Añadir bordes inferiores a las filas de la tabla
-                                                    $(win.document.body).find('table tr').css('border-bottom', '1px solid black');
-                                                }
-                                            },
-                                        ], language: {
-                                            "sProcessing": "Procesando...",
-                                            "sLengthMenu": "Mostrar _MENU_ registros",
-                                            "sZeroRecords": "No se encontraron resultados",
-                                            "sEmptyTable": "Ningún dato disponible en esta tabla",
-                                            "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                                            "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                                            "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                                            "sInfoPostFix": "",
-                                            "sSearch": "Buscar:",
-                                            "sUrl": "",
-                                            "sInfoThousands": ",",
-                                            "sLoadingRecords": "Cargando...",
-                                            "oPaginate": {
-                                                "sFirst": "Primero",
-                                                "sLast": "Último",
-                                                "sNext": "Siguiente",
-                                                "sPrevious": "Anterior"
-                                            },
-                                            "oAria": {
-                                                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                                                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                                            }
-                                        }
-                                    });
-                                });
-                        });
+                      const baseDisponible = tS + tE;
+                      const pV = baseDisponible > 0 ? (tV * 100) / baseDisponible : 0;
+                      const pD = baseDisponible > 0 ? (tD * 100) / baseDisponible : 0;
+                      const pM = baseDisponible > 0 ? (tM * 100) / baseDisponible : 0;
+                      
+                      const ftS = formatearNumero(tS);
+                      const ftE = formatearNumero(tE);
+                      const ftV = formatearNumero(tV);
+                      const ftD = formatearNumero(tD);
+                      const ftF = formatearNumero(tF);
+                      const fpV = formatearNumero(pV);
+                      const fpD = formatearNumero(pD);
+                      const resumen = `
+                      <tr>
+                      <td colspan="4"></td>
+                      <td>${ftS}</td>
+                      <td></td>
+                      <td>${ftE}</td>
+                      <td colspan="2"></td>
+                      <td>${ftV}</td>
+                      <td></td>
+                      <td>${ftD}</td>
+                      <td></td>
+                      <td></td>
+                      <td>${ftF}</td>
+                      </tr>`;
+                      tbody.insertAdjacentHTML("beforeend", resumen);
+                      document.getElementById("dataSaldo").textContent = ftS;
+                      document.getElementById("dataEntradas").textContent = ftE;
+                      document.getElementById("dataPorcE").textContent = `+ ${pE}`;
+                      document.getElementById("dataVentas").textContent = ftV;
+                      document.getElementById("dataPorcV").textContent = `+ ${fpV}%`;
+                      document.getElementById("dataDevol").textContent = ftD;
+                      document.getElementById("dataPorcD").textContent = `+ ${fpD}%`;
+                      document.getElementById("dataSaldoF").textContent = ftF;
+                      document.getElementById("fechaIPV").textContent = fechaTxt;
+                      document.getElementById("puntoIPV").textContent = data[0].punto_nombre;
+                  }
 
-          });
-          $(document).ajaxStart(function () {
-              $('#ajaxLoader').show();
+                  // 5. Reconstruye el array de <tr> y dispara fullRefresh
+                  const newRows = Array.from(tbody.querySelectorAll("tr"));
+                instance.fullRefresh(newRows);
+            }
+            document.getElementById("btnExportExcel").addEventListener("click", function () {
+                const fecha = document.getElementById("fechaIPV").textContent;
+                const punto = document.getElementById("puntoIPV").textContent;
+                const categ = $("#categ option:selected").text();
 
-          });
+                const table = document.getElementById("ipv");
+                const exporter = new Table2Excel();
+                exporter.export(table, "IPV CIERRE:" + categ + " " + punto + " " + fecha);
+            });
+            document.getElementById("btnPrint").addEventListener("click", function () {
+                  const tablaHTML = document.getElementById("ipv").outerHTML;
+                  const fecha = document.getElementById("fechaIPV").textContent;
+                  const punto = document.getElementById("puntoIPV").textContent;
+                  const ventana = window.open('', '', 'height=800,width=1200');
+                  ventana.document.write(`
+                            <html>
+                            <head>
+                            <title>Imprimir IPV</title>
+                            <style>
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    margin: 20px;
+                                    font-size: 11px;
+                                    color: #333;
+                                }
+                                h3 {
+                                    margin-bottom: 5px;
+                                    color: #004080;
+                                }
+                                p {
+                                    margin: 0 0 10px;
+                                    font-weight: bold;
+                                }
+                                table {
+                                    width: 100%;
+                                    border-collapse: collapse;
+                                    margin-top: 10px;
+                                }
+                                th, td {
+                                    border: 1px solid #999;
+                                    padding: 6px 4px;
+                                    text-align: center;
+                                }
+                                thead {
+                                    background-color: #004080;
+                                    color: white;
+                                    font-weight: bold;
+                                }
+                                tfoot td {
+                                    background-color: #f0f0f0;
+                                    font-weight: bold;
+                                }
+                                tr:nth-child(even) td {
+                                    background-color: #f9f9f9;
+                                }
+                                media print {
+                                    body {
+                                        font-size: 12px;
+                                    }
+                                }
+                            </style>
+                            </head>
+                            <body>
+                            <h3>📋 IPV CIERRE</h3>
+                          
+                         
+                            ${tablaHTML}
+                            </body>
+                            </html>
+                            `);
+                  ventana.document.close();
+                  ventana.focus();
+                  ventana.print();
+              });
 
-          $(document).ajaxComplete(function () {
-              $('#ajaxLoader').hide();
-          });
+        });
+
+        function activarOverlayEnContenedor(contenedorID) {
+            const contenedor = document.querySelector(contenedorID);
+            if (!contenedor) return;
+
+            const cards = contenedor.querySelectorAll('.card');
+            cards.forEach(card => {
+                let overlay = card.querySelector('.card-overlay');
+                if (!overlay) {
+                    overlay = document.createElement('div');
+                    overlay.classList.add(
+                        'card-overlay',
+                        'position-absolute',
+                        'top-0',
+                        'start-0',
+                        'w-100',
+                        'h-100',
+                        'd-flex',
+                        'justify-content-center',
+                        'align-items-center',
+                        'noExport'
+                    );
+
+                    overlay.style.zIndex = '10';
+                    const spinner = document.createElement('div');
+                    spinner.classList.add('spinner-border', 'text-primary');
+                    spinner.setAttribute('role', 'status');
+                    const label = document.createElement('span');
+                    label.classList.add('visually-hidden');
+                    label.textContent = 'Cargando...';
+                    spinner.appendChild(label);
+                    overlay.appendChild(spinner);
+                    card.appendChild(overlay);
+                }
+
+                overlay.style.display = 'flex';
+                $(overlay).hide().fadeIn(200);
+            });
+        }
+        function desactivarOverlayEnContenedor(contenedorID) {
+            const contenedor = document.querySelector(contenedorID);
+            if (!contenedor) return;
+            const overlays = contenedor.querySelectorAll('.card .card-overlay');
+            overlays.forEach(overlay => {
+                $(overlay).fadeOut(200, () => overlay.remove());
+            });
+        }
+        function abrirModalOperacion(element) {
+            const bloqueID = "#modalDetalles";
+            const id = element.dataset.id;
+            const tipo = element.dataset.tipo;
+            const fechainicio = element.dataset.fechainicio;
+            const fechafin = element.dataset.fechafin;
+            const pventa = element.dataset.pventa;
+            const categ = element.dataset.categ;
+            const url = '@Url.Action("Details", "Operacion")';
+            activarOverlayEnContenedor(bloqueID);
+            // Construir ruta para la API
+            $.getJSON(url, { id: id, tipo: tipo, inicio: fechainicio, fin: fechafin, pventa: pventa, categ: categ }).done(data => refreshDataDetails(data)).always(() => desactivarOverlayEnContenedor(bloqueID));
+        }
+        function formatearNumero(valor) {
+            if (valor == Math.floor(valor)) {
+                return valor;
+            } else {
+                return valor.toFixed(2);
+            }
+        }
+        function refreshDataDetails(data) {
+            // 1. Localiza <table> y su instancia
+            const tableEl = document.querySelector('#dtableDetails');
+            const instance = window.customTable.tables.find(t => t.table === tableEl);
+            const tbody = tableEl.querySelector("tbody");
+            tbody.innerHTML = "";
+            let cantTotal = 0, impTotal = 0, cantEfe = 0, cantTranf = 0, impEfe = 0, impTra = 0;            
+            const rows = data.map(item => {
+                cantTotal += item.cantidad;
+                impTotal += item.importe;
+                if (item.tipo_pago == "EFECTIVO") cantEfe += item.cantidad, impEfe += item.importe;
+                if (item.tipo_pago == "TRANSFERENCIA") cantTranf += item.cantidad, impTra += item.importe;
+                const tr = document.createElement('tr');  
+                tr.id = `${item.id}`;
+                tr.innerHTML = `
+                <td class="noExport">
+                <input class="form-check-input form-check-input-light fs-14 product-item-check mt-0" type="checkbox" value="${item.id}">
+                </td>
+                <td>${item.cantidad}</td>
+                <td>${item.unidad}</td>
+                <td>${item.importe}</td>
+                <td>${item.tipo_pago ? item.tipo_pago : '-' }</td>
+                <td class="noExport">
+                <div class="d-flex justify-content-center gap-1">
+                <a href="@Url.Action("Edit", "Operacion")/${item.id}" class="btn btn-light btn-icon btn-sm rounded-circle"><i class="ti ti-edit fs-lg"></i></a>
+                </div>
+                </td>`;
+                return tr;
+            }); 
+            document.getElementById("label_cantidad").textContent = cantTotal;    
+            document.getElementById("label_totalImporte").textContent = impTotal;     
+            document.getElementById("label_cantEfectivo").textContent = cantEfe;
+            document.getElementById("label_impEfectivo").textContent = impEfe;
+            document.getElementById("label_cantTransferencia").textContent = cantTranf;
+            document.getElementById("label_impTransferencia").textContent = impTra;
+            instance.fullRefresh(rows);
+            setupCheckboxListeners();
+            const modalDetalles = document.getElementById('modalDetalles');
+            modalDetalles.addEventListener('show.bs.modal', event => {
+                // Button that triggered the modal
+                const button = event.relatedTarget;
+                // Extract info from data-bs-* attributes
+                const cantidad = button.getAttribute('data-bs-whatever');
+                const id = button.dataset.id;
+                const tipo = button.dataset.tipo;
+                const fechaS = button.dataset.fecha;
+                const pventa = button.dataset.pventa;
+                const categ = button.dataset.categ;
+
+            });
+        }
+        function setupCheckboxListeners() {
+            let tableEl = document.querySelector('#dtableDetails');
+            let btnDeleteSelected = document.querySelector('[data-table-delete-selected]');
+            let e = tableEl.querySelector("tbody");
+            let checkAllCheckBox = document.querySelector("#select-all-products");
+            let t = e.querySelectorAll('input[type="checkbox"]');
+            let rows = Array.from(e.querySelectorAll("tr"));
+            let filteredRows = [...rows];
+
+            checkAllCheckBox &&
+                0 < t.length &&
+                t.forEach((e) => {
+                    e.addEventListener("change", () => {
+                        var e = Array.from(t).some((e) => e.checked);
+                        btnDeleteSelected &&
+                            0 < filteredRows.length &&
+                            btnDeleteSelected.classList.toggle("d-none", !e);
+                    });
+                });
+        }
     </script>
 }

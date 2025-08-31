@@ -4,13 +4,49 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="VERCOMModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="VERCOMModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AlertasSistema">
+          <Key>
+            <PropertyRef Name="AlertaID" />
+          </Key>
+          <Property Name="AlertaID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TipoAlerta" Type="nvarchar" MaxLength="50" />
+          <Property Name="Descripcion" Type="nvarchar" MaxLength="255" />
+          <Property Name="FechaAlerta" Type="datetime" Nullable="false" />
+          <Property Name="Usuario" Type="nvarchar" MaxLength="100" />
+        </EntityType>
         <EntityType Name="area">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="nombre" Type="varchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="AuditoriaMovimientosCaja">
+          <Key>
+            <PropertyRef Name="AuditoriaID" />
+          </Key>
+          <Property Name="AuditoriaID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MovimientoID" Type="int" />
+          <Property Name="SubMayorID" Type="int" />
+          <Property Name="TipoOperacion" Type="nvarchar" MaxLength="10" />
+          <Property Name="TipoMovimiento" Type="nvarchar" MaxLength="10" />
+          <Property Name="Monto" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Concepto" Type="nvarchar" MaxLength="255" />
+          <Property Name="ReferenciaExterna" Type="nvarchar" MaxLength="100" />
+          <Property Name="MetodoPago" Type="nvarchar" MaxLength="50" />
+          <Property Name="FechaMovimiento" Type="datetime" />
+          <Property Name="UsuarioOperacion" Type="nvarchar" MaxLength="100" />
+          <Property Name="FechaOperacion" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CajaPrincipal">
+          <Key>
+            <PropertyRef Name="CajaID" />
+          </Key>
+          <Property Name="CajaID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Moneda" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="SaldoActual" Type="decimal" Precision="18" Scale="2" Nullable="false" />
         </EntityType>
         <EntityType Name="categoria">
           <Key>
@@ -19,6 +55,30 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="clave" Type="varchar" MaxLength="10" />
         </EntityType>
+        <EntityType Name="CierreCaja">
+          <Key>
+            <PropertyRef Name="CierreID" />
+          </Key>
+          <Property Name="CierreID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CajaID" Type="int" Nullable="false" />
+          <Property Name="FechaCierre" Type="datetime" Nullable="false" />
+          <Property Name="TotalIngresos" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="TotalEgresos" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="SaldoFinal" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Usuario" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Observaciones" Type="nvarchar" MaxLength="255" />
+          <Property Name="Estado" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="FechaRegistro" Type="datetime" Nullable="false" />
+          <Property Name="SaldoCajaPrincipal" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+        </EntityType>
+        <!--Errores durante la generación:
+advertencia 6013: La tabla o vista 'VERCOM.dbo.CierreSubMayor' no tiene definida una clave principal y no es posible inferir ninguna clave principal válida. Esta tabla o vista se ha excluido. Para usar la entidad, necesitará revisar el esquema, agregar las claves correctas y quitar sus comentarios.
+        <EntityType Name="CierreSubMayor">
+          <Property Name="CierreID" Type="int" />
+          <Property Name="SubMayorID" Type="int" />
+          <Property Name="SaldoFinal" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="FechaRegistro" Type="datetime" />
+        </EntityType>-->
         <EntityType Name="cliente">
           <Key>
             <PropertyRef Name="id" />
@@ -43,6 +103,14 @@
           <Property Name="clienteid" Type="int" />
           <Property Name="cuentaid" Type="int" />
         </EntityType>
+        <EntityType Name="ConfiguracionHorarioCaja">
+          <Key>
+            <PropertyRef Name="CajaID" />
+          </Key>
+          <Property Name="CajaID" Type="int" Nullable="false" />
+          <Property Name="HoraInicio" Type="time" Precision="7" Nullable="false" />
+          <Property Name="HoraFin" Type="time" Precision="7" Nullable="false" />
+        </EntityType>
         <EntityType Name="cuenta">
           <Key>
             <PropertyRef Name="id" />
@@ -54,19 +122,6 @@
           <Property Name="banco" Type="varchar" MaxLength="50" />
           <Property Name="titular" Type="varchar" MaxLength="255" />
           <Property Name="direccion" Type="varchar" MaxLength="255" />
-        </EntityType>
-        <EntityType Name="flujo">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="areaid" Type="int" />
-          <Property Name="tipo_flujoid" Type="int" />
-          <Property Name="fecha" Type="datetime" />
-          <Property Name="cantidad" Type="real" />
-          <Property Name="importe" Type="real" />
-          <Property Name="concepto" Type="varchar" MaxLength="250" />
-          <Property Name="precio" Type="real" />
         </EntityType>
         <EntityType Name="forma_operacion">
           <Key>
@@ -82,6 +137,20 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="medio" Type="varchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="MovimientoCaja">
+          <Key>
+            <PropertyRef Name="MovimientoID" />
+          </Key>
+          <Property Name="MovimientoID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SubMayorID" Type="int" Nullable="false" />
+          <Property Name="TipoMovimiento" Type="nvarchar" MaxLength="10" />
+          <Property Name="Monto" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Concepto" Type="nvarchar" MaxLength="255" />
+          <Property Name="ReferenciaExterna" Type="nvarchar" MaxLength="100" />
+          <Property Name="MetodoPago" Type="nvarchar" MaxLength="50" />
+          <Property Name="Fecha" Type="datetime" Nullable="false" />
+          <Property Name="Usuario" Type="nvarchar" MaxLength="100" />
+        </EntityType>
         <EntityType Name="negocio">
           <Key>
             <PropertyRef Name="id" />
@@ -96,8 +165,6 @@
           <Property Name="medioPagoID" Type="int" />
           <Property Name="factura" Type="varchar" MaxLength="10" />
         </EntityType>
-        <!--Errores durante la generación:
-advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
         <EntityType Name="Notifications">
           <Key>
             <PropertyRef Name="Id" />
@@ -132,15 +199,6 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="PermissionName" Type="varchar" MaxLength="75" />
           <Property Name="PermissionDescription" Type="varchar" MaxLength="255" />
         </EntityType>
-        <EntityType Name="presupuesto">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="saldo" Type="real" />
-          <Property Name="fecha" Type="datetime" />
-          <Property Name="areaid" Type="int" />
-        </EntityType>
         <EntityType Name="producto">
           <Key>
             <PropertyRef Name="id" />
@@ -154,6 +212,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="categoriaid" Type="int" />
           <Property Name="unidadid" Type="int" />
           <Property Name="areaid" Type="int" />
+          <Property Name="activo" Type="bit" />
         </EntityType>
         <EntityType Name="producto_servicio">
           <Key>
@@ -170,6 +229,19 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="nombre" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="RegistroDiarioCaja">
+          <Key>
+            <PropertyRef Name="RegistroID" />
+          </Key>
+          <Property Name="RegistroID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CajaID" Type="int" Nullable="false" />
+          <Property Name="Fecha" Type="date" Nullable="false" />
+          <Property Name="TotalIngresos" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="TotalEgresos" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="SaldoFinal" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="UsuarioCierre" Type="nvarchar" MaxLength="100" />
+          <Property Name="Observaciones" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="RolePermissions">
           <Key>
@@ -188,6 +260,16 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="IsSysAdmin" Type="bit" />
           <Property Name="RoleDescription" Type="varchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="SubMayor">
+          <Key>
+            <PropertyRef Name="SubMayorID" />
+          </Key>
+          <Property Name="SubMayorID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CajaID" Type="int" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Saldo" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Activo" Type="bit" />
+        </EntityType>
         <EntityType Name="tipo_cliente">
           <Key>
             <PropertyRef Name="id" />
@@ -196,13 +278,6 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="tipo" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="tipo_factura">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="tipo" Type="varchar" MaxLength="50" />
-        </EntityType>
-        <EntityType Name="tipo_flujo">
           <Key>
             <PropertyRef Name="id" />
           </Key>
@@ -231,7 +306,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="fecha" Type="datetime" />
           <Property Name="usuario" Type="varchar" MaxLength="100" />
           <Property Name="accion" Type="varchar" MaxLength="255" />
-          <Property Name="descripcion" Type="text" />
+          <Property Name="descripcion" Type="varchar(max)" />
           <Property Name="ip" Type="varchar" MaxLength="45" />
           <Property Name="modulo" Type="varchar" MaxLength="100" />
         </EntityType>
@@ -263,39 +338,153 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="LastModified" Type="datetime" />
           <Property Name="Inactive" Type="bit" />
         </EntityType>
-        <Association Name="FK_FKflujo15833">
-          <End Role="area" Type="Self.area" Multiplicity="0..1" />
-          <End Role="flujo" Type="Self.flujo" Multiplicity="*" />
+        <!--Errores durante la generación:
+error 6004: Una relación hace referencia a la tabla 'VERCOM.dbo.CierreSubMayor', pero no se encuentra la tabla.
+        <Association Name="FK__CierreSub__Cierr__5C6CB6D7" />-->
+        <!--Errores durante la generación:
+error 6004: Una relación hace referencia a la tabla 'VERCOM.dbo.CierreSubMayor', pero no se encuentra la tabla.
+        <Association Name="FK__CierreSub__SubMa__5D60DB10" />-->
+        <Association Name="FK__Movimient__SubMa__2CBDA3B5">
+          <End Role="SubMayor" Type="Self.SubMayor" Multiplicity="1" />
+          <End Role="MovimientoCaja" Type="Self.MovimientoCaja" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="area">
-              <PropertyRef Name="id" />
+            <Principal Role="SubMayor">
+              <PropertyRef Name="SubMayorID" />
             </Principal>
-            <Dependent Role="flujo">
-              <PropertyRef Name="areaid" />
+            <Dependent Role="MovimientoCaja">
+              <PropertyRef Name="SubMayorID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_FKflujo805307">
-          <End Role="tipo_flujo" Type="Self.tipo_flujo" Multiplicity="0..1" />
-          <End Role="flujo" Type="Self.flujo" Multiplicity="*" />
+        <Association Name="FK__RegistroD__CajaI__32767D0B">
+          <End Role="CajaPrincipal" Type="Self.CajaPrincipal" Multiplicity="1" />
+          <End Role="RegistroDiarioCaja" Type="Self.RegistroDiarioCaja" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="tipo_flujo">
-              <PropertyRef Name="id" />
+            <Principal Role="CajaPrincipal">
+              <PropertyRef Name="CajaID" />
             </Principal>
-            <Dependent Role="flujo">
-              <PropertyRef Name="tipo_flujoid" />
+            <Dependent Role="RegistroDiarioCaja">
+              <PropertyRef Name="CajaID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_FKpresupuest533734">
-          <End Role="area" Type="Self.area" Multiplicity="0..1" />
-          <End Role="presupuesto" Type="Self.presupuesto" Multiplicity="*" />
+        <Association Name="FK__SubMayor__CajaID__2704CA5F">
+          <End Role="CajaPrincipal" Type="Self.CajaPrincipal" Multiplicity="1" />
+          <End Role="SubMayor" Type="Self.SubMayor" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="area">
+            <Principal Role="CajaPrincipal">
+              <PropertyRef Name="CajaID" />
+            </Principal>
+            <Dependent Role="SubMayor">
+              <PropertyRef Name="CajaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CierreCaja_CajaPrincipal">
+          <End Role="CajaPrincipal" Type="Self.CajaPrincipal" Multiplicity="1" />
+          <End Role="CierreCaja" Type="Self.CierreCaja" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CajaPrincipal">
+              <PropertyRef Name="CajaID" />
+            </Principal>
+            <Dependent Role="CierreCaja">
+              <PropertyRef Name="CajaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FKcliente_cu504141">
+          <End Role="cuenta" Type="Self.cuenta" Multiplicity="0..1" />
+          <End Role="cliente_cuenta" Type="Self.cliente_cuenta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cuenta">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="presupuesto">
-              <PropertyRef Name="areaid" />
+            <Dependent Role="cliente_cuenta">
+              <PropertyRef Name="cuentaid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FKcliente_cu555547">
+          <End Role="cliente" Type="Self.cliente" Multiplicity="0..1" />
+          <End Role="cliente_cuenta" Type="Self.cliente_cuenta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cliente">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="cliente_cuenta">
+              <PropertyRef Name="clienteid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FKcliente423992">
+          <End Role="tipo_cliente" Type="Self.tipo_cliente" Multiplicity="1" />
+          <End Role="cliente" Type="Self.cliente" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tipo_cliente">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="cliente">
+              <PropertyRef Name="tipoClienteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FKnegocio542366">
+          <End Role="tipo_factura" Type="Self.tipo_factura" Multiplicity="0..1" />
+          <End Role="negocio" Type="Self.negocio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tipo_factura">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="negocio">
+              <PropertyRef Name="facturaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FKnegocio549625">
+          <End Role="producto_servicio" Type="Self.producto_servicio" Multiplicity="0..1" />
+          <End Role="negocio" Type="Self.negocio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="producto_servicio">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="negocio">
+              <PropertyRef Name="productoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FKnegocio736135">
+          <End Role="cliente" Type="Self.cliente" Multiplicity="0..1" />
+          <End Role="negocio" Type="Self.negocio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cliente">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="negocio">
+              <PropertyRef Name="clienteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FKnegocio873465">
+          <End Role="forma_operacion" Type="Self.forma_operacion" Multiplicity="0..1" />
+          <End Role="negocio" Type="Self.negocio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="forma_operacion">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="negocio">
+              <PropertyRef Name="operacionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FKnegocio968398">
+          <End Role="medio_pago" Type="Self.medio_pago" Multiplicity="0..1" />
+          <End Role="negocio" Type="Self.negocio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="medio_pago">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="negocio">
+              <PropertyRef Name="medioPagoID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -335,99 +524,51 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKcliente_cu504141">
-          <End Role="cuenta" Type="Self.cuenta" Multiplicity="0..1" />
-          <End Role="cliente_cuenta" Type="Self.cliente_cuenta" Multiplicity="*" />
+        <Association Name="FK_FKRolePermis471885">
+          <End Role="Permissions" Type="Self.Permissions" Multiplicity="0..1" />
+          <End Role="RolePermissions" Type="Self.RolePermissions" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="cuenta">
-              <PropertyRef Name="id" />
+            <Principal Role="Permissions">
+              <PropertyRef Name="PermissionID" />
             </Principal>
-            <Dependent Role="cliente_cuenta">
-              <PropertyRef Name="cuentaid" />
+            <Dependent Role="RolePermissions">
+              <PropertyRef Name="PermissionID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKcliente_cu555547">
-          <End Role="cliente" Type="Self.cliente" Multiplicity="0..1" />
-          <End Role="cliente_cuenta" Type="Self.cliente_cuenta" Multiplicity="*" />
+        <Association Name="FK_FKRolePermis48370">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
+          <End Role="RolePermissions" Type="Self.RolePermissions" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="cliente">
-              <PropertyRef Name="id" />
+            <Principal Role="Roles">
+              <PropertyRef Name="RoleID" />
             </Principal>
-            <Dependent Role="cliente_cuenta">
-              <PropertyRef Name="clienteid" />
+            <Dependent Role="RolePermissions">
+              <PropertyRef Name="RoleID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKcliente423992">
-          <End Role="tipo_cliente" Type="Self.tipo_cliente" Multiplicity="1" />
-          <End Role="cliente" Type="Self.cliente" Multiplicity="*" />
+        <Association Name="FK_FKUserRoles613991">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
+          <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="tipo_cliente">
-              <PropertyRef Name="id" />
+            <Principal Role="Roles">
+              <PropertyRef Name="RoleID" />
             </Principal>
-            <Dependent Role="cliente">
-              <PropertyRef Name="tipoClienteID" />
+            <Dependent Role="UserRoles">
+              <PropertyRef Name="RoleID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKnegocio542366">
-          <End Role="tipo_factura" Type="Self.tipo_factura" Multiplicity="0..1" />
-          <End Role="negocio" Type="Self.negocio" Multiplicity="*" />
+        <Association Name="FK_FKUserRoles959420">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="tipo_factura">
-              <PropertyRef Name="id" />
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
             </Principal>
-            <Dependent Role="negocio">
-              <PropertyRef Name="facturaID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKnegocio549625">
-          <End Role="producto_servicio" Type="Self.producto_servicio" Multiplicity="0..1" />
-          <End Role="negocio" Type="Self.negocio" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="producto_servicio">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="negocio">
-              <PropertyRef Name="productoID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKnegocio736135">
-          <End Role="cliente" Type="Self.cliente" Multiplicity="0..1" />
-          <End Role="negocio" Type="Self.negocio" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="cliente">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="negocio">
-              <PropertyRef Name="clienteID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKnegocio873465">
-          <End Role="forma_operacion" Type="Self.forma_operacion" Multiplicity="0..1" />
-          <End Role="negocio" Type="Self.negocio" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="forma_operacion">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="negocio">
-              <PropertyRef Name="operacionID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKnegocio968398">
-          <End Role="medio_pago" Type="Self.medio_pago" Multiplicity="0..1" />
-          <End Role="negocio" Type="Self.negocio" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="medio_pago">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="negocio">
-              <PropertyRef Name="medioPagoID" />
+            <Dependent Role="UserRoles">
+              <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -440,6 +581,18 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             </Principal>
             <Dependent Role="operacion">
               <PropertyRef Name="punto_ventaid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKoperacion21">
+          <End Role="producto" Type="Self.producto" Multiplicity="0..1" />
+          <End Role="operacion" Type="Self.operacion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="producto">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="operacion">
+              <PropertyRef Name="productoid" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -467,114 +620,86 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKoperacion506509">
-          <End Role="producto" Type="Self.producto" Multiplicity="0..1" />
-          <End Role="operacion" Type="Self.operacion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="producto">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="operacion">
-              <PropertyRef Name="productoid" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKRolePermis471885">
-          <End Role="Permissions" Type="Self.Permissions" Multiplicity="0..1" />
-          <End Role="RolePermissions" Type="Self.RolePermissions" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Permissions">
-              <PropertyRef Name="PermissionID" />
-            </Principal>
-            <Dependent Role="RolePermissions">
-              <PropertyRef Name="PermissionID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKRolePermis48370">
-          <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
-          <End Role="RolePermissions" Type="Self.RolePermissions" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Roles">
-              <PropertyRef Name="RoleID" />
-            </Principal>
-            <Dependent Role="RolePermissions">
-              <PropertyRef Name="RoleID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKUserRoles613991">
-          <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
-          <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Roles">
-              <PropertyRef Name="RoleID" />
-            </Principal>
-            <Dependent Role="UserRoles">
-              <PropertyRef Name="RoleID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKUserRoles959420">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
-          <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="UserID" />
-            </Principal>
-            <Dependent Role="UserRoles">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="VERCOMModelStoreContainer">
+          <EntitySet Name="AlertasSistema" EntityType="Self.AlertasSistema" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="area" EntityType="Self.area" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AuditoriaMovimientosCaja" EntityType="Self.AuditoriaMovimientosCaja" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CajaPrincipal" EntityType="Self.CajaPrincipal" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="categoria" EntityType="Self.categoria" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CierreCaja" EntityType="Self.CierreCaja" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cliente" EntityType="Self.cliente" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cliente_cuenta" EntityType="Self.cliente_cuenta" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ConfiguracionHorarioCaja" EntityType="Self.ConfiguracionHorarioCaja" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cuenta" EntityType="Self.cuenta" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="flujo" EntityType="Self.flujo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="forma_operacion" EntityType="Self.forma_operacion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="medio_pago" EntityType="Self.medio_pago" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MovimientoCaja" EntityType="Self.MovimientoCaja" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="negocio" EntityType="Self.negocio" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="operacion" EntityType="Self.operacion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="presupuesto" EntityType="Self.presupuesto" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="producto" EntityType="Self.producto" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="producto_servicio" EntityType="Self.producto_servicio" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="punto_venta" EntityType="Self.punto_venta" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RegistroDiarioCaja" EntityType="Self.RegistroDiarioCaja" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RolePermissions" EntityType="Self.RolePermissions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SubMayor" EntityType="Self.SubMayor" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tipo_cliente" EntityType="Self.tipo_cliente" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tipo_factura" EntityType="Self.tipo_factura" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="tipo_flujo" EntityType="Self.tipo_flujo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tipo_operacion" EntityType="Self.tipo_operacion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tipo_pago" EntityType="Self.tipo_pago" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="trazas" EntityType="Self.trazas" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="unidad" EntityType="Self.unidad" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserRoles" EntityType="Self.UserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Notifications" EntityType="Self.Notifications" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Notifications].[Id] AS [Id], 
-    [Notifications].[Message] AS [Message], 
-    [Notifications].[Role] AS [Role], 
-    [Notifications].[UserId] AS [UserId], 
-    [Notifications].[IsRead] AS [IsRead], 
-    [Notifications].[CreatedAt] AS [CreatedAt]
-    FROM [dbo].[Notifications] AS [Notifications]</DefiningQuery>
-          </EntitySet>
-          <AssociationSet Name="FK_FKflujo15833" Association="Self.FK_FKflujo15833">
-            <End Role="area" EntitySet="area" />
-            <End Role="flujo" EntitySet="flujo" />
+          <AssociationSet Name="FK__Movimient__SubMa__2CBDA3B5" Association="Self.FK__Movimient__SubMa__2CBDA3B5">
+            <End Role="SubMayor" EntitySet="SubMayor" />
+            <End Role="MovimientoCaja" EntitySet="MovimientoCaja" />
           </AssociationSet>
-          <AssociationSet Name="FK_FKflujo805307" Association="Self.FK_FKflujo805307">
-            <End Role="tipo_flujo" EntitySet="tipo_flujo" />
-            <End Role="flujo" EntitySet="flujo" />
+          <AssociationSet Name="FK__RegistroD__CajaI__32767D0B" Association="Self.FK__RegistroD__CajaI__32767D0B">
+            <End Role="CajaPrincipal" EntitySet="CajaPrincipal" />
+            <End Role="RegistroDiarioCaja" EntitySet="RegistroDiarioCaja" />
           </AssociationSet>
-          <AssociationSet Name="FK_FKpresupuest533734" Association="Self.FK_FKpresupuest533734">
-            <End Role="area" EntitySet="area" />
-            <End Role="presupuesto" EntitySet="presupuesto" />
+          <AssociationSet Name="FK__SubMayor__CajaID__2704CA5F" Association="Self.FK__SubMayor__CajaID__2704CA5F">
+            <End Role="CajaPrincipal" EntitySet="CajaPrincipal" />
+            <End Role="SubMayor" EntitySet="SubMayor" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CierreCaja_CajaPrincipal" Association="Self.FK_CierreCaja_CajaPrincipal">
+            <End Role="CajaPrincipal" EntitySet="CajaPrincipal" />
+            <End Role="CierreCaja" EntitySet="CierreCaja" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FKcliente_cu504141" Association="Self.FK_FKcliente_cu504141">
+            <End Role="cuenta" EntitySet="cuenta" />
+            <End Role="cliente_cuenta" EntitySet="cliente_cuenta" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FKcliente_cu555547" Association="Self.FK_FKcliente_cu555547">
+            <End Role="cliente" EntitySet="cliente" />
+            <End Role="cliente_cuenta" EntitySet="cliente_cuenta" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FKcliente423992" Association="Self.FK_FKcliente423992">
+            <End Role="tipo_cliente" EntitySet="tipo_cliente" />
+            <End Role="cliente" EntitySet="cliente" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FKnegocio542366" Association="Self.FK_FKnegocio542366">
+            <End Role="tipo_factura" EntitySet="tipo_factura" />
+            <End Role="negocio" EntitySet="negocio" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FKnegocio549625" Association="Self.FK_FKnegocio549625">
+            <End Role="producto_servicio" EntitySet="producto_servicio" />
+            <End Role="negocio" EntitySet="negocio" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FKnegocio736135" Association="Self.FK_FKnegocio736135">
+            <End Role="cliente" EntitySet="cliente" />
+            <End Role="negocio" EntitySet="negocio" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FKnegocio873465" Association="Self.FK_FKnegocio873465">
+            <End Role="forma_operacion" EntitySet="forma_operacion" />
+            <End Role="negocio" EntitySet="negocio" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FKnegocio968398" Association="Self.FK_FKnegocio968398">
+            <End Role="medio_pago" EntitySet="medio_pago" />
+            <End Role="negocio" EntitySet="negocio" />
           </AssociationSet>
           <AssociationSet Name="FK_FKproducto393903" Association="Self.FK_FKproducto393903">
             <End Role="categoria" EntitySet="categoria" />
@@ -588,40 +713,28 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             <End Role="area" EntitySet="area" />
             <End Role="producto" EntitySet="producto" />
           </AssociationSet>
-          <AssociationSet Name="FKcliente_cu504141" Association="Self.FKcliente_cu504141">
-            <End Role="cuenta" EntitySet="cuenta" />
-            <End Role="cliente_cuenta" EntitySet="cliente_cuenta" />
+          <AssociationSet Name="FK_FKRolePermis471885" Association="Self.FK_FKRolePermis471885">
+            <End Role="Permissions" EntitySet="Permissions" />
+            <End Role="RolePermissions" EntitySet="RolePermissions" />
           </AssociationSet>
-          <AssociationSet Name="FKcliente_cu555547" Association="Self.FKcliente_cu555547">
-            <End Role="cliente" EntitySet="cliente" />
-            <End Role="cliente_cuenta" EntitySet="cliente_cuenta" />
+          <AssociationSet Name="FK_FKRolePermis48370" Association="Self.FK_FKRolePermis48370">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="RolePermissions" EntitySet="RolePermissions" />
           </AssociationSet>
-          <AssociationSet Name="FKcliente423992" Association="Self.FKcliente423992">
-            <End Role="tipo_cliente" EntitySet="tipo_cliente" />
-            <End Role="cliente" EntitySet="cliente" />
+          <AssociationSet Name="FK_FKUserRoles613991" Association="Self.FK_FKUserRoles613991">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="UserRoles" EntitySet="UserRoles" />
           </AssociationSet>
-          <AssociationSet Name="FKnegocio542366" Association="Self.FKnegocio542366">
-            <End Role="tipo_factura" EntitySet="tipo_factura" />
-            <End Role="negocio" EntitySet="negocio" />
-          </AssociationSet>
-          <AssociationSet Name="FKnegocio549625" Association="Self.FKnegocio549625">
-            <End Role="producto_servicio" EntitySet="producto_servicio" />
-            <End Role="negocio" EntitySet="negocio" />
-          </AssociationSet>
-          <AssociationSet Name="FKnegocio736135" Association="Self.FKnegocio736135">
-            <End Role="cliente" EntitySet="cliente" />
-            <End Role="negocio" EntitySet="negocio" />
-          </AssociationSet>
-          <AssociationSet Name="FKnegocio873465" Association="Self.FKnegocio873465">
-            <End Role="forma_operacion" EntitySet="forma_operacion" />
-            <End Role="negocio" EntitySet="negocio" />
-          </AssociationSet>
-          <AssociationSet Name="FKnegocio968398" Association="Self.FKnegocio968398">
-            <End Role="medio_pago" EntitySet="medio_pago" />
-            <End Role="negocio" EntitySet="negocio" />
+          <AssociationSet Name="FK_FKUserRoles959420" Association="Self.FK_FKUserRoles959420">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserRoles" EntitySet="UserRoles" />
           </AssociationSet>
           <AssociationSet Name="FKoperacion168701" Association="Self.FKoperacion168701">
             <End Role="punto_venta" EntitySet="punto_venta" />
+            <End Role="operacion" EntitySet="operacion" />
+          </AssociationSet>
+          <AssociationSet Name="FKoperacion21" Association="Self.FKoperacion21">
+            <End Role="producto" EntitySet="producto" />
             <End Role="operacion" EntitySet="operacion" />
           </AssociationSet>
           <AssociationSet Name="FKoperacion273527" Association="Self.FKoperacion273527">
@@ -632,41 +745,58 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             <End Role="tipo_operacion" EntitySet="tipo_operacion" />
             <End Role="operacion" EntitySet="operacion" />
           </AssociationSet>
-          <AssociationSet Name="FKoperacion506509" Association="Self.FKoperacion506509">
-            <End Role="producto" EntitySet="producto" />
-            <End Role="operacion" EntitySet="operacion" />
-          </AssociationSet>
-          <AssociationSet Name="FKRolePermis471885" Association="Self.FKRolePermis471885">
-            <End Role="Permissions" EntitySet="Permissions" />
-            <End Role="RolePermissions" EntitySet="RolePermissions" />
-          </AssociationSet>
-          <AssociationSet Name="FKRolePermis48370" Association="Self.FKRolePermis48370">
-            <End Role="Roles" EntitySet="Roles" />
-            <End Role="RolePermissions" EntitySet="RolePermissions" />
-          </AssociationSet>
-          <AssociationSet Name="FKUserRoles613991" Association="Self.FKUserRoles613991">
-            <End Role="Roles" EntitySet="Roles" />
-            <End Role="UserRoles" EntitySet="UserRoles" />
-          </AssociationSet>
-          <AssociationSet Name="FKUserRoles959420" Association="Self.FKUserRoles959420">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="UserRoles" EntitySet="UserRoles" />
-          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="VERCOMModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AlertasSistema">
+          <Key>
+            <PropertyRef Name="AlertaID" />
+          </Key>
+          <Property Name="AlertaID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TipoAlerta" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Descripcion" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FechaAlerta" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Usuario" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="area">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="nombre" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="flujo" Relationship="Self.FK_FKflujo15833" FromRole="area" ToRole="flujo" />
           <NavigationProperty Name="presupuesto" Relationship="Self.FK_FKpresupuest533734" FromRole="area" ToRole="presupuesto" />
           <NavigationProperty Name="producto" Relationship="Self.FK_FKproducto660940" FromRole="area" ToRole="producto" />
+        </EntityType>
+        <EntityType Name="AuditoriaMovimientosCaja">
+          <Key>
+            <PropertyRef Name="AuditoriaID" />
+          </Key>
+          <Property Name="AuditoriaID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MovimientoID" Type="Int32" />
+          <Property Name="SubMayorID" Type="Int32" />
+          <Property Name="TipoOperacion" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="TipoMovimiento" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Monto" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Concepto" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ReferenciaExterna" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MetodoPago" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FechaMovimiento" Type="DateTime" Precision="3" />
+          <Property Name="UsuarioOperacion" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FechaOperacion" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="CajaPrincipal">
+          <Key>
+            <PropertyRef Name="CajaID" />
+          </Key>
+          <Property Name="CajaID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Moneda" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SaldoActual" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <NavigationProperty Name="RegistroDiarioCaja" Relationship="Self.FK__RegistroD__CajaI__32767D0B" FromRole="CajaPrincipal" ToRole="RegistroDiarioCaja" />
+          <NavigationProperty Name="SubMayor" Relationship="Self.FK__SubMayor__CajaID__2704CA5F" FromRole="CajaPrincipal" ToRole="SubMayor" />
+          <NavigationProperty Name="CierreCaja" Relationship="VERCOMModel.FK_CierreCaja_CajaPrincipal" FromRole="CajaPrincipal" ToRole="CierreCaja" />
         </EntityType>
         <EntityType Name="categoria">
           <Key>
@@ -691,9 +821,9 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="reeup" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
           <Property Name="renae" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
           <Property Name="tipoClienteID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="cliente_cuenta" Relationship="Self.FKcliente_cu555547" FromRole="cliente" ToRole="cliente_cuenta" />
-          <NavigationProperty Name="tipo_cliente" Relationship="Self.FKcliente423992" FromRole="cliente" ToRole="tipo_cliente" />
-          <NavigationProperty Name="negocio" Relationship="Self.FKnegocio736135" FromRole="cliente" ToRole="negocio" />
+          <NavigationProperty Name="cliente_cuenta" Relationship="Self.FK_FKcliente_cu555547" FromRole="cliente" ToRole="cliente_cuenta" />
+          <NavigationProperty Name="tipo_cliente" Relationship="Self.FK_FKcliente423992" FromRole="cliente" ToRole="tipo_cliente" />
+          <NavigationProperty Name="negocio" Relationship="Self.FK_FKnegocio736135" FromRole="cliente" ToRole="negocio" />
         </EntityType>
         <EntityType Name="cliente_cuenta">
           <Key>
@@ -702,8 +832,16 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="clienteid" Type="Int32" />
           <Property Name="cuentaid" Type="Int32" />
-          <NavigationProperty Name="cliente" Relationship="Self.FKcliente_cu555547" FromRole="cliente_cuenta" ToRole="cliente" />
-          <NavigationProperty Name="cuenta" Relationship="Self.FKcliente_cu504141" FromRole="cliente_cuenta" ToRole="cuenta" />
+          <NavigationProperty Name="cliente" Relationship="Self.FK_FKcliente_cu555547" FromRole="cliente_cuenta" ToRole="cliente" />
+          <NavigationProperty Name="cuenta" Relationship="Self.FK_FKcliente_cu504141" FromRole="cliente_cuenta" ToRole="cuenta" />
+        </EntityType>
+        <EntityType Name="ConfiguracionHorarioCaja">
+          <Key>
+            <PropertyRef Name="CajaID" />
+          </Key>
+          <Property Name="CajaID" Type="Int32" Nullable="false" />
+          <Property Name="HoraInicio" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="HoraFin" Type="Time" Nullable="false" Precision="7" />
         </EntityType>
         <EntityType Name="cuenta">
           <Key>
@@ -716,22 +854,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="banco" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="titular" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="direccion" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="cliente_cuenta" Relationship="Self.FKcliente_cu504141" FromRole="cuenta" ToRole="cliente_cuenta" />
-        </EntityType>
-        <EntityType Name="flujo">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="areaid" Type="Int32" />
-          <Property Name="tipo_flujoid" Type="Int32" />
-          <Property Name="fecha" Type="DateTime" Precision="3" />
-          <Property Name="cantidad" Type="Single" />
-          <Property Name="importe" Type="Single" />
-          <Property Name="concepto" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
-          <Property Name="precio" Type="Single" />
-          <NavigationProperty Name="area" Relationship="Self.FK_FKflujo15833" FromRole="flujo" ToRole="area" />
-          <NavigationProperty Name="tipo_flujo" Relationship="Self.FK_FKflujo805307" FromRole="flujo" ToRole="tipo_flujo" />
+          <NavigationProperty Name="cliente_cuenta" Relationship="Self.FK_FKcliente_cu504141" FromRole="cuenta" ToRole="cliente_cuenta" />
         </EntityType>
         <EntityType Name="forma_operacion">
           <Key>
@@ -739,7 +862,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="forma" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="negocio" Relationship="Self.FKnegocio873465" FromRole="forma_operacion" ToRole="negocio" />
+          <NavigationProperty Name="negocio" Relationship="Self.FK_FKnegocio873465" FromRole="forma_operacion" ToRole="negocio" />
         </EntityType>
         <EntityType Name="medio_pago">
           <Key>
@@ -747,7 +870,22 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="medio" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="negocio" Relationship="Self.FKnegocio968398" FromRole="medio_pago" ToRole="negocio" />
+          <NavigationProperty Name="negocio" Relationship="Self.FK_FKnegocio968398" FromRole="medio_pago" ToRole="negocio" />
+        </EntityType>
+        <EntityType Name="MovimientoCaja">
+          <Key>
+            <PropertyRef Name="MovimientoID" />
+          </Key>
+          <Property Name="MovimientoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SubMayorID" Type="Int32" Nullable="false" />
+          <Property Name="TipoMovimiento" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Monto" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Concepto" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ReferenciaExterna" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MetodoPago" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Fecha" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Usuario" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="SubMayor" Relationship="Self.FK__Movimient__SubMa__2CBDA3B5" FromRole="MovimientoCaja" ToRole="SubMayor" />
         </EntityType>
         <EntityType Name="negocio">
           <Key>
@@ -762,11 +900,24 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="facturaID" Type="Int32" />
           <Property Name="medioPagoID" Type="Int32" />
           <Property Name="factura" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="cliente" Relationship="Self.FKnegocio736135" FromRole="negocio" ToRole="cliente" />
-          <NavigationProperty Name="forma_operacion" Relationship="Self.FKnegocio873465" FromRole="negocio" ToRole="forma_operacion" />
-          <NavigationProperty Name="medio_pago" Relationship="Self.FKnegocio968398" FromRole="negocio" ToRole="medio_pago" />
-          <NavigationProperty Name="tipo_factura" Relationship="Self.FKnegocio542366" FromRole="negocio" ToRole="tipo_factura" />
-          <NavigationProperty Name="producto_servicio" Relationship="Self.FKnegocio549625" FromRole="negocio" ToRole="producto_servicio" />
+          <NavigationProperty Name="cliente" Relationship="Self.FK_FKnegocio736135" FromRole="negocio" ToRole="cliente" />
+          <NavigationProperty Name="forma_operacion" Relationship="Self.FK_FKnegocio873465" FromRole="negocio" ToRole="forma_operacion" />
+          <NavigationProperty Name="medio_pago" Relationship="Self.FK_FKnegocio968398" FromRole="negocio" ToRole="medio_pago" />
+          <NavigationProperty Name="tipo_factura" Relationship="Self.FK_FKnegocio542366" FromRole="negocio" ToRole="tipo_factura" />
+          <NavigationProperty Name="producto_servicio" Relationship="Self.FK_FKnegocio549625" FromRole="negocio" ToRole="producto_servicio" />
+        </EntityType>
+        <EntityType Name="Notifications">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Message" />
+            <PropertyRef Name="Role" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Message" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Role" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="IsRead" Type="Boolean" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="operacion">
           <Key>
@@ -783,7 +934,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <NavigationProperty Name="punto_venta" Relationship="Self.FKoperacion168701" FromRole="operacion" ToRole="punto_venta" />
           <NavigationProperty Name="tipo_pago" Relationship="Self.FKoperacion273527" FromRole="operacion" ToRole="tipo_pago" />
           <NavigationProperty Name="tipo_operacion" Relationship="Self.FKoperacion325014" FromRole="operacion" ToRole="tipo_operacion" />
-          <NavigationProperty Name="producto" Relationship="Self.FKoperacion506509" FromRole="operacion" ToRole="producto" />
+          <NavigationProperty Name="producto" Relationship="VERCOMModel.FKoperacion21" FromRole="operacion" ToRole="producto" />
         </EntityType>
         <EntityType Name="Permissions">
           <Key>
@@ -792,7 +943,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="PermissionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PermissionName" Type="String" MaxLength="75" FixedLength="false" Unicode="false" />
           <Property Name="PermissionDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="RolePermissions" Relationship="Self.FKRolePermis471885" FromRole="Permissions" ToRole="RolePermissions" />
+          <NavigationProperty Name="RolePermissions" Relationship="Self.FK_FKRolePermis471885" FromRole="Permissions" ToRole="RolePermissions" />
         </EntityType>
         <EntityType Name="presupuesto">
           <Key>
@@ -817,10 +968,11 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="categoriaid" Type="Int32" />
           <Property Name="unidadid" Type="Int32" />
           <Property Name="areaid" Type="Int32" />
+          <Property Name="activo" Type="Boolean" />
           <NavigationProperty Name="area" Relationship="Self.FK_FKproducto660940" FromRole="producto" ToRole="area" />
           <NavigationProperty Name="categoria" Relationship="Self.FK_FKproducto393903" FromRole="producto" ToRole="categoria" />
-          <NavigationProperty Name="operacion" Relationship="Self.FKoperacion506509" FromRole="producto" ToRole="operacion" />
           <NavigationProperty Name="unidad" Relationship="Self.FK_FKproducto607651" FromRole="producto" ToRole="unidad" />
+          <NavigationProperty Name="operacion" Relationship="VERCOMModel.FKoperacion21" FromRole="producto" ToRole="operacion" />
         </EntityType>
         <EntityType Name="producto_servicio">
           <Key>
@@ -830,7 +982,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="nombre" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
           <Property Name="precio" Type="Single" />
           <Property Name="costo" Type="Single" />
-          <NavigationProperty Name="negocio" Relationship="Self.FKnegocio549625" FromRole="producto_servicio" ToRole="negocio" />
+          <NavigationProperty Name="negocio" Relationship="Self.FK_FKnegocio549625" FromRole="producto_servicio" ToRole="negocio" />
         </EntityType>
         <EntityType Name="punto_venta">
           <Key>
@@ -840,6 +992,20 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="operacion" Relationship="Self.FKoperacion168701" FromRole="punto_venta" ToRole="operacion" />
         </EntityType>
+        <EntityType Name="RegistroDiarioCaja">
+          <Key>
+            <PropertyRef Name="RegistroID" />
+          </Key>
+          <Property Name="RegistroID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CajaID" Type="Int32" Nullable="false" />
+          <Property Name="Fecha" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="TotalIngresos" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="TotalEgresos" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="SaldoFinal" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="UsuarioCierre" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Observaciones" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CajaPrincipal" Relationship="Self.FK__RegistroD__CajaI__32767D0B" FromRole="RegistroDiarioCaja" ToRole="CajaPrincipal" />
+        </EntityType>
         <EntityType Name="RolePermissions">
           <Key>
             <PropertyRef Name="ID" />
@@ -847,8 +1013,8 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="RoleID" Type="Int32" />
           <Property Name="PermissionID" Type="Int32" />
-          <NavigationProperty Name="Permissions" Relationship="Self.FKRolePermis471885" FromRole="RolePermissions" ToRole="Permissions" />
-          <NavigationProperty Name="Roles" Relationship="Self.FKRolePermis48370" FromRole="RolePermissions" ToRole="Roles" />
+          <NavigationProperty Name="Permissions" Relationship="Self.FK_FKRolePermis471885" FromRole="RolePermissions" ToRole="Permissions" />
+          <NavigationProperty Name="Roles" Relationship="Self.FK_FKRolePermis48370" FromRole="RolePermissions" ToRole="Roles" />
         </EntityType>
         <EntityType Name="Roles">
           <Key>
@@ -858,8 +1024,20 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="RoleName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="IsSysAdmin" Type="Boolean" />
           <Property Name="RoleDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="RolePermissions" Relationship="Self.FKRolePermis48370" FromRole="Roles" ToRole="RolePermissions" />
-          <NavigationProperty Name="UserRoles" Relationship="Self.FKUserRoles613991" FromRole="Roles" ToRole="UserRoles" />
+          <NavigationProperty Name="RolePermissions" Relationship="Self.FK_FKRolePermis48370" FromRole="Roles" ToRole="RolePermissions" />
+          <NavigationProperty Name="UserRoles" Relationship="Self.FK_FKUserRoles613991" FromRole="Roles" ToRole="UserRoles" />
+        </EntityType>
+        <EntityType Name="SubMayor">
+          <Key>
+            <PropertyRef Name="SubMayorID" />
+          </Key>
+          <Property Name="SubMayorID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CajaID" Type="Int32" Nullable="false" />
+          <Property Name="Nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Saldo" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <NavigationProperty Name="CajaPrincipal" Relationship="Self.FK__SubMayor__CajaID__2704CA5F" FromRole="SubMayor" ToRole="CajaPrincipal" />
+          <NavigationProperty Name="MovimientoCaja" Relationship="Self.FK__Movimient__SubMa__2CBDA3B5" FromRole="SubMayor" ToRole="MovimientoCaja" />
+          <Property Name="Activo" Type="Boolean" />
         </EntityType>
         <EntityType Name="tipo_cliente">
           <Key>
@@ -867,7 +1045,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="tipo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="cliente" Relationship="Self.FKcliente423992" FromRole="tipo_cliente" ToRole="cliente" />
+          <NavigationProperty Name="cliente" Relationship="Self.FK_FKcliente423992" FromRole="tipo_cliente" ToRole="cliente" />
         </EntityType>
         <EntityType Name="tipo_factura">
           <Key>
@@ -875,15 +1053,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="tipo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="negocio" Relationship="Self.FKnegocio542366" FromRole="tipo_factura" ToRole="negocio" />
-        </EntityType>
-        <EntityType Name="tipo_flujo">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="tipo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="flujo" Relationship="Self.FK_FKflujo805307" FromRole="tipo_flujo" ToRole="flujo" />
+          <NavigationProperty Name="negocio" Relationship="Self.FK_FKnegocio542366" FromRole="tipo_factura" ToRole="negocio" />
         </EntityType>
         <EntityType Name="tipo_operacion">
           <Key>
@@ -928,8 +1098,8 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserID" Type="Int32" Nullable="false" />
           <Property Name="RoleID" Type="Int32" />
-          <NavigationProperty Name="Roles" Relationship="Self.FKUserRoles613991" FromRole="UserRoles" ToRole="Roles" />
-          <NavigationProperty Name="Users" Relationship="Self.FKUserRoles959420" FromRole="UserRoles" ToRole="Users" />
+          <NavigationProperty Name="Roles" Relationship="Self.FK_FKUserRoles613991" FromRole="UserRoles" ToRole="Roles" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_FKUserRoles959420" FromRole="UserRoles" ToRole="Users" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -943,33 +1113,8 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <Property Name="CreationDate" Type="DateTime" Precision="3" />
           <Property Name="LastModified" Type="DateTime" Precision="3" />
           <Property Name="Inactive" Type="Boolean" />
-          <NavigationProperty Name="UserRoles" Relationship="Self.FKUserRoles959420" FromRole="Users" ToRole="UserRoles" />
+          <NavigationProperty Name="UserRoles" Relationship="Self.FK_FKUserRoles959420" FromRole="Users" ToRole="UserRoles" />
         </EntityType>
-        <EntityType Name="Notifications">
-          <Key>
-            <PropertyRef Name="Id" />
-            <PropertyRef Name="Message" />
-            <PropertyRef Name="Role" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Message" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Role" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="UserId" Type="Int32" />
-          <Property Name="IsRead" Type="Boolean" />
-          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
-        </EntityType>
-        <Association Name="FK_FKflujo15833">
-          <End Role="area" Type="Self.area" Multiplicity="0..1" />
-          <End Role="flujo" Type="Self.flujo" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="area">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="flujo">
-              <PropertyRef Name="areaid" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_FKpresupuest533734">
           <End Role="area" Type="Self.area" Multiplicity="0..1" />
           <End Role="presupuesto" Type="Self.presupuesto" Multiplicity="*" />
@@ -994,6 +1139,30 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__RegistroD__CajaI__32767D0B">
+          <End Role="CajaPrincipal" Type="Self.CajaPrincipal" Multiplicity="1" />
+          <End Role="RegistroDiarioCaja" Type="Self.RegistroDiarioCaja" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CajaPrincipal">
+              <PropertyRef Name="CajaID" />
+            </Principal>
+            <Dependent Role="RegistroDiarioCaja">
+              <PropertyRef Name="CajaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SubMayor__CajaID__2704CA5F">
+          <End Role="CajaPrincipal" Type="Self.CajaPrincipal" Multiplicity="1" />
+          <End Role="SubMayor" Type="Self.SubMayor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CajaPrincipal">
+              <PropertyRef Name="CajaID" />
+            </Principal>
+            <Dependent Role="SubMayor">
+              <PropertyRef Name="CajaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_FKproducto393903">
           <End Role="categoria" Type="Self.categoria" Multiplicity="0..1" />
           <End Role="producto" Type="Self.producto" Multiplicity="*" />
@@ -1006,7 +1175,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKcliente_cu555547">
+        <Association Name="FK_FKcliente_cu555547">
           <End Role="cliente" Type="Self.cliente" Multiplicity="0..1" />
           <End Role="cliente_cuenta" Type="Self.cliente_cuenta" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1018,7 +1187,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKcliente423992">
+        <Association Name="FK_FKcliente423992">
           <End Role="tipo_cliente" Type="Self.tipo_cliente" Multiplicity="1" />
           <End Role="cliente" Type="Self.cliente" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1030,7 +1199,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKnegocio736135">
+        <Association Name="FK_FKnegocio736135">
           <End Role="cliente" Type="Self.cliente" Multiplicity="0..1" />
           <End Role="negocio" Type="Self.negocio" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1042,7 +1211,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKcliente_cu504141">
+        <Association Name="FK_FKcliente_cu504141">
           <End Role="cuenta" Type="Self.cuenta" Multiplicity="0..1" />
           <End Role="cliente_cuenta" Type="Self.cliente_cuenta" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1054,19 +1223,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_FKflujo805307">
-          <End Role="tipo_flujo" Type="Self.tipo_flujo" Multiplicity="0..1" />
-          <End Role="flujo" Type="Self.flujo" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tipo_flujo">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="flujo">
-              <PropertyRef Name="tipo_flujoid" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKnegocio873465">
+        <Association Name="FK_FKnegocio873465">
           <End Role="forma_operacion" Type="Self.forma_operacion" Multiplicity="0..1" />
           <End Role="negocio" Type="Self.negocio" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1078,7 +1235,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKnegocio968398">
+        <Association Name="FK_FKnegocio968398">
           <End Role="medio_pago" Type="Self.medio_pago" Multiplicity="0..1" />
           <End Role="negocio" Type="Self.negocio" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1090,7 +1247,19 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKnegocio542366">
+        <Association Name="FK__Movimient__SubMa__2CBDA3B5">
+          <End Role="SubMayor" Type="Self.SubMayor" Multiplicity="1" />
+          <End Role="MovimientoCaja" Type="Self.MovimientoCaja" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SubMayor">
+              <PropertyRef Name="SubMayorID" />
+            </Principal>
+            <Dependent Role="MovimientoCaja">
+              <PropertyRef Name="SubMayorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FKnegocio542366">
           <End Role="tipo_factura" Type="Self.tipo_factura" Multiplicity="0..1" />
           <End Role="negocio" Type="Self.negocio" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1102,7 +1271,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKnegocio549625">
+        <Association Name="FK_FKnegocio549625">
           <End Role="producto_servicio" Type="Self.producto_servicio" Multiplicity="0..1" />
           <End Role="negocio" Type="Self.negocio" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1150,19 +1319,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKoperacion506509">
-          <End Role="producto" Type="Self.producto" Multiplicity="0..1" />
-          <End Role="operacion" Type="Self.operacion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="producto">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="operacion">
-              <PropertyRef Name="productoid" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FKRolePermis471885">
+        <Association Name="FK_FKRolePermis471885">
           <End Role="Permissions" Type="Self.Permissions" Multiplicity="0..1" />
           <End Role="RolePermissions" Type="Self.RolePermissions" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1186,7 +1343,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKRolePermis48370">
+        <Association Name="FK_FKRolePermis48370">
           <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
           <End Role="RolePermissions" Type="Self.RolePermissions" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1198,7 +1355,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKUserRoles613991">
+        <Association Name="FK_FKUserRoles613991">
           <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
           <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1210,7 +1367,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FKUserRoles959420">
+        <Association Name="FK_FKUserRoles959420">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
           <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1223,37 +1380,38 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="VERCOMEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AlertasSistema" EntityType="Self.AlertasSistema" />
           <EntitySet Name="area" EntityType="Self.area" />
+          <EntitySet Name="AuditoriaMovimientosCaja" EntityType="Self.AuditoriaMovimientosCaja" />
+          <EntitySet Name="CajaPrincipal" EntityType="Self.CajaPrincipal" />
           <EntitySet Name="categoria" EntityType="Self.categoria" />
           <EntitySet Name="cliente" EntityType="Self.cliente" />
           <EntitySet Name="cliente_cuenta" EntityType="Self.cliente_cuenta" />
+          <EntitySet Name="ConfiguracionHorarioCaja" EntityType="Self.ConfiguracionHorarioCaja" />
           <EntitySet Name="cuenta" EntityType="Self.cuenta" />
-          <EntitySet Name="flujo" EntityType="Self.flujo" />
           <EntitySet Name="forma_operacion" EntityType="Self.forma_operacion" />
           <EntitySet Name="medio_pago" EntityType="Self.medio_pago" />
+          <EntitySet Name="MovimientoCaja" EntityType="Self.MovimientoCaja" />
           <EntitySet Name="negocio" EntityType="Self.negocio" />
+          <EntitySet Name="Notifications" EntityType="Self.Notifications" />
           <EntitySet Name="operacion" EntityType="Self.operacion" />
           <EntitySet Name="Permissions" EntityType="Self.Permissions" />
           <EntitySet Name="presupuesto" EntityType="Self.presupuesto" />
           <EntitySet Name="producto" EntityType="Self.producto" />
           <EntitySet Name="producto_servicio" EntityType="Self.producto_servicio" />
           <EntitySet Name="punto_venta" EntityType="Self.punto_venta" />
+          <EntitySet Name="RegistroDiarioCaja" EntityType="Self.RegistroDiarioCaja" />
           <EntitySet Name="RolePermissions" EntityType="Self.RolePermissions" />
           <EntitySet Name="Roles" EntityType="Self.Roles" />
+          <EntitySet Name="SubMayor" EntityType="Self.SubMayor" />
           <EntitySet Name="tipo_cliente" EntityType="Self.tipo_cliente" />
           <EntitySet Name="tipo_factura" EntityType="Self.tipo_factura" />
-          <EntitySet Name="tipo_flujo" EntityType="Self.tipo_flujo" />
           <EntitySet Name="tipo_operacion" EntityType="Self.tipo_operacion" />
           <EntitySet Name="tipo_pago" EntityType="Self.tipo_pago" />
           <EntitySet Name="trazas" EntityType="Self.trazas" />
           <EntitySet Name="unidad" EntityType="Self.unidad" />
           <EntitySet Name="UserRoles" EntityType="Self.UserRoles" />
           <EntitySet Name="Users" EntityType="Self.Users" />
-          <EntitySet Name="Notifications" EntityType="Self.Notifications" />
-          <AssociationSet Name="FK_FKflujo15833" Association="Self.FK_FKflujo15833">
-            <End Role="area" EntitySet="area" />
-            <End Role="flujo" EntitySet="flujo" />
-          </AssociationSet>
           <AssociationSet Name="FK_FKpresupuest533734" Association="Self.FK_FKpresupuest533734">
             <End Role="area" EntitySet="area" />
             <End Role="presupuesto" EntitySet="presupuesto" />
@@ -1262,43 +1420,51 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             <End Role="area" EntitySet="area" />
             <End Role="producto" EntitySet="producto" />
           </AssociationSet>
+          <AssociationSet Name="FK__RegistroD__CajaI__32767D0B" Association="Self.FK__RegistroD__CajaI__32767D0B">
+            <End Role="CajaPrincipal" EntitySet="CajaPrincipal" />
+            <End Role="RegistroDiarioCaja" EntitySet="RegistroDiarioCaja" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SubMayor__CajaID__2704CA5F" Association="Self.FK__SubMayor__CajaID__2704CA5F">
+            <End Role="CajaPrincipal" EntitySet="CajaPrincipal" />
+            <End Role="SubMayor" EntitySet="SubMayor" />
+          </AssociationSet>
           <AssociationSet Name="FK_FKproducto393903" Association="Self.FK_FKproducto393903">
             <End Role="categoria" EntitySet="categoria" />
             <End Role="producto" EntitySet="producto" />
           </AssociationSet>
-          <AssociationSet Name="FKcliente_cu555547" Association="Self.FKcliente_cu555547">
+          <AssociationSet Name="FK_FKcliente_cu555547" Association="Self.FK_FKcliente_cu555547">
             <End Role="cliente" EntitySet="cliente" />
             <End Role="cliente_cuenta" EntitySet="cliente_cuenta" />
           </AssociationSet>
-          <AssociationSet Name="FKcliente423992" Association="Self.FKcliente423992">
+          <AssociationSet Name="FK_FKcliente423992" Association="Self.FK_FKcliente423992">
             <End Role="tipo_cliente" EntitySet="tipo_cliente" />
             <End Role="cliente" EntitySet="cliente" />
           </AssociationSet>
-          <AssociationSet Name="FKnegocio736135" Association="Self.FKnegocio736135">
+          <AssociationSet Name="FK_FKnegocio736135" Association="Self.FK_FKnegocio736135">
             <End Role="cliente" EntitySet="cliente" />
             <End Role="negocio" EntitySet="negocio" />
           </AssociationSet>
-          <AssociationSet Name="FKcliente_cu504141" Association="Self.FKcliente_cu504141">
+          <AssociationSet Name="FK_FKcliente_cu504141" Association="Self.FK_FKcliente_cu504141">
             <End Role="cuenta" EntitySet="cuenta" />
             <End Role="cliente_cuenta" EntitySet="cliente_cuenta" />
           </AssociationSet>
-          <AssociationSet Name="FK_FKflujo805307" Association="Self.FK_FKflujo805307">
-            <End Role="tipo_flujo" EntitySet="tipo_flujo" />
-            <End Role="flujo" EntitySet="flujo" />
-          </AssociationSet>
-          <AssociationSet Name="FKnegocio873465" Association="Self.FKnegocio873465">
+          <AssociationSet Name="FK_FKnegocio873465" Association="Self.FK_FKnegocio873465">
             <End Role="forma_operacion" EntitySet="forma_operacion" />
             <End Role="negocio" EntitySet="negocio" />
           </AssociationSet>
-          <AssociationSet Name="FKnegocio968398" Association="Self.FKnegocio968398">
+          <AssociationSet Name="FK_FKnegocio968398" Association="Self.FK_FKnegocio968398">
             <End Role="medio_pago" EntitySet="medio_pago" />
             <End Role="negocio" EntitySet="negocio" />
           </AssociationSet>
-          <AssociationSet Name="FKnegocio542366" Association="Self.FKnegocio542366">
+          <AssociationSet Name="FK__Movimient__SubMa__2CBDA3B5" Association="Self.FK__Movimient__SubMa__2CBDA3B5">
+            <End Role="SubMayor" EntitySet="SubMayor" />
+            <End Role="MovimientoCaja" EntitySet="MovimientoCaja" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FKnegocio542366" Association="Self.FK_FKnegocio542366">
             <End Role="tipo_factura" EntitySet="tipo_factura" />
             <End Role="negocio" EntitySet="negocio" />
           </AssociationSet>
-          <AssociationSet Name="FKnegocio549625" Association="Self.FKnegocio549625">
+          <AssociationSet Name="FK_FKnegocio549625" Association="Self.FK_FKnegocio549625">
             <End Role="producto_servicio" EntitySet="producto_servicio" />
             <End Role="negocio" EntitySet="negocio" />
           </AssociationSet>
@@ -1314,11 +1480,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             <End Role="tipo_operacion" EntitySet="tipo_operacion" />
             <End Role="operacion" EntitySet="operacion" />
           </AssociationSet>
-          <AssociationSet Name="FKoperacion506509" Association="Self.FKoperacion506509">
-            <End Role="producto" EntitySet="producto" />
-            <End Role="operacion" EntitySet="operacion" />
-          </AssociationSet>
-          <AssociationSet Name="FKRolePermis471885" Association="Self.FKRolePermis471885">
+          <AssociationSet Name="FK_FKRolePermis471885" Association="Self.FK_FKRolePermis471885">
             <End Role="Permissions" EntitySet="Permissions" />
             <End Role="RolePermissions" EntitySet="RolePermissions" />
           </AssociationSet>
@@ -1326,30 +1488,119 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
             <End Role="unidad" EntitySet="unidad" />
             <End Role="producto" EntitySet="producto" />
           </AssociationSet>
-          <AssociationSet Name="FKRolePermis48370" Association="Self.FKRolePermis48370">
+          <AssociationSet Name="FK_FKRolePermis48370" Association="Self.FK_FKRolePermis48370">
             <End Role="Roles" EntitySet="Roles" />
             <End Role="RolePermissions" EntitySet="RolePermissions" />
           </AssociationSet>
-          <AssociationSet Name="FKUserRoles613991" Association="Self.FKUserRoles613991">
+          <AssociationSet Name="FK_FKUserRoles613991" Association="Self.FK_FKUserRoles613991">
             <End Role="Roles" EntitySet="Roles" />
             <End Role="UserRoles" EntitySet="UserRoles" />
           </AssociationSet>
-          <AssociationSet Name="FKUserRoles959420" Association="Self.FKUserRoles959420">
+          <AssociationSet Name="FK_FKUserRoles959420" Association="Self.FK_FKUserRoles959420">
             <End Role="Users" EntitySet="Users" />
             <End Role="UserRoles" EntitySet="UserRoles" />
           </AssociationSet>
+          <AssociationSet Name="FKoperacion21" Association="VERCOMModel.FKoperacion21">
+            <End Role="producto" EntitySet="producto" />
+            <End Role="operacion" EntitySet="operacion" />
+          </AssociationSet>
+          <EntitySet Name="CierreCaja" EntityType="VERCOMModel.CierreCaja" />
+          <AssociationSet Name="FK_CierreCaja_CajaPrincipal" Association="VERCOMModel.FK_CierreCaja_CajaPrincipal">
+            <End Role="CajaPrincipal" EntitySet="CajaPrincipal" />
+            <End Role="CierreCaja" EntitySet="CierreCaja" />
+          </AssociationSet>
         </EntityContainer>
+        <Association Name="FKoperacion21">
+          <End Type="VERCOMModel.producto" Role="producto" Multiplicity="0..1" />
+          <End Type="VERCOMModel.operacion" Role="operacion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="producto">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="operacion">
+              <PropertyRef Name="productoid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CierreCaja">
+          <Key>
+            <PropertyRef Name="CierreID" />
+          </Key>
+          <Property Name="CierreID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CajaID" Type="Int32" Nullable="false" />
+          <Property Name="FechaCierre" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TotalIngresos" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="TotalEgresos" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="SaldoFinal" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="Usuario" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Observaciones" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Estado" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="FechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="CajaPrincipal" Relationship="VERCOMModel.FK_CierreCaja_CajaPrincipal" FromRole="CierreCaja" ToRole="CajaPrincipal" />
+          <Property Name="SaldoCajaPrincipal" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+        </EntityType>
+        <Association Name="FK_CierreCaja_CajaPrincipal">
+          <End Type="VERCOMModel.CajaPrincipal" Role="CajaPrincipal" Multiplicity="1" />
+          <End Type="VERCOMModel.CierreCaja" Role="CierreCaja" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CajaPrincipal">
+              <PropertyRef Name="CajaID" />
+            </Principal>
+            <Dependent Role="CierreCaja">
+              <PropertyRef Name="CajaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="VERCOMModelStoreContainer" CdmEntityContainer="VERCOMEntities">
+          <EntitySetMapping Name="AlertasSistema">
+            <EntityTypeMapping TypeName="VERCOMModel.AlertasSistema">
+              <MappingFragment StoreEntitySet="AlertasSistema">
+                <ScalarProperty Name="AlertaID" ColumnName="AlertaID" />
+                <ScalarProperty Name="TipoAlerta" ColumnName="TipoAlerta" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="FechaAlerta" ColumnName="FechaAlerta" />
+                <ScalarProperty Name="Usuario" ColumnName="Usuario" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="area">
             <EntityTypeMapping TypeName="VERCOMModel.area">
               <MappingFragment StoreEntitySet="area">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="nombre" ColumnName="nombre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AuditoriaMovimientosCaja">
+            <EntityTypeMapping TypeName="VERCOMModel.AuditoriaMovimientosCaja">
+              <MappingFragment StoreEntitySet="AuditoriaMovimientosCaja">
+                <ScalarProperty Name="AuditoriaID" ColumnName="AuditoriaID" />
+                <ScalarProperty Name="MovimientoID" ColumnName="MovimientoID" />
+                <ScalarProperty Name="SubMayorID" ColumnName="SubMayorID" />
+                <ScalarProperty Name="TipoOperacion" ColumnName="TipoOperacion" />
+                <ScalarProperty Name="TipoMovimiento" ColumnName="TipoMovimiento" />
+                <ScalarProperty Name="Monto" ColumnName="Monto" />
+                <ScalarProperty Name="Concepto" ColumnName="Concepto" />
+                <ScalarProperty Name="ReferenciaExterna" ColumnName="ReferenciaExterna" />
+                <ScalarProperty Name="MetodoPago" ColumnName="MetodoPago" />
+                <ScalarProperty Name="FechaMovimiento" ColumnName="FechaMovimiento" />
+                <ScalarProperty Name="UsuarioOperacion" ColumnName="UsuarioOperacion" />
+                <ScalarProperty Name="FechaOperacion" ColumnName="FechaOperacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CajaPrincipal">
+            <EntityTypeMapping TypeName="VERCOMModel.CajaPrincipal">
+              <MappingFragment StoreEntitySet="CajaPrincipal">
+                <ScalarProperty Name="CajaID" ColumnName="CajaID" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Moneda" ColumnName="Moneda" />
+                <ScalarProperty Name="SaldoActual" ColumnName="SaldoActual" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1387,6 +1638,15 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ConfiguracionHorarioCaja">
+            <EntityTypeMapping TypeName="VERCOMModel.ConfiguracionHorarioCaja">
+              <MappingFragment StoreEntitySet="ConfiguracionHorarioCaja">
+                <ScalarProperty Name="CajaID" ColumnName="CajaID" />
+                <ScalarProperty Name="HoraInicio" ColumnName="HoraInicio" />
+                <ScalarProperty Name="HoraFin" ColumnName="HoraFin" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="cuenta">
             <EntityTypeMapping TypeName="VERCOMModel.cuenta">
               <MappingFragment StoreEntitySet="cuenta">
@@ -1397,20 +1657,6 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
                 <ScalarProperty Name="banco" ColumnName="banco" />
                 <ScalarProperty Name="titular" ColumnName="titular" />
                 <ScalarProperty Name="direccion" ColumnName="direccion" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="flujo">
-            <EntityTypeMapping TypeName="VERCOMModel.flujo">
-              <MappingFragment StoreEntitySet="flujo">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="areaid" ColumnName="areaid" />
-                <ScalarProperty Name="tipo_flujoid" ColumnName="tipo_flujoid" />
-                <ScalarProperty Name="fecha" ColumnName="fecha" />
-                <ScalarProperty Name="cantidad" ColumnName="cantidad" />
-                <ScalarProperty Name="importe" ColumnName="importe" />
-                <ScalarProperty Name="concepto" ColumnName="concepto" />
-                <ScalarProperty Name="precio" ColumnName="precio" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1430,6 +1676,21 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="MovimientoCaja">
+            <EntityTypeMapping TypeName="VERCOMModel.MovimientoCaja">
+              <MappingFragment StoreEntitySet="MovimientoCaja">
+                <ScalarProperty Name="MovimientoID" ColumnName="MovimientoID" />
+                <ScalarProperty Name="SubMayorID" ColumnName="SubMayorID" />
+                <ScalarProperty Name="TipoMovimiento" ColumnName="TipoMovimiento" />
+                <ScalarProperty Name="Monto" ColumnName="Monto" />
+                <ScalarProperty Name="Concepto" ColumnName="Concepto" />
+                <ScalarProperty Name="ReferenciaExterna" ColumnName="ReferenciaExterna" />
+                <ScalarProperty Name="MetodoPago" ColumnName="MetodoPago" />
+                <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+                <ScalarProperty Name="Usuario" ColumnName="Usuario" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="negocio">
             <EntityTypeMapping TypeName="VERCOMModel.negocio">
               <MappingFragment StoreEntitySet="negocio">
@@ -1442,6 +1703,18 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
                 <ScalarProperty Name="facturaID" ColumnName="facturaID" />
                 <ScalarProperty Name="medioPagoID" ColumnName="medioPagoID" />
                 <ScalarProperty Name="factura" ColumnName="factura" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notifications">
+            <EntityTypeMapping TypeName="VERCOMModel.Notifications">
+              <MappingFragment StoreEntitySet="Notifications">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1468,16 +1741,6 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="presupuesto">
-            <EntityTypeMapping TypeName="VERCOMModel.presupuesto">
-              <MappingFragment StoreEntitySet="presupuesto">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="saldo" ColumnName="saldo" />
-                <ScalarProperty Name="fecha" ColumnName="fecha" />
-                <ScalarProperty Name="areaid" ColumnName="areaid" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="producto">
             <EntityTypeMapping TypeName="VERCOMModel.producto">
               <MappingFragment StoreEntitySet="producto">
@@ -1490,6 +1753,7 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
                 <ScalarProperty Name="categoriaid" ColumnName="categoriaid" />
                 <ScalarProperty Name="unidadid" ColumnName="unidadid" />
                 <ScalarProperty Name="areaid" ColumnName="areaid" />
+                <ScalarProperty Name="activo" ColumnName="activo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1508,6 +1772,20 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
               <MappingFragment StoreEntitySet="punto_venta">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="nombre" ColumnName="nombre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RegistroDiarioCaja">
+            <EntityTypeMapping TypeName="VERCOMModel.RegistroDiarioCaja">
+              <MappingFragment StoreEntitySet="RegistroDiarioCaja">
+                <ScalarProperty Name="RegistroID" ColumnName="RegistroID" />
+                <ScalarProperty Name="CajaID" ColumnName="CajaID" />
+                <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+                <ScalarProperty Name="TotalIngresos" ColumnName="TotalIngresos" />
+                <ScalarProperty Name="TotalEgresos" ColumnName="TotalEgresos" />
+                <ScalarProperty Name="SaldoFinal" ColumnName="SaldoFinal" />
+                <ScalarProperty Name="UsuarioCierre" ColumnName="UsuarioCierre" />
+                <ScalarProperty Name="Observaciones" ColumnName="Observaciones" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1530,6 +1808,17 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="SubMayor">
+            <EntityTypeMapping TypeName="VERCOMModel.SubMayor">
+              <MappingFragment StoreEntitySet="SubMayor">
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+                <ScalarProperty Name="SubMayorID" ColumnName="SubMayorID" />
+                <ScalarProperty Name="CajaID" ColumnName="CajaID" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Saldo" ColumnName="Saldo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="tipo_cliente">
             <EntityTypeMapping TypeName="VERCOMModel.tipo_cliente">
               <MappingFragment StoreEntitySet="tipo_cliente">
@@ -1541,14 +1830,6 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
           <EntitySetMapping Name="tipo_factura">
             <EntityTypeMapping TypeName="VERCOMModel.tipo_factura">
               <MappingFragment StoreEntitySet="tipo_factura">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="tipo" ColumnName="tipo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tipo_flujo">
-            <EntityTypeMapping TypeName="VERCOMModel.tipo_flujo">
-              <MappingFragment StoreEntitySet="tipo_flujo">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="tipo" ColumnName="tipo" />
               </MappingFragment>
@@ -1614,15 +1895,20 @@ advertencia 6002: La tabla o vista 'VERCOM.dbo.Notifications' no tiene definida 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Notifications">
-            <EntityTypeMapping TypeName="VERCOMModel.Notifications">
-              <MappingFragment StoreEntitySet="Notifications">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Message" ColumnName="Message" />
-                <ScalarProperty Name="Role" ColumnName="Role" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
-                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+          <EntitySetMapping Name="CierreCaja">
+            <EntityTypeMapping TypeName="VERCOMModel.CierreCaja">
+              <MappingFragment StoreEntitySet="CierreCaja">
+                <ScalarProperty Name="SaldoCajaPrincipal" ColumnName="SaldoCajaPrincipal" />
+                <ScalarProperty Name="FechaRegistro" ColumnName="FechaRegistro" />
+                <ScalarProperty Name="Estado" ColumnName="Estado" />
+                <ScalarProperty Name="Observaciones" ColumnName="Observaciones" />
+                <ScalarProperty Name="Usuario" ColumnName="Usuario" />
+                <ScalarProperty Name="SaldoFinal" ColumnName="SaldoFinal" />
+                <ScalarProperty Name="TotalEgresos" ColumnName="TotalEgresos" />
+                <ScalarProperty Name="TotalIngresos" ColumnName="TotalIngresos" />
+                <ScalarProperty Name="FechaCierre" ColumnName="FechaCierre" />
+                <ScalarProperty Name="CajaID" ColumnName="CajaID" />
+                <ScalarProperty Name="CierreID" ColumnName="CierreID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
