@@ -140,11 +140,8 @@
                         </select>
                     </div>
                 </div>
-                <div class="d-flex gap-1">
-                    <a href="@Url.Action("Create","Caja")" class="btn btn-secondary btn-icon">
-                        <i class="ti ti-plus fs-xxl"></i>
-                    </a>
-                    <button class="btn btn-primary btn-icon" id="btnExportExcel">
+                <div class="d-flex gap-1">          
+                    <button class="btn btn-success btn-icon" id="btnExportExcel">
                         <i data-lucide="file-spreadsheet" class="fs-lg"></i>
                     </button>
                     <button class="btn btn-info btn-icon" id="btnPrint">
@@ -153,13 +150,13 @@
                 </div>
             </div>
             <div class="table-responsive">
-                <table id="tablaMovimientosCaja" class="table table-custom table-centered table-select table-hover w-100 mb-0">
+                <table id="tablaCierreMovimientosCaja" class="table table-custom table-centered table-select table-hover w-100 mb-0">
                     <thead class="bg-light align-middle bg-opacity-25 thead-sm">
                         <tr class="text-uppercase fs-xxs">
                             <th data-table-sort="" data-column="SUBMAYOR">SUB-MAYOR</th>
                             <th data-table-sort="" data-column="TIPO">ENTRADAS</th>
                             <th data-table-sort="" data-column="MONTO">SALIDAS</th>
-                            <th data-table-sort="" data-column="CONCEPTO">SALDO ACTUAL</th>
+                            <th data-table-sort="" data-column="CONCEPTO">SALDO FINAL</th>
                             <th class="text-center noExport" style="width: 1%;" data-exclude="true">ACCIONES</th>
                         </tr>
                     </thead>
@@ -214,8 +211,129 @@
             cargarResumenCierre();
             cargarResumenSubMayores();
             $('#CajaID').change(cargarResumenCierre, cargarResumenSubMayores);
-        });
+            document.getElementById("btnExportExcel").addEventListener("click", function () {
+                const exporter = new Table2Excel();
+                // Clona la tabla para no afectar el original
+                let tablaClonada = $("#tablaCierreMovimientosCaja").clone();
+                // Elimina las columnas que no deseas              
+                tablaClonada.find("th:nth-child(5), td:nth-child(5)").remove(); // 8
+                // Export tabla
+                exporter.export(tablaClonada, "Cierre de caja", {
+                    exclude: ".noExport",
+                    name: "Exportación",
+                    filename: `Cierre de caja ${Date.now}.xls`,
+                    preserveColors: true
+                });
 
+            });
+            document.getElementById("btnPrint").addEventListener("click", function () {
+                let tablaClonada = $("#tablaCierreMovimientosCaja").clone();
+                tablaClonada.find(".noExport").remove();
+                const ventana = window.open('', '', 'height=1080,width=1920');
+                ventana.document.write(`
+                <html>
+             <head>
+             <title>IMPRIMIR TABLA CIERRE</title>
+             <style>
+ body {
+     font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+     margin: 20px;
+     font-size: 13px;
+     color: #2c3e50;
+     background-color: #fdfdfd;
+ }
+
+ h3 {
+     margin-bottom: 8px;
+     color: #2c3e50;
+     font-size: 18px;
+     border-bottom: 2px solid #3498db;
+     padding-bottom: 4px;
+ }
+
+ p {
+     margin: 0 0 12px;
+     font-weight: 600;
+     color: #34495e;
+ }
+
+ table {
+     width: 100%;
+     border-collapse: separate;
+     border-spacing: 0;
+     margin-top: 15px;
+     box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+     border-radius: 6px;
+     overflow: hidden;
+ }
+ table td a,
+ table th a {
+     text-decoration: none;
+     color: inherit; /* opcional: hereda el color del texto de la celda */
+ }
+
+ /* Borde inferior para todas las filas del cuerpo */
+ tbody tr td {
+     border-bottom: 1px solid #ccc;
+     }
+
+ thead {
+     background-color: #3498db;
+     color: white;
+     font-weight: bold;
+     text-transform: uppercase;
+     letter-spacing: 0.5px;
+ }
+
+ thead th {
+     background-color: #3498db;
+     color: white;
+     font-weight: bold;
+     text-transform: uppercase;
+     letter-spacing: 0.5px;
+     border-bottom: 1px solid #2c3e50; /* Borde inferior elegante */
+ }
+
+ th, td {
+     border: none;
+     padding: 10px 8px;
+     text-align: center;
+     transition: background-color 0.3s ease;
+ }
+
+ tbody tr:hover td {
+     background-color: #ecf0f1;
+     }
+
+ tr:nth-child(even) td {
+     background-color: #f9fbfc;
+     }
+
+  /* Última fila resaltada */
+  tbody tr:last-child td {
+      background-color: #ffeaa7;
+      border-bottom: 3px solid #d35400; /* cierre destacado */
+      font-weight: bold;
+      color: #2d3436;
+  }
+
+ tfoot td {
+     background-color: #ecf0f1;
+     font-weight: bold;
+     color: #2c3e50;
+ }
+</style>
+            </head>
+            <body>
+            ${tablaClonada[0].outerHTML}
+            </body>
+            </html>
+            `);
+                ventana.document.close();
+                ventana.focus();
+                ventana.print();
+            });
+        });
         function cargarResumenCierre() {
             const cajaId = $('#CajaID').val();
             $.ajax({
@@ -259,21 +377,51 @@
                 });
             }).always(() => desactivarOverlayEnContenedor(bloqueID));
         }
+        //function refreshTable(data) {
+        //    // 1. Localiza <table> y su instancia
+        //    const tableEl = document.querySelector('[data-table]');
+        //    const instance = window.customTable.tables.find(t => t.table === tableEl);
+        //    const tbody = tableEl.querySelector("tbody");
+        //    tbody.innerHTML = "";
+        //    let ingresos = 0, egresos = 0;
+        //    const rows = data.map(m => {
+        //        const tr = document.createElement('tr');
+        //        const tipColor = "";
+        //        tr.id = `${m.SubMayorID}`;
+        //        tr.dataset.id = m.SubMayorID;
+        //        tr.innerHTML = `
+        //        <td>${m.SubMayorNombre}</td>
+        //        <td class="tipo">${m.TotalEntrada.toFixed(2)}</td>
+        //        <td class="monto">$${m.TotalSalida.toFixed(2)}</td>
+        //        <td>${m.SaldoActual.toFixed(2)}</td>
+        //        <td class="noExport">
+        //        <div class="d-flex justify-content-center gap-1">
+        //        <button class="btn btn-light btn-icon btn-sm rounded-circle btn_edit btnEditar"><i class="ti ti-edit fs-lg"></i></button>
+        //        </div>
+        //        </td>`;
+        //        return tr;
+        //    });  
+        //    instance.fullRefresh(rows);
+        //    setupCheckboxListeners();
+        //}
         function refreshTable(data) {
-            // 1. Localiza <table> y su instancia
             const tableEl = document.querySelector('[data-table]');
             const instance = window.customTable.tables.find(t => t.table === tableEl);
             const tbody = tableEl.querySelector("tbody");
+            const rows = [];   
             tbody.innerHTML = "";
-            let ingresos = 0, egresos = 0;
-            const rows = data.map(m => {
+            let totalEntradas = 0;
+            let totalSalidas = 0;
+            let saldoFinal = 0;
+
+            data.forEach(m => {
+                totalEntradas += m.TotalEntrada;
+                totalSalidas += m.TotalSalida;
+                saldoFinal += m.SaldoActual;
                 const tr = document.createElement('tr');
-                const tipColor = "";
-                tr.id = `${m.SubMayorID}`;
-                tr.dataset.id = m.SubMayorID;
                 tr.innerHTML = `
                 <td>${m.SubMayorNombre}</td>
-                <td class="tipo">${m.TotalEntrada.toFixed(2)}</td>
+                <td class="tipo">$${m.TotalEntrada.toFixed(2)}</td>
                 <td class="monto">$${m.TotalSalida.toFixed(2)}</td>
                 <td>${m.SaldoActual.toFixed(2)}</td>
                 <td class="noExport">
@@ -281,8 +429,21 @@
                 <button class="btn btn-light btn-icon btn-sm rounded-circle btn_edit btnEditar"><i class="ti ti-edit fs-lg"></i></button>
                 </div>
                 </td>`;
-                return tr;
-            });  
+                tbody.appendChild(tr);
+                rows.push(tr);  
+            });
+
+            // 🔸 Fila resumen
+            const resumenRow = document.createElement('tr');
+            resumenRow.classList.add('table-warning', 'fw-bold');
+            resumenRow.innerHTML = `
+                <td>TOTAL</td>
+                <td class="tipo">$${totalEntradas.toFixed(2)}</td>
+                <td class="monto">$${totalSalidas.toFixed(2)}</td>
+                <td>$${saldoFinal.toFixed(2)}</td>
+                <td class="noExport">               
+                </td>`;
+            rows.push(resumenRow);  
             instance.fullRefresh(rows);
             setupCheckboxListeners();
         }

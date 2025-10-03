@@ -27,7 +27,7 @@ namespace vercom.Controllers
         }
                
         [HttpGet]
-        public JsonResult GetProductos(int cantidad = 250)
+        public JsonResult GetProductos(int cantidad = 1000)
         {
             try
             {
@@ -43,32 +43,6 @@ namespace vercom.Controllers
                 return Json(new { error = true, message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
-        // GET: /Producto/Details/5
-
-        [RBAC]
-        public ActionResult Details(int id = 0)
-        {
-            producto producto = db.producto.Find(id);
-            if (producto == null)
-            {
-                return HttpNotFound();
-            }
-            return View(producto);
-        }
-
-        //
-        // GET: /Producto/Create
-
-        [RBAC]
-        public ActionResult Create()
-        {
-            ViewBag.categoriaid = new SelectList(db.categoria, "id", "clave", new { @class = "form-control" });
-            ViewBag.unidadid = new SelectList(db.unidad, "id", "unidad1", new { @class = "form-control" });
-            return View();
-        }
-
-        //
-        // POST: /Producto/Create
 
         [HttpPost]
         [ValidateAntiForgeryToken]   
@@ -92,30 +66,59 @@ namespace vercom.Controllers
             });
         }
 
-        //
-        // GET: /Producto/Edit/5
 
-        [RBAC]
-        public ActionResult Edit(int id = 0)
+        [HttpGet]
+        public JsonResult ObtenerProductoPorId(int id)
         {
-            producto producto = db.producto.Find(id);
-            if (producto == null)
+            var m = db.producto.Find(id);
+            if (m == null) return Json(new { exito = false, mensaje = "Producto no encontrado." }, JsonRequestBehavior.AllowGet);
+            var iData = new List<iProducto>();
+            iData.Add(new iProducto
             {
-                return HttpNotFound();
-            }
-            return View(producto);
-        }
+                ProductoId = m.id,
+                Nombre = m.nombre,
+                Cod = m.cod,
+                Precio = m.precio,
+                Costo = m.costo,
+                UnidadID = m.unidadid,  
+                CategoriaID = m.categoriaid,
+                AreaID = m.areaid,
+                Activo = m.activo,              
+            });
 
-        //
-        // POST: /Producto/Edit/5
+            return Json(new { exito = true, iData }, JsonRequestBehavior.AllowGet);
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(producto producto)
+        public JsonResult EditarProducto(int Edit_ProductoID, string Edit_Nombre, string Edit_Cod, int Edit_UnidadID, decimal Edit_Precio, decimal Edit_Costo, int Edit_CategoriaID, int Edit_AreaID, bool Edit_Activo)
         {
-            db.Entry(producto).State = EntityState.Modified;
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            try
+            {
+
+                var producto = db.producto.Find(Edit_ProductoID);
+                if (producto == null)
+                    return Json(new { success = false, message = "Producto no encontrado." });
+                              
+                // Actualización de campos              
+                producto.nombre = Edit_Nombre;
+                producto.cod = Edit_Cod;
+                producto.unidadid = Edit_UnidadID;
+                producto.precio = (double?) Edit_Precio;
+                producto.costo = (double?) Edit_Costo;
+                producto.categoriaid = Edit_CategoriaID;
+                producto.areaid = Edit_AreaID;
+                producto.activo = Edit_Activo;
+
+                db.SaveChanges();
+
+                return Json(new { exito = true, mensaje = "Producto editado correctamente." });
+            }
+            catch (Exception ex)
+            {
+                // Log opcional
+                return Json(new { success = false, message = "Error al editar: " + ex.Message });
+            }
         }
 
         //

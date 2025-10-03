@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
+using System.Xml.Linq;
 using vercom.Helpers;
 using vercom.Interfaces;
 using vercom.Models;
@@ -101,15 +102,7 @@ namespace vercom.Controllers
             var consulta = from r in db.area orderby r.nombre ascending select r;
             return PartialView("_listareasName", consulta.ToList());
         }
-
-        public ActionResult _listpresupuestos()
-        {
-            var fecha = DateTime.Now.Day + "/" + DateTime.Now.Month + "/" + DateTime.Now.Year;
-            var fechafilter = Convert.ToDateTime(fecha);
-            var consulta = (from r in db.presupuesto where (r.fecha == fechafilter) select r);
-            return PartialView("_listpresupuestos", consulta.ToList());
-        }
-
+       
         public ActionResult _listclientes()
         {
             var consulta = from r in db.cliente orderby r.nombre ascending select r;
@@ -151,38 +144,12 @@ namespace vercom.Controllers
             var consulta = from r in db.CajaPrincipal orderby r.CajaID ascending select r;
             return PartialView("_listcajas", consulta.ToList());
         }
+
         public ActionResult _listsubmayores()
         {
             var consulta = from r in db.SubMayor orderby r.Nombre ascending select r;
             return PartialView("_listsubmayores", consulta.ToList());
-        }
-
-        public ContentResult _listpresupuestosFecha(string fecha)
-        {
-            List<iFlujoResumen> iData = new List<iFlujoResumen>();
-            var cvFecha = Convert.ToDateTime(fecha);
-            var cvFechaFilter = cvFecha.AddDays(-1);
-            var consulta = (from d in db.presupuesto
-                            where (d.fecha == cvFechaFilter)
-                            group d by d.areaid into rp
-                            select new
-                            {
-                                grp = rp.Key,
-                                areaID = rp.Select(x => x.areaid).FirstOrDefault(),
-                                area = rp.Select(x => x.area.nombre).FirstOrDefault(),
-                            }).OrderBy(x => x.grp).ToList();
-
-            foreach (var item in consulta)
-            {
-                iFlujoResumen iVal = new iFlujoResumen
-                {
-                    areaID = item.areaID,
-                    area = item.area,
-                };
-                iData.Add(iVal);
-            }
-            return Content(JsonConvert.SerializeObject(iData), "application/json");
-        }
+        }     
 
         public ContentResult _productosXpunto(int id, int tipo, string fecha)
         {
@@ -229,53 +196,56 @@ namespace vercom.Controllers
 
         public ContentResult _productosXpuntoFilCategoria(int id, int tipo, string fecha, int categ)
         {
-            var cvFecha = DateTime.Parse(fecha);
+            List<iProductosXpunto> iData = new List<iProductosXpunto>();
+            var cvFecha = Convert.ToDateTime(fecha);
             var cvFechaSaldo = cvFecha.AddDays(-1);
-            var iData = new List<iProductosXpunto>();
-            db.Database.CommandTimeout = 120;
-            var data = IPVHelper.GenerarAnaliticoDesdeSP(cvFechaSaldo, cvFecha, id, categ);
 
-            if (tipo == 1 || tipo == 5)
+            // Obtener el saldo anterior
+            var saldo = db.operacion
+                .Where(r => r.fecha == cvFechaSaldo && r.punto_ventaid == id && r.tipo_operacionid == 5)
+                .GroupBy(r => r.productoid)
+                .Select(g => new { ProductoId = g.Key, Cantidad = g.Sum(r => r.cantidad) })
+                .ToDictionary(s => s.ProductoId, s => s.Cantidad);
+
+            // Obtener las entradas desde la fecha dada
+            var entradas = db.operacion
+                .Where(r => r.fecha >= cvFecha && r.punto_ventaid == id && r.tipo_operacionid == 1)
+                .GroupBy(r => r.productoid)
+                .Select(g => new { ProductoId = g.Key, Cantidad = g.Sum(r => r.cantidad) })
+                .ToDictionary(e => e.ProductoId, e => e.Cantidad);
+
+            if (tipo == 5 || tipo == 1)
             {
-                var productoList = db.producto.Where(p => p.categoriaid == categ && p.activo == true).ToList();
-                foreach (var producto in productoList)
+                var productos = db.producto.ToList();
+                foreach (var item in productos)
                 {
-                    float? kvp = 0;
-                    var saldo = data.Where(p => p.id == producto.id).Select(p => p.final_saldo).SingleOrDefault();
-                    if (saldo != null)
+                    iProductosXpunto iVal = new iProductosXpunto
                     {
-                        kvp += (float?) saldo;
-                    }                   
-                    
-                    var produntoPunto = new iProductosXpunto
-                    {
-                        id = producto.id,
-                        cod = producto.cod,
-                        nombre = producto.nombre,
-                        precio = producto.precio,
-                        cant_saldo = kvp,
+                        id = item.id,
+                        cod = item.cod,
+                        nombre = item.nombre,
+                        precio = item.precio,
+                        cant_saldo = (saldo.ContainsKey(item.id) ? saldo[item.id] : 0) +
+                                     (entradas.ContainsKey(item.id) ? entradas[item.id] : 0),
                     };
-                    iData.Add(produntoPunto);
+                    iData.Add(iVal);
                 }
-            }else {
-                // 🎯 Catálogo de productos por categoría
-
-                foreach (var kvp in data.Where(p => p.final_saldo > 0))
-                {
-                    var producto = db.producto.Where(p => p.id == kvp.id).SingleOrDefault();
-                    // 🛠 Constructor de respuesta
-                    var produntoPunto = new iProductosXpunto
+            }
+            else
+            {
+                var productosFiltrados = saldo.Keys.ToList()
+                    .Where(pid => saldo[pid] > 0 || entradas.ContainsKey(pid) && db.producto.First(p => p.id == pid).categoriaid == categ)
+                    .Select(pid => new iProductosXpunto
                     {
-                        id = producto.id,
-                        cod = producto.cod,
-                        nombre = producto.nombre,
-                        precio = producto.precio,
-                        cant_saldo = (float?)kvp.final_saldo,
-                    };
-                    iData.Add(produntoPunto);
-                }
+                        id = (int)pid,
+                        cod = db.producto.First(p => p.id == pid).cod,
+                        nombre = db.producto.First(p => p.id == pid).nombre,
+                        precio = db.producto.First(p => p.id == pid).precio,
+                        cant_saldo = saldo[pid] + (entradas.ContainsKey(pid) ? entradas[pid] : 0),
+                    }).ToList();
 
-            }           
+                iData.AddRange(productosFiltrados);
+            }
 
             return Content(JsonConvert.SerializeObject(iData), "application/json");
         }
@@ -335,32 +305,51 @@ namespace vercom.Controllers
             return Content(JsonConvert.SerializeObject(iData), "application/json");
         }
 
-        public ContentResult _productoSaldoXpuntoXfechaXcateg(int idprod, int idpunto, string fecha, int categ)
+        public ContentResult _productoSaldoXpuntoXfechaXcateg(int id, int tipo, string fecha, int categ)
         {
             var cvFecha = DateTime.Parse(fecha);
             var cvFechaSaldo = cvFecha.AddDays(-1);
             db.Database.CommandTimeout = 120;
-
-            var data = IPVHelper.GenerarAnaliticoDesdeSP(cvFechaSaldo, cvFecha, idpunto, categ);
             var iData = new List<iProductosXpunto>();
+            var data = IPVHelper.GenerarAnaliticoDesdeSP(cvFechaSaldo, cvFecha, id, categ);
 
-            // 🎯 Catálogo de productos por categoría
-            var producto = db.producto.Where(p => p.id == idprod).SingleOrDefault();
-
-
-            foreach ( var kvp in data.Where(p => p.id == idprod))
+            if (tipo == 5 || tipo == 1)
             {
-                // 🛠 Constructor de respuesta
-                var produntoPunto =  new iProductosXpunto
+                var productos = db.producto.Where(x => x.categoriaid == categ && x.activo == true);
+
+                foreach (var item in productos)
                 {
-                    id = producto.id,
-                    cod = producto.cod,
-                    nombre = producto.nombre,
-                    precio = producto.precio,
-                    cant_saldo = (float?) kvp.final_saldo,
-                };
-                iData.Add(produntoPunto);
+                    var saldo = data.FirstOrDefault(d => d.id == item.id)?.final_saldo ?? 0;
+                    iProductosXpunto iVal = new iProductosXpunto
+                    {
+                        id = item.id,
+                        cod = item.cod,
+                        nombre = item.nombre,
+                        precio = item.precio,
+                        cant_saldo = (float?)saldo,
+                    };
+                    iData.Add(iVal);
+                }
             }
+            else
+            {
+               
+                foreach (var kvp in data)
+                {
+                    var producto = db.producto.Where(p => p.id == kvp.id).SingleOrDefault();
+                    // 🛠 Constructor de respuesta
+                    var produntoPunto = new iProductosXpunto
+                    {
+                        id = producto.id,
+                        cod = producto.cod,
+                        nombre = producto.nombre,
+                        precio = producto.precio,
+                        cant_saldo = (float?)kvp.final_saldo,
+                    };
+                    if (produntoPunto.cant_saldo > 0) iData.Add(produntoPunto);
+                }
+            }
+
             return Content(JsonConvert.SerializeObject(iData), "application/json");
         }
 

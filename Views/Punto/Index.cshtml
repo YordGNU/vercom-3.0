@@ -42,10 +42,10 @@
                     </div>
                 </div>
                 <div class="d-flex gap-1">
-                    <a href="@Url.Action("Create","Punto")" class="btn btn-secondary btn-icon">
+                    <button class="btn btn-secondary btn-icon" id="btnAgregarPunto">
                         <i class="ti ti-plus fs-xxl"></i>
-                    </a>
-                    <button class="btn btn-primary btn-icon" id="btnExportExcel">
+                    </button>
+                    <button class="btn btn-success btn-icon" id="btnExportExcel">
                         <i data-lucide="file-spreadsheet" class="fs-lg"></i>
                     </button>
                     <button class="btn btn-info btn-icon" id="btnPrint">
@@ -78,6 +78,90 @@
         </div>
     </div><!-- end col -->
 </div><!-- end row -->
+<div class="modal fade" id="modalAgregarPunto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">Agregar Punto</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formAgregarPunto">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xxl-12">
+                            <div class="card">
+                                <div class="card-header d-block p-3">
+                                    <h4 class="card-title mb-1">Información del punto de venta</h4>
+                                    <p class="text-muted mb-0">
+                                        Para agregar un nuevo punto de venta, proporcione los detalles necesarios en los campos a continuación.
+                                    </p>
+                                </div> <!-- end card-header -->
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="nombre" class="form-label">Nombre del punto de venta <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Entre el nombre del punto de venta" required="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> <!-- end card-body-->                               
+                            </div> <!-- end card-->
+                        </div> <!-- end col-->
+                    </div> <!-- end row-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" id="btnGuardarPunto" class="btn btn-primary">Agregar</button>
+                </div>      
+            </form>
+        </div>
+    </div> <!-- end modal dialog-->
+</div> <!-- end modal-->
+<div class="modal fade" id="modalEditarPunto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">Editar Punto</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formEditarPunto">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="Edit_PuntoID" name="Edit_PuntoID" />
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xxl-12">
+                            <div class="card">
+                                <div class="card-header d-block p-3">
+                                    <h4 class="card-title mb-1">Información del punto de venta</h4>
+                                </div> <!-- end card-header -->
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="Edit_Nombre" class="form-label">Nombre del punto de venta <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="Edit_Nombre" name="Edit_Nombre" placeholder="Entre el nombre del punto de venta" required="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> <!-- end card-body-->
+                            </div> <!-- end card-->
+                        </div> <!-- end col-->
+                    </div> <!-- end row-->
+                </div>
+                <div class="modal-footer">
+                    <div class="mt-2 mb-2 d-flex gap-2 justify-content-end">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">
+                            <i data-lucide="save" class="fs-sm me-2"></i> Actualizar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div> <!-- end modal dialog-->
+</div> <!-- end modal-->
 @section Styles {
     <link href="~/Content/plugins/toastr/toastr.min.css" rel="stylesheet" />
     <link href="~/Content/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
@@ -96,6 +180,102 @@
              // 🧠 Ejecutar en cascada sin dependencia entre ellas
              try { cargarTablaPuntos(); } catch (e) { console.error("Error al optener listado:", e.message); }
          }
+
+         $('#tablaPuntos').on('click', '.btnEditar', function (e) {
+             const id = $(this).closest('tr').data('id');
+             const bloqueID = '#formEditarPunto';
+             activarOverlayEnContenedor(bloqueID);
+             $.getJSON(`/Punto/ObtenerPuntoPorId/${id}`, function (res) {
+                 //Asignar valores al modal
+                 const m = res.iData[0];
+                 $('#Edit_PuntoID').val(m.PuntoID);
+                 $('#Edit_Nombre').val(m.Nombre);
+                 $('#modalEditarPunto').modal('show');
+             }).fail(function () {
+                 Swal.fire({
+                     icon: 'error',
+                     title: 'Error de conexión',
+                     text: 'No se pudo consultar los datos. Verifica tu conexión o intenta nuevamente.'
+                 });
+             }).always(() => desactivarOverlayEnContenedor(bloqueID));
+         });
+         $('#btnAgregarPunto').on('click', function (e) {
+             e.preventDefault();
+             $('#modalAgregarPunto').modal('show');
+         });
+         $('#formAgregarPunto').on("submit", function (e) {
+                $(".decimalVAL").each(function () {
+                    var valor = $(this).val().replace(".", ",");
+                    $(this).val(valor);
+                });
+                e.preventDefault();
+                $('#modalAgregarPunto').modal('hide');
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("Create", "Punto")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Punto agregado',
+                                text: 'Punto agregado correctamente, actualizando lista...',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                            cargarTablaPuntos();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '¡Error!',
+                                text: response.message
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Hubo un problema al enviar el formulario.'
+                        });
+                    }
+                });
+            });
+         $('#formEditarPunto').on('submit', function (e) {
+                e.preventDefault();              
+                $.ajax({
+                    url: '@Url.Action("EditarPunto", "Punto")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (res) {
+                        if (res.exito) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Punto actualizado, actualizando lista...',
+                                text: res.mensaje,
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                            $('#modalEditarPunto').modal('hide');
+                            cargarTablaPuntos(); // Recarga la tabla
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: res.mensaje
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Hubo un problema al actualizar el punto.'
+                        });
+                    }
+                });
+            });
 
          async function cargarTablaPuntos() {
              const url = '@Url.Action("GetPuntos", "Punto")';
@@ -142,17 +322,17 @@
              const rows = data.map(item => {
                  const tr = document.createElement('tr');
                  tr.id = `${item.id}`;
+                 tr.dataset.id = item.id;
                  tr.innerHTML = `
-                 <td class="noExport">                
+                 <td class="noExport">
                  <input class="form-check-input form-check-input-light fs-14 product-item-check mt-0" type="checkbox" value="${item.id}">
                  </td>
                  <td>${item.id}</td>
                  <td>${item.nombre}</td>
                  <td class="noExport">
                  <div class="d-flex justify-content-center gap-1">
-                 <a href="@Url.Action("Edit", "Punto")/${item.id}" class="btn btn-light btn-icon btn-sm rounded-circle"><i class="ti ti-edit fs-lg"></i></a>
-                 </div>
-                 </td>`;
+                 <button class="btn btn-light btn-icon btn-sm rounded-circle btnEditar"><i class="ti ti-edit fs-lg"></i></button>
+                 </div></td>`;
                  return tr;
              });
              instance.fullRefresh(rows);
@@ -226,7 +406,7 @@
              overlays.forEach(overlay => {
                  $(overlay).fadeOut(200, () => overlay.remove());
              });
-         }        
+         }
 
          document.getElementById("btnExportExcel").addEventListener("click", function () {
              const exporter = new Table2Excel();

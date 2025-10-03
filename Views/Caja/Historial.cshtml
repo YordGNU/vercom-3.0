@@ -1,0 +1,614 @@
+﻿@{
+    ViewBag.Title = "HISTORIAL";
+}
+<div class="page-title-head d-flex align-items-center">
+    <div class="flex-grow-1">
+        <h4 class="fs-sm text-uppercase fw-bold m-0">HISTORIAL</h4>
+    </div>
+    <div class="text-end">
+        <ol class="breadcrumb m-0 py-0">
+            <li class="breadcrumb-item"><a href="javascript:void(0);">VERCOM</a></li>
+            <li class="breadcrumb-item"><a href="javascript:void(0);">CAJA</a></li>
+            <li class="breadcrumb-item active">HISTORIAL</li>
+        </ol>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <!-- Simple card -->
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="mb-2 fw-semibold">Caja:</span>
+                    <div class="col-auto">
+                        <div class="input-group mb-2">
+                            <select class="form-select" id="filtroCajaID">
+                                @Html.Action("_listcajas", "Parcial")
+                            </select>
+                        </div>
+                    </div>
+                    <span class="mb-2 fw-semibold">Desde:</span>
+                    <div class="col-auto">
+                        <div class="input-group mb-2">
+                            <input type="datetime-local" class="form-control" id="filtroDesde" value="@DateTime.Today.ToString("yyyy-MM-ddTHH:mm")" />
+                        </div>
+                    </div>
+                    <span class="mb-2 fw-semibold">Hasta:</span>
+                    <div class="col-auto">
+                        <div class="input-group mb-2">
+                            <input type="datetime-local" class="form-control" id="filtroHasta" value="@DateTime.Today.AddDays(1).AddSeconds(-1).ToString("yyyy-MM-ddTHH:mm")" />
+                        </div>
+                    </div>                   
+                    <div class="col-auto">
+                        <div class="input-group mb-2">                         
+                            <button type="button" class="btn btn-primary w-100" onclick="filtrarCierres()">
+                                <i data-lucide="filter" class="fs-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end card-body-->
+        </div>
+        <!-- end card-->
+    </div>
+    <!-- end col -->
+</div>
+<div class="row" id="bloque-Thistorialcierres">
+    <div class="col-12">
+        <div data-table="" data-table-rows-per-page="100" class="card">
+            <div class="card-header border-light justify-content-between">
+                <div class="d-flex gap-2">
+                    <div class="app-search">
+                        <input data-table-search="" type="search" class="form-control" placeholder="Buscar por nombre...">
+                        <i data-lucide="search" class="app-search-icon text-muted"></i>
+                    </div>
+                    <button data-table-delete-selected="" data-table-delete-url="@Url.Action("EliminarMultiples","Caja")" type="button" class="btn btn-danger btn-icon d-none">
+                        <i class="ti ti-trash fs-xl"></i>
+                    </button>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Records Per Page -->
+                    <div>
+                        <select data-table-set-rows-per-page="" class="form-select form-control my-1 my-md-0">
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex gap-1">
+                    <button class="btn btn-success btn-icon" id="btnExportExcelHCierres">
+                        <i data-lucide="file-spreadsheet" class="fs-lg"></i>
+                    </button>
+                    <button class="btn btn-info btn-icon" id="btnPrintHCierres">
+                        <i data-lucide="printer" class="fs-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id="tablaHistorialCierres" class="table table-custom table-centered table-select table-hover w-100 mb-0">
+                    <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                        <tr class="text-uppercase fs-xxs">
+                            <th data-table-sort="" data-column="FECHA">Fecha</th>
+                            <th data-table-sort="" data-column="CAJA">Caja</th>
+                            <th data-table-sort="" data-column="ENTRADAS">Entradas</th>
+                            <th data-table-sort="" data-column="SALIDA">Salidas</th>
+                            <th data-table-sort="" data-column="SALDO">Saldo Final</th>
+                            <th data-table-sort="" data-column="USUARIO">Usuario</th>
+                            <th data-table-sort="" data-column="OBSERVACIONES">Observaciones</th>
+                            <th data-table-sort="" data-column="ESTADO">Estado</th>
+                            <th class="text-center noExport" style="width: 1%;" data-exclude="true">ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="card-footer border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div data-table-pagination-info="entradas"></div>
+                    <div data-table-pagination=""></div>
+                </div>
+            </div>
+        </div>
+    </div><!-- end col -->
+</div><!-- end row -->
+<div class="modal fade" id="modalDetalleCierre" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tituloModalDetalle">Detalles de cierre</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div> <!-- end modal header -->
+            <div class="modal-body">
+                <div class="row row-cols-xxl-3 row-cols-md-3 row-cols-1 align-items-center g-1">
+                    <div class="col">
+                        <div class="card mb-1">
+                            <div class="card-body">
+                                <h5 title="Customer Orders">Entradas</h5>
+                                <div class="d-flex align-items-center gap-2 my-3">
+                                    <div class="avatar-md flex-shrink-0">
+                                        <span class="avatar-title text-bg-success rounded-circle fs-22">
+                                            <i class="ti ti-stack-push"></i>
+                                        </span>
+                                    </div>
+                                    <h3 class="card-subtitle text-success" id="resumenEntradas">$0.00</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card mb-1">
+                            <div class="card-body">
+                                <h5 title="Sales Today">Salidas</h5>
+                                <div class="d-flex align-items-center gap-2 my-3">
+                                    <div class="avatar-md flex-shrink-0">
+                                        <span class="avatar-title text-bg-danger rounded-circle fs-22">
+                                            <i class="ti ti-stack-pop"></i>
+                                        </span>
+                                    </div>
+                                    <h3 class="card-subtitle text-danger" id="resumenSalidas">$0.00</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card mb-1">
+                            <div class="card-body">
+                                <h5 title="Total Revenue">Saldo final</h5>
+                                <div class="d-flex align-items-center gap-2 my-3">
+                                    <div class="avatar-md flex-shrink-0">
+                                        <span class="avatar-title text-bg-warning rounded-circle fs-22">
+                                            <i class="ti ti-wallet-off"></i>
+                                        </span>
+                                    </div>
+                                    <h3 class="card-subtitle text-primary" id="resumenSaldo">$0.00</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- end row -->
+                <div data-table="" data-table-rows-per-page="100" class="card">
+                    <div class="card-header border-light justify-content-between">
+                        <div class="d-flex gap-2">
+                            <div class="app-search">
+                                <input data-table-search="" type="search" class="form-control" placeholder="Buscar por nombre...">
+                                <i data-lucide="search" class="app-search-icon text-muted"></i>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <!-- Records Per Page -->
+                            <div>
+                                <select data-table-set-rows-per-page="" class="form-select form-control my-1 my-md-0">
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                    <option value="150">150</option>
+                                    <option value="200">200</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-success btn-icon" id="btnExportExcelHRCierres">
+                                <i data-lucide="file-spreadsheet" class="fs-lg"></i>
+                            </button>
+                            <button class="btn btn-info btn-icon" id="btnPrintHRCierres">
+                                <i data-lucide="printer" class="fs-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="tablaDetalleCierre" class="table table-custom table-centered table-select table-hover w-100 mb-0">
+                            <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                                <tr class="text-uppercase fs-xxs">
+                                    <th colspan="2">Sub-Mayor</th>
+                                    <th>Concepto</th>
+                                    <th class="text-end">Entradas</th>
+                                    <th class="text-end">Salidas</th>
+                                    <th class="text-end">Saldo</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer border-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div data-table-pagination-info="entradas"></div>
+                            <div data-table-pagination=""></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles {
+    <link href="~/Content/plugins/toastr/toastr.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+    }
+
+@section Scripts {
+    <script src="~/Scripts/plugins/toastr/toastr.min.js"></script>
+    <script src="~/Scripts/plugins/moment/moment.min.js"></script>
+    <script src="~/Scripts/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/Scripts/plugins/choices/choices.min.js"></script>
+    <script src="~/Scripts/plugins/table2excel/table2excel.js"></script>
+    <script src="~/Scripts/custom-table.js"></script>
+    <script>
+        $(document).ready(function () {
+            window.customTable = new CustomTable();
+            $('#tablaHistorialCierres').on('click', '.btnDetalles', function (e) {
+                const id = $(this).closest('tr').data('id');
+                const fecha_cierre = $(this).closest('tr').data('fecha');
+                const tentradas = $(this).closest('tr').data('entradas');
+                const tsalidas = $(this).closest('tr').data('salidas');
+                const saldo_cierre = $(this).closest('tr').data('saldo');
+                document.getElementById('tituloModalDetalle').textContent = `Detalle del cierre #${id} fecha: ${fecha_cierre} saldo final: ${saldo_cierre}`;
+                activarOverlayEnContenedor('#modalDetalleCierre');
+                e.preventDefault();
+                $.getJSON(`/Caja/ObtenerDetalleCierre/${id}`, function (data) {
+                    const tabla2 = window.customTable.tables[1];
+                    const rows = [];                        
+                   
+                    const bgMap = [                   
+                        { base: '#7CA9CD', soft: '#EDF2F8' }
+                    ];
+
+                    if (data.length > 0) {                      
+                        document.getElementById('resumenEntradas').textContent = tentradas;
+                        document.getElementById('resumenSalidas').textContent = tsalidas;
+                        document.getElementById('resumenSaldo').textContent = saldo_cierre;
+                    }
+
+                    data.forEach((c, i) => {
+                        const { base, soft } = bgMap[i % bgMap.length];
+                        // Fila principal con botón de colapso                     
+                        const trResumen = document.createElement('tr');
+                        trResumen.id = `resumen-${c.SubMayorID}`;  
+                        trResumen.dataset.id = c.SubMayorID;                
+                        trResumen.innerHTML = `
+                              <td colspan="2"><strong>${c.SubMayorNombre.toUpperCase()}</strong></td>                                               
+                              <td><strong>TOTAL</strong></td>                                               
+                              <td class="text-end entrada"><strong>${c.TotalEntradas > 0 ? `$${c.TotalEntradas.toFixed(2)}` : '-'}</strong></td>
+                              <td class="text-end salida"><strong>${c.TotalSalidas > 0 ? `$${c.TotalSalidas.toFixed(2)}` : '-'}</strong></td>
+                              <td class="text-end"><strong>$${c.SaldoFinal.toFixed(2)}</strong></td>`;
+                        rows.push(trResumen);                   
+                        // 2) Fila con todas las Entradas
+                        c.Entradas.forEach(m => {
+                            const trEnt = document.createElement('tr');                         
+                            trEnt.innerHTML = `                        
+                            <td colspan="2">${m.FechaTexto}</td>
+                            <td>${m.Concepto?.length > 50 ? m.Concepto.substring(0, 50) + '…' : m.Concepto}</td>
+                            <td class="text-end text-success"><strong>$${m.Monto.toFixed(2)}</strong></td>
+                            <td class="text-end">-</td>
+                            <td class="text-end"></td>`;
+                            rows.push(trEnt);
+                        });
+                        c.Salidas.forEach(m => {
+                            const trSal = document.createElement('tr');    
+                            trSal.classList.add('text-uppercase', 'fs-xxs');
+                            trSal.innerHTML = `              
+                           <td colspan="2">${m.FechaTexto}</td>
+                           <td>${m.Concepto?.length > 50 ? m.Concepto.substring(0, 50) + '…' : m.Concepto}</td>              
+                           <td class="text-end">-</td>
+                           <td class="text-end text-danger"><strong>$${m.Monto.toFixed(2)}</strong></td>
+                           <td class="text-end"></td>`;
+                            rows.push(trSal);
+                        });
+                    });
+                    const trResumen = document.createElement('tr');     
+                    trResumen.style.backgroundColor = '#FAFBFC';       
+                    trResumen.classList.add('text-uppercase', 'fs-xxs');
+                    trResumen.innerHTML = `
+                    <td colspan="3"><strong>TOTAL</strong></td>
+                    <td class="text-end"><strong>${tentradas}</strong></td>
+                    <td class="text-end"><strong>${tsalidas}</strong></td>
+                    <td class="text-end"><strong>$${saldo_cierre}</strong></td>`;
+                    rows.push(trResumen); 
+                    tabla2.fullRefresh(rows);
+                    $('#modalDetalleCierre').modal('show');       
+                    desactivarOverlayEnContenedor('#modalDetalleCierre');
+                }).fail(function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de conexión',
+                        text: 'No se pudo consultar los datos. Verifica tu conexión o intenta nuevamente.'
+                    });
+                });
+            });
+            document.getElementById("btnExportExcelHCierres").addEventListener("click", function () {
+                const exporter = new Table2Excel();
+                // Clona la tabla para no afectar el original
+                let tablaClonada = $("#tablaHistorialCierres").clone();
+                // Elimina las columnas que no deseas
+                tablaClonada.find("th:nth-child(9), td:nth-child(9)").remove(); // 10
+                // Export tabla
+                exporter.export(tablaClonada, "Historial Cierres", {
+                    exclude: ".noExport",
+                    name: "Exportación",
+                    filename: "HistorialCierres.xlsx",
+                    preserveColors: true
+                });
+
+            });
+            document.getElementById("btnPrintHCierres").addEventListener("click", function () {
+                let tablaClonada = $("#tablaHistorialCierres").clone();
+                tablaClonada.find(".noExport").remove();
+                const ventana = window.open('', '', 'height=1080,width=1920');
+                ventana.document.write(`
+                        <html>
+                        <head>
+                        <title>IMPRIMIR TABLA HISTORIAL CIERRE</title>
+                        <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 10px;
+                            font-size: 12px;
+                            color: #333;
+                        }
+                        h3 {
+                            margin-bottom: 5px;
+                            color: #004080;
+                        }
+                        p {
+                            margin: 0 0 10px;
+                            font-weight: bold;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 10px;
+                        }
+                        th, td {
+                            border: 1px solid #999;
+                            padding: 6px 4px;
+                            text-align: center;
+                        }
+                        thead {                         
+                            color: white;                           
+                        }
+                        tfoot td {
+                            background-color: #f0f0f0;
+                            font-weight: bold;
+                        }
+                        tr:nth-child(even) td {
+                            background-color: #f9f9f9;
+                            }
+                            media print {
+                         body {
+                             font-size: 12px;
+                         }
+                         }
+                         </style>
+                         </head>
+                         <body>
+                         ${tablaClonada[0].outerHTML}
+                         </body>
+                         </html>
+                         `);
+                ventana.document.close();
+                ventana.focus();
+                ventana.print();
+            });
+            document.getElementById("btnExportExcelHRCierres").addEventListener("click", function () {
+                const exporter = new Table2Excel();
+                // Clona la tabla para no afectar el original
+                let tablaClonada = $("#tablaDetalleCierre").clone();              
+                // Export tabla
+                exporter.export(tablaClonada, "Resumen de cierre", {
+                    exclude: ".noExport",
+                    name: "Exportación",
+                    filename: "HistorialCierres.xlsx",
+                    preserveColors: true
+                });
+
+            });
+            document.getElementById("btnPrintHRCierres").addEventListener("click", function () {
+                let tablaClonada = $("#tablaDetalleCierre").clone();
+                const baseUrl = window.location.origin;
+                const titulo = document.getElementById('tituloModalDetalle').textContent;     
+                tablaClonada.find(".noExport").remove();
+                const ventana = window.open('', '', 'height=1080,width=1920');
+                ventana.document.write(`
+                      <html>
+                      <head>
+                      <title>IMPRIMIR TABLA RESUMEN HISTORIAL CIERRE</title>    
+                      <style>
+                      body {
+                          font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+                          margin: 20px;
+                          font-size: 13px;
+                          color: #2c3e50;
+                          background-color: #fdfdfd;
+                      }
+                      
+                      h3 {
+                          margin-bottom: 8px;
+                          color: #2c3e50;
+                          font-size: 18px;
+                          border-bottom: 2px solid #3498db;
+                          padding-bottom: 4px;
+                      }
+                      
+                      p {
+                          margin: 0 0 12px;
+                          font-weight: 600;
+                          color: #34495e;
+                      }
+                      
+                      table {
+                          width: 100%;
+                          border-collapse: separate;
+                          border-spacing: 0;
+                          margin-top: 15px;
+                          box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+                          border-radius: 6px;
+                          overflow: hidden;
+                      }
+                      table td a,
+                      table th a {
+                          text-decoration: none;
+                          color: inherit; /* opcional: hereda el color del texto de la celda */
+                      }
+                      
+                      /* Borde inferior para todas las filas del cuerpo */
+                      tbody tr td {
+                          border-bottom: 1px solid #ccc;
+                          }
+                          
+                      thead {
+                          background-color: #3498db;
+                          color: white;
+                          font-weight: bold;
+                          text-transform: uppercase;
+                          letter-spacing: 0.5px;
+                      }
+                      
+                      thead th {
+                          background-color: #3498db;
+                          color: white;
+                          font-weight: bold;
+                          text-transform: uppercase;
+                          letter-spacing: 0.5px;
+                          border-bottom: 1px solid #2c3e50; /* Borde inferior elegante */
+                      }
+                      
+                      th, td {
+                          border: none;
+                          padding: 10px 8px;
+                          text-align: center;
+                          transition: background-color 0.3s ease;
+                      }
+                      
+                      tbody tr:hover td {
+                          background-color: #ecf0f1;
+                          }
+                          
+                      tr:nth-child(even) td {
+                          background-color: #f9fbfc;
+                          }
+                              
+                       /* Última fila resaltada */
+                       tbody tr:last-child td {
+                           background-color: #ffeaa7;
+                           border-bottom: 3px solid #d35400; /* cierre destacado */
+                           font-weight: bold;
+                           color: #2d3436;
+                       }
+                              
+                      tfoot td {
+                          background-color: #ecf0f1;
+                          font-weight: bold;
+                          color: #2c3e50;
+                      }
+                     </style>
+                     </head>
+                     <body class="bg-white">
+                     <div style="text-align:center; margin-bottom:10px;">
+                     <h2 style="margin:0;">Resumen Historial de Cierre</h2>
+                     <small>${titulo}</small>
+                     </div>
+                     ${tablaClonada[0].outerHTML}
+                     </body>                     
+                     </html>
+                       `);
+                ventana.document.close();
+                ventana.focus();
+                ventana.print();
+            });
+        });
+        function filtrarCierres() {
+            const cajaId = $('#filtroCajaID').val();
+            const desde = $('#filtroDesde').val();
+            const hasta = $('#filtroHasta').val();
+            $.get('/Caja/ObtenerHistorialCierres', {
+                cajaId: cajaId,
+                desde: desde,
+                hasta: hasta
+            }, function (data) {
+                refreshTable(data);
+            });
+        }
+        function refreshTable(data) {
+            // 1. Localiza <table> y su instancia
+            const tableEl = document.querySelector('[data-table]');
+            const instance = window.customTable.tables.find(t => t.table === tableEl);
+            const tbody = tableEl.querySelector("tbody");
+            tbody.innerHTML = "";
+            let ingresos = 0, egresos = 0;
+            const rows = data.map(c => {
+                const tr = document.createElement('tr');
+                tr.id = `${c.CierreID}`;
+                tr.dataset.id = c.CierreID;
+                tr.dataset.fecha = c.FechaTexto;
+                tr.dataset.entradas = c.TotalIngresos.toFixed(2);
+                tr.dataset.salidas = c.TotalEgresos.toFixed(2);
+                tr.dataset.saldo = c.SaldoFinal.toFixed(2);
+                tr.innerHTML = `
+                          <td>${c.FechaTexto}</td>
+                          <td>${c.Caja}</td>
+                          <td>$${c.TotalIngresos.toFixed(2)}</td>
+                          <td>$${c.TotalEgresos.toFixed(2)}</td>
+                          <td>$${c.SaldoFinal.toFixed(2)}</td>
+                          <td>${c.Usuario}</td>
+                          <td>${c.Observaciones}</td>
+                          <td>${c.Estado}</td>
+                          <td class="noExport">
+                          <div class="d-flex justify-content-center gap-1">
+                          <button class="btn btn-light btn-icon btn-sm rounded-circle btnDetalles"><i class="ti ti-info-circle fs-lg"></i></button>
+                          </div>
+                          </td>`;
+                return tr;
+            });
+            $('#totalIngresos').text(`$${ingresos.toFixed(2)}`);
+            $('#totalEgresos').text(`$${egresos.toFixed(2)}`);    
+            instance.fullRefresh(rows);
+        }
+        function activarOverlayEnContenedor(contenedorID) {
+            const contenedor = document.querySelector(contenedorID);
+            if (!contenedor) return;
+
+            const cards = contenedor.querySelectorAll('.card');
+            cards.forEach(card => {
+                let overlay = card.querySelector('.card-overlay');
+                if (!overlay) {
+                    overlay = document.createElement('div');
+                    overlay.classList.add(
+                        'card-overlay',
+                        'position-absolute',
+                        'top-0',
+                        'start-0',
+                        'w-100',
+                        'h-100',
+                        'd-flex',
+                        'justify-content-center',
+                        'align-items-center',
+                        'noExport'
+                    );
+
+                    overlay.style.zIndex = '10';
+                    const spinner = document.createElement('div');
+                    spinner.classList.add('spinner-border', 'text-primary');
+                    spinner.setAttribute('role', 'status');
+                    const label = document.createElement('span');
+                    label.classList.add('visually-hidden');
+                    label.textContent = 'Cargando...';
+                    spinner.appendChild(label);
+                    overlay.appendChild(spinner);
+                    card.appendChild(overlay);
+                }
+
+                overlay.style.display = 'flex';
+                $(overlay).hide().fadeIn(200);
+            });
+        }
+        function desactivarOverlayEnContenedor(contenedorID) {
+            const contenedor = document.querySelector(contenedorID);
+            if (!contenedor) return;
+            const overlays = contenedor.querySelectorAll('.card .card-overlay');
+            overlays.forEach(overlay => {
+                $(overlay).fadeOut(200, () => overlay.remove());
+            });
+        }
+    </script>
+}

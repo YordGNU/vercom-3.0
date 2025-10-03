@@ -23,7 +23,7 @@
             <div class="card-header border-light justify-content-between">
                 <div class="d-flex gap-2">
                     <div class="app-search">
-                        <input data-table-search="" type="search" class="form-control" placeholder="Search product name...">
+                        <input data-table-search="" type="search" class="form-control" placeholder="Buscar por nombre...">
                         <i data-lucide="search" class="app-search-icon text-muted"></i>
                     </div>
                     <button data-table-delete-selected="" data-table-delete-url="@Url.Action("EliminarMultiples","Producto")" type="button" class="btn btn-danger btn-icon d-none">
@@ -65,10 +65,10 @@
                     </div>
                 </div>
                 <div class="d-flex gap-1">
-                    <a href="@Url.Action("Create","Producto")" class="btn btn-secondary btn-icon">
+                    <button class="btn btn-secondary btn-icon" id="btnAgregarProducto">
                         <i class="ti ti-plus fs-xxl"></i>
-                    </a>
-                    <button class="btn btn-primary btn-icon" id="btnExportExcel">
+                    </button>
+                    <button class="btn btn-success btn-icon" id="btnExportExcel">
                         <i data-lucide="file-spreadsheet" class="fs-lg"></i>
                     </button>
                     <button class="btn btn-info btn-icon" id="btnPrint">
@@ -107,6 +107,251 @@
         </div>
     </div><!-- end col -->
 </div><!-- end row -->
+<div class="modal fade" id="modalAgregarProducto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">Agregar producto</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formAgregarProducto">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xxl-8">
+                            <div class="card">
+                                <div class="card-header d-block p-3">
+                                    <h4 class="card-title mb-1">Información del producto</h4>
+                                    <p class="text-muted mb-0">
+                                        Para agregar un nuevo producto, proporcione los detalles necesarios en los campos a continuación.
+                                    </p>
+                                </div> <!-- end card-header -->
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="nombre" class="form-label">Nombre del producto <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Entre el nombre del producto" required="">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label for="cod" class="form-label">Código <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="cod" name="cod" placeholder="SOFA-10058" required="">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label for="unidadid" class="form-label">Unidad <span class="text-danger">*</span></label>
+                                                <div class="app-search">
+                                                    <select class="form-select form-control my-1 my-md-0" id="unidadid" name="unidadid">
+                                                        @Html.Action("_listunidades", "Parcial")
+                                                    </select>
+                                                    <i data-lucide="box" class="app-search-icon text-muted"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> <!-- end card-body-->
+                            </div> <!-- end card-->
+                        </div> <!-- end col-->
+                        <div class="col-xxl-4">
+                            <div class="card">
+                                <div class="card-header d-block p-3">
+                                    <h4 class="card-title mb-1">Precios</h4>
+                                    <p class="text-muted mb-0">
+                                        Establezca el precio y el costo del producto.
+                                    </p>
+                                </div> <!-- end card-header -->
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="precio" class="form-label">Precio <span class="text-danger">*</span></label>
+                                        <div class="app-search">
+                                            <input type="text" class="form-control decimalVAL" id="precio" name="precio" step="0.01" placeholder="Precio (Ejemplo, 199,99)" required="">
+                                            <i data-lucide="dollar-sign" class="app-search-icon text-muted"></i>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="costo" class="form-label">Costo <span class="text-danger">*</span></label>
+                                        <div class="app-search">
+                                            <input type="text" class="form-control decimalVAL" id="costo" name="costo" step="0.01" placeholder="Costo (Ejemplo, 99,99)" required="">
+                                            <i data-lucide="hand-coins" class="app-search-icon text-muted"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-12">
+                            <div class="card">
+                                <div class="card-header d-block p-3">
+                                    <h4 class="card-title mb-1">Organizar</h4>
+                                    <p class="text-muted mb-0">
+                                        Organice su producto, seleccionando categoría y subcategoría adecuadas.
+                                    </p>
+                                </div> <!-- end card-header -->
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label for="category" class="form-label">Categoría <span class="text-danger">*</span></label>
+                                                <div class="app-search">
+                                                    <select class="form-select form-control my-1 my-md-0" id="categoriaid" name="categoriaid" required="">
+                                                        @Html.Action("_listcategorias", "Parcial")
+                                                    </select>
+                                                    <i data-lucide="tag" class="app-search-icon text-muted"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label for="subCategory" class="form-label">Sub Categoría<span class="text-danger"></span></label>
+                                                <div class="app-search">
+                                                    <select class="form-select form-control my-1 my-md-0" id="areaid" name="areaid">
+                                                        @Html.Action("_listareas", "Parcial")
+                                                    </select>
+                                                    <i data-lucide="tag" class="app-search-icon text-muted"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" id="btnGuardarMovimiento" class="btn btn-primary">Agregar</button>
+                </div>
+            </form>
+        </div>
+    </div> <!-- end modal dialog-->
+</div> <!-- end modal-->
+<div class="modal fade" id="modalEditarProducto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">Editar producto</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formEditarProducto">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="Edit_ProductoID" name="Edit_ProductoID" />
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xxl-8">
+                            <div class="card">
+                                <div class="card-header d-block p-3">
+                                    <h4 class="card-title mb-1">Información del producto</h4>
+                                </div> <!-- end card-header -->
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="Edit_Nombre" class="form-label">Nombre del producto <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="Edit_Nombre" name="Edit_Nombre" placeholder="Entre el nombre del producto" required="">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label for="Edit_Cod" class="form-label">Código <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="Edit_Cod" name="Edit_Cod" placeholder="SOFA-10058" required="">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label for="Edit_UnidadID" class="form-label">Unidad <span class="text-danger">*</span></label>
+                                                <div class="app-search">
+                                                    <select class="form-select form-control my-1 my-md-0" id="Edit_UnidadID" name="Edit_UnidadID">
+                                                        @Html.Action("_listunidades", "Parcial")
+                                                    </select>
+                                                    <i data-lucide="box" class="app-search-icon text-muted"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> <!-- end card-body-->
+                            </div> <!-- end card-->
+                        </div> <!-- end col-->
+                        <div class="col-xxl-4">
+                            <div class="card">
+                                <div class="card-header d-block p-3">
+                                    <h4 class="card-title mb-1">Precios</h4>
+                                </div> <!-- end card-header -->
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="Edit_Precio" class="form-label">Precio <span class="text-danger">*</span></label>
+                                        <div class="app-search">
+                                            <input type="text" class="form-control decimalVAL" id="Edit_Precio" name="Edit_Precio" step="0.01" placeholder="Precio (Ejemplo, 199,99)" required="">
+                                            <i data-lucide="dollar-sign" class="app-search-icon text-muted"></i>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="Edit_Costo" class="form-label">Costo <span class="text-danger">*</span></label>
+                                        <div class="app-search">
+                                            <input type="text" class="form-control decimalVAL" id="Edit_Costo" name="Edit_Costo" step="0.01" placeholder="Costo (Ejemplo, 99,99)" required="">
+                                            <i data-lucide="hand-coins" class="app-search-icon text-muted"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-12">
+                            <div class="card">
+                                <div class="card-header d-block p-3">
+                                    <h4 class="card-title mb-1">Organizar</h4>
+                                </div> <!-- end card-header -->
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <div class="mb-3">
+                                                <label for="Edit_CategoriaID" class="form-label">Categoría <span class="text-danger">*</span></label>
+                                                <div class="app-search">
+                                                    <select class="form-select form-control my-1 my-md-0" id="Edit_CategoriaID" name="Edit_CategoriaID" required="">
+                                                        @Html.Action("_listcategorias", "Parcial")
+                                                    </select>
+                                                    <i data-lucide="tag" class="app-search-icon text-muted"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-5">
+                                            <div class="mb-3">
+                                                <label for="Edit_AreaID" class="form-label">Sub Categoría<span class="text-danger"></span></label>
+                                                <div class="app-search">
+                                                    <select class="form-select form-control my-1 my-md-0" id="Edit_AreaID" name="Edit_AreaID">
+                                                        @Html.Action("_listareas", "Parcial")
+                                                    </select>
+                                                    <i data-lucide="tag" class="app-search-icon text-muted"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label d-block">Estado</label>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="Edit_Activo" id="radioActivo" value="true">
+                                                    <label class="form-check-label" for="radioActivo">Activo</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="Edit_Activo" id="radioInactivo" value="false">
+                                                    <label class="form-check-label" for="radioInactivo">Inactivo</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" id="btnGuardarMovimiento" class="btn btn-primary">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div> <!-- end modal dialog-->
+</div> <!-- end modal-->
 @section Styles {
     <link href="~/Content/plugins/toastr/toastr.min.css" rel="stylesheet" />
     <link href="~/Content/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
@@ -117,16 +362,122 @@
     <script src="~/Scripts/plugins/table2excel/table2excel.js"></script>
     <script src="~/Scripts/custom-table.js"></script>
     <script>
-        $(document).ready(function () {    
-
+        $(document).ready(function () {
             window.customTable = new CustomTable();
             iniciarVista();
+            $('#productosTable').on('click', '.btnEditar', function (e) {
+                const id = $(this).closest('tr').data('id');
+                const bloqueID = '#formEditarProducto';
+                activarOverlayEnContenedor(bloqueID);
+                $.getJSON(`/Producto/ObtenerProductoPorId/${id}`, function (res) {                  
+                    //Asignar valores al modal
+                    const m = res.iData[0];
+                    $('#Edit_ProductoID').val(m.ProductoId);                
+                    $('#Edit_Nombre').val(m.Nombre);                
+                    $('#Edit_Cod').val(m.Cod);                
+                    $('#Edit_UnidadID').val(m.UnidadID);                
+                    $('#Edit_Precio').val(m.Precio);
+                    $('#Edit_Costo').val(m.Costo);                
+                    $('#Edit_CategoriaID').val(m.CategoriaID);                
+                    $('#Edit_AreaID').val(m.AreaID);   
+                    $('#radioActivo').prop('checked', m.Activo === true);
+                    $('#radioInactivo').prop('checked', m.Activo === false);                                
+                    $('#modalEditarProducto').modal('show');                 
+                }).fail(function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de conexión',
+                        text: 'No se pudo consultar los datos. Verifica tu conexión o intenta nuevamente.'
+                    });
+                }).always(() => desactivarOverlayEnContenedor(bloqueID));
+            });
+            $('#btnAgregarProducto').on('click', function (e) {
+                e.preventDefault();
+                $('#modalAgregarProducto').modal('show');
+            });
+            $('#formAgregarProducto').on("submit", function (e) {
+                $(".decimalVAL").each(function () {
+                    var valor = $(this).val().replace(".", ",");
+                    $(this).val(valor);
+                });
+                e.preventDefault();
+                $('#modalAgregarProducto').modal('hide');
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("Create", "Producto")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Producto agregado',
+                                text: 'Producto agregado correctamente, redireccionando a la lista.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            cargarTablaProductos();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '¡Error!',
+                                text: response.message
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Hubo un problema al enviar el formulario.'
+                        });
+                    }
+                });
+            });
+            $('#formEditarProducto').on('submit', function (e) {
+                e.preventDefault();               
+                $(".decimalVAL").each(function () {
+                    var valor = $(this).val().replace(".", ",");
+                    $(this).val(valor);
+                });
+
+                $.ajax({
+                    url: '@Url.Action("EditarProducto", "Producto")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (res) {
+                        if (res.exito) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Producto actualizado',
+                                text: res.mensaje,
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            $('#modalEditarProducto').modal('hide');
+                            cargarTablaProductos(); // Recarga la tabla
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: res.mensaje
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Hubo un problema al actualizar el movimiento.'
+                        });
+                    }
+                });
+            });
 
             function iniciarVista() {
                 // 🧠 Ejecutar en cascada sin dependencia entre ellas
                 try { cargarTablaProductos(); } catch (e) { console.error("Error al optener listado:", e.message); }
             }
-
             async function cargarTablaProductos() {
                 const url = '@Url.Action("GetProductos", "Producto")';
                 const bloqueID = '#bloque-Tproductos';
@@ -135,7 +486,6 @@
                     refreshTable(datos, bloqueID);
                 }
             }
-
             async function OptenerData(url, bloqueID) {
                 activarOverlayEnContenedor(bloqueID);
                 try {
@@ -161,7 +511,6 @@
                     return null;
                 }
             }
-          
             function refreshTable(data, bloqueID) {
                 const tableEl = document.querySelector('[data-table]');
                 const instance = window.customTable.tables.find(t => t.table === tableEl);
@@ -172,6 +521,7 @@
                 const rows = data.map(item => {
                     const tr = document.createElement('tr');
                     tr.id = `${item.ProductoID}`;
+                    tr.dataset.id = item.ProductoID;
                     tr.innerHTML = `
                     <td class="noExport">
                     <input class="form-check-input form-check-input-light fs-14 product-item-check mt-0" type="checkbox" value="${item.ProductoID}">
@@ -186,16 +536,14 @@
                     <td>${item.Costo}</td>
                     <td class="noExport">
                     <div class="d-flex justify-content-center gap-1">
-                    <a href="@Url.Action("Edit", "Producto")/${item.ProductoID}" class="btn btn-light btn-icon btn-sm rounded-circle"><i class="ti ti-edit fs-lg"></i></a>
-                    </div>
-                    </td>`;
+                    <button class="btn btn-light btn-icon btn-sm rounded-circle btnEditar"><i class="ti ti-edit fs-lg"></i></button>
+                    </div></td>`;
                     return tr;
                 });
 
                 instance.fullRefresh(rows);
                 setupCheckboxListeners();
-            }      
-
+            }
             function setupCheckboxListeners() {
                 let tableEl = document.querySelector('[data-table]');
                 let btnDeleteSelected = document.querySelector('[data-table-delete-selected]');
@@ -216,7 +564,6 @@
                         });
                     });
             }
-
             function activarOverlayEnContenedor(contenedorID) {
                 const contenedor = document.querySelector(contenedorID);
                 if (!contenedor) return;
@@ -263,7 +610,6 @@
                     $(overlay).fadeOut(200, () => overlay.remove());
                 });
             }
-
             document.getElementById("btnExportExcel").addEventListener("click", function () {
                 const exporter = new Table2Excel();
                 // Clona la tabla para no afectar el original
@@ -280,8 +626,8 @@
                 });
 
             });
-            document.getElementById("btnPrint").addEventListener("click", function () {            
-                let tablaClonada = $("#productosTable").clone();          
+            document.getElementById("btnPrint").addEventListener("click", function () {
+                let tablaClonada = $("#productosTable").clone();
                 tablaClonada.find(".noExport").remove();
                 const ventana = window.open('', '', 'height=1080,width=1920');
                 ventana.document.write(`
@@ -339,8 +685,8 @@
                 ventana.document.close();
                 ventana.focus();
                 ventana.print();
-            });  
-            
+            });
+
         });
     </script>
 }

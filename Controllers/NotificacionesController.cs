@@ -18,7 +18,7 @@ public class NotificacionesController : Controller
     {
         var hubContext = GlobalHost.ConnectionManager.GetHubContext<NotificacionesHub>();
         // Enviar la notificación a todos los clientes conectados
-        hubContext.Clients.All.RecibirNotificacion(mensaje);
+        hubContext.Clients.All.recibirNotificacion(mensaje);
         return Json(new { mensaje = "Notificación enviada." }, JsonRequestBehavior.AllowGet);
     }
 

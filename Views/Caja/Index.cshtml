@@ -60,7 +60,7 @@
                     <div class="col-auto">
                         <div class="input-group mb-2">
                             <button type="button" class="btn btn-primary w-100" id="btnFiltrar">
-                                <i data-lucide="search" class="me-2"></i> Filtrar
+                                <i data-lucide="filter" class="fs-lg"></i>
                             </button>
                         </div>
                     </div>
@@ -175,7 +175,7 @@
                     </div>
                 </div>
                 <div class="d-flex gap-1">
-                    <button class="btn btn-primary btn-icon" id="btnAgregarMovimiento">
+                    <button class="btn btn-secondary btn-icon" id="btnAgregarMovimiento">
                         <i class="ti ti-plus fs-xxl"></i>
                     </button>
                     <button class="btn btn-success btn-icon" id="btnExportExcel">
@@ -242,6 +242,7 @@
                             <div class="mb-3">
                                 <label for="TipoMovimiento" class="form-label">Tipo <span class="text-danger">*</span></label>
                                 <select class="form-select" id="TipoMovimiento" name="TipoMovimiento" required>
+                                    <option value="">Tipo de movimiento</option>
                                     <option value="Entrada">Entrada</option>
                                     <option value="Salida">Salida</option>
                                 </select>
@@ -398,6 +399,7 @@
                      //Asignar valores al modal
                     const m = res.iData[0];
                     $('#Edit_MovimientoID').val(m.MovimientoID);
+                    $('#Edit_SubMayorIDval').val(m.SubMayorID);
                     $('#SaldoSubMayor').val(m.SaldoSubMayor);
                     $('#SaldoSubMayorRes').val(m.SaldoSubMayor);
                     $('#TipoMovimiento').val(m.TipoMovimiento);
@@ -429,6 +431,7 @@
                     $(this).val(valor);
                 });
                 e.preventDefault();
+                $('#modalAgregarMovimiento').modal('hide');
                 $.ajax({
                  url: '@Url.Action("RegistrarMovimiento", "Caja")',
                  type: 'POST',
@@ -442,8 +445,8 @@
                              timer: 1500,
                              showConfirmButton: false
                          });
-                         $('#modalAgregarMovimiento').modal('hide');
                          cargarMovimientosCaja();
+                         cargarResumenFiltrado();
                      } else {
                          Swal.fire({
                              icon: 'error',
@@ -547,7 +550,129 @@
                 row.addClass('table-success');
                 setTimeout(() => row.removeClass('table-success'), 1000);
             }
+            document.getElementById("btnExportExcel").addEventListener("click", function () {
+                const exporter = new Table2Excel();
+                // Clona la tabla para no afectar el original
+                let tablaClonada = $("#tablaMovimientosCaja").clone();
+                // Elimina las columnas que no deseas
+                tablaClonada.find("th:nth-child(1), td:nth-child(1)").remove(); // 1
+                tablaClonada.find("th:nth-child(9), td:nth-child(9)").remove(); // 8
+                // Export tabla
+                exporter.export(tablaClonada, "Movimientos de caja", {
+                    exclude: ".noExport",
+                    name: "Exportación",
+                    filename: "Movimientos de caja.xlsx",
+                    preserveColors: true
+                });
 
+            });
+            document.getElementById("btnPrint").addEventListener("click", function () {
+                let tablaClonada = $("#tablaMovimientosCaja").clone();
+                tablaClonada.find(".noExport").remove();
+                const ventana = window.open('', '', 'height=1080,width=1920');
+                ventana.document.write(`
+                <html>
+                <head>
+                <title>IMPRIMIR TABLA MOVIMIENTOS</title>
+                <style>
+    body {
+        font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        margin: 20px;
+        font-size: 13px;
+        color: #2c3e50;
+        background-color: #fdfdfd;
+    }
+
+    h3 {
+        margin-bottom: 8px;
+        color: #2c3e50;
+        font-size: 18px;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 4px;
+    }
+
+    p {
+        margin: 0 0 12px;
+        font-weight: 600;
+        color: #34495e;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 15px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    table td a,
+    table th a {
+        text-decoration: none;
+        color: inherit; /* opcional: hereda el color del texto de la celda */
+    }
+
+    /* Borde inferior para todas las filas del cuerpo */
+    tbody tr td {
+        border-bottom: 1px solid #ccc;
+        }
+
+    thead {
+        background-color: #3498db;
+        color: white;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    thead th {
+        background-color: #3498db;
+        color: white;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #2c3e50; /* Borde inferior elegante */
+    }
+
+    th, td {
+        border: none;
+        padding: 10px 8px;
+        text-align: center;
+        transition: background-color 0.3s ease;
+    }
+
+    tbody tr:hover td {
+        background-color: #ecf0f1;
+        }
+
+    tr:nth-child(even) td {
+        background-color: #f9fbfc;
+        }
+
+     /* Última fila resaltada */
+     tbody tr:last-child td {
+         background-color: #ffeaa7;
+         border-bottom: 3px solid #d35400; /* cierre destacado */
+         font-weight: bold;
+         color: #2d3436;
+     }
+
+    tfoot td {
+        background-color: #ecf0f1;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+   </style>
+               </head>
+               <body>
+               ${tablaClonada[0].outerHTML}
+               </body>
+               </html>
+               `);
+                ventana.document.close();
+                ventana.focus();
+                ventana.print();
+            });
         });
         function cargarMovimientosCaja() {
             var url = '@Url.Action("ListarMovimientos", "Caja")';
@@ -597,11 +722,10 @@
             const instance = window.customTable.tables.find(t => t.table === tableEl);
             const tbody = tableEl.querySelector("tbody");
             tbody.innerHTML = "";
-            let ingresos = 0, egresos = 0;
             const rows = data.map(m => {
                 const tr = document.createElement('tr');
-                const tipColor = "";
-                if (m.TipoMovimiento === "Entrada") { }
+                tr.id = `${m.MovimientoID}`;
+                tr.dataset.id = m.MovimientoID;
                 tr.id = `${m.MovimientoID}`;
                 tr.dataset.id = m.MovimientoID;
                 tr.dataset.obs = m.Concepto;
@@ -614,7 +738,7 @@
                     <td class="tipo">${m.TipoMovimiento}</td>
                     <td class="monto">$${m.Monto.toFixed(2)}</td>
                     <td>${m.Concepto}</td>
-                    <td>${m.ReferenciaExterna}</td>
+                    <td>${m.ReferenciaExterna ? m.ReferenciaExterna :  '-' }</td>
                     <td>${m.MetodoPago}</td>
                     <td>${m.Usuario}</td>
                     <td class="noExport">
@@ -622,12 +746,8 @@
                     <button class="btn btn-light btn-icon btn-sm rounded-circle btn_edit btnEditar"><i class="ti ti-edit fs-lg"></i></button>
                     </div>
                     </td>`;
-                return tr;
-            });
-
-            $('#totalIngresos').text(`$${ingresos.toFixed(2)}`);
-            $('#totalEgresos').text(`$${egresos.toFixed(2)}`);
-            $('#saldoFinal').text(`$${(ingresos - egresos).toFixed(2)}`);
+                return tr;               
+            });       
             instance.fullRefresh(rows);
             setupCheckboxListeners();
         }
@@ -639,7 +759,6 @@
             let t = e.querySelectorAll('input[type="checkbox"]');
             let rows = Array.from(e.querySelectorAll("tr"));
             let filteredRows = [...rows];
-
             checkAllCheckBox &&
                 0 < t.length &&
                 t.forEach((e) => {

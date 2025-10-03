@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
@@ -34,23 +35,6 @@ namespace vercom.Controllers
             }
         }
 
-        [RBAC]
-        public ActionResult Details(int id = 0)
-        {
-            punto_venta punto_venta = db.punto_venta.Find(id);
-            if (punto_venta == null)
-            {
-                return HttpNotFound();
-            }
-            return View(punto_venta);
-        }
-
-        [RBAC]
-        public ActionResult Create()
-        {
-            return View();
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult Create(punto_venta punto_venta)
@@ -60,7 +44,7 @@ namespace vercom.Controllers
             {                           
                 db.punto_venta.Add(punto_venta);
                 db.SaveChanges();
-                return Json(new { success = true, redirectUrl = Url.Action("Index") });
+                return Json(new { success = true});
             }
 
             return Json(new
@@ -70,30 +54,42 @@ namespace vercom.Controllers
             });
         }
 
-        [RBAC]
-        public ActionResult Edit(int id = 0)
+        [HttpGet]
+        public JsonResult ObtenerPuntoPorId(int id)
         {
-            punto_venta punto_venta = db.punto_venta.Find(id);
-            if (punto_venta == null)
+            var m = db.punto_venta.Find(id);
+            if (m == null) return Json(new { exito = false, mensaje = "Punto no encontrado." }, JsonRequestBehavior.AllowGet);
+            var iData = new List<iPunto>();
+            iData.Add(new iPunto
             {
-                return HttpNotFound();
-            }
-            return View(punto_venta);
+             PuntoID =m.id,
+             Nombre = m.nombre,
+            });
+            return Json(new { exito = true, iData }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(punto_venta punto_venta)
+        public JsonResult EditarPunto(int Edit_PuntoID, string Edit_Nombre)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Entry(punto_venta).State = EntityState.Modified;
+
+                var punto = db.punto_venta.Find(Edit_PuntoID);
+                if (punto == null) return Json(new { success = false, message = "Punto no encontrado." });
+
+                // Actualización de campos    
+                punto.nombre = Edit_Nombre;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return Json(new { exito = true, mensaje = "Punto editado correctamente." });
             }
-            return View(punto_venta);
+            catch (Exception ex)
+            {
+                // Log opcional
+                return Json(new { success = false, message = "Error al editar: " + ex.Message });
+            }
         }
-        
+
         [HttpPost]
         public JsonResult EliminarMultiples(int[] ids)
         {

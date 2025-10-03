@@ -10,7 +10,7 @@ namespace vercom.Interfaces
 
         public int CierreID { get; set; }
         public DateTime FechaCierre { get; set; }
-        public string FechaTexto => FechaCierre.ToString("d");
+        public string FechaTexto => FechaCierre.ToString("g");
         public string Caja { get; set; }
         public decimal TotalIngresos { get; set; }
         public decimal TotalEgresos { get; set; }

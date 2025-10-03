@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Policy;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Xml.Linq;
@@ -27,12 +28,7 @@ namespace vercom.Controllers
             return View();
         }
 
-        public ActionResult Resumen()
-        {
-            return View();
-        }
-
-        public ActionResult HistorialCierres()
+        public ActionResult Historial()
         {
             return View();
         }
@@ -86,14 +82,7 @@ namespace vercom.Controllers
                 SaldoTotal = saldoCajaPrincipal
             }, JsonRequestBehavior.AllowGet);
 
-        }
-
-        [HttpGet]     
-        public JsonResult ObtenerDetalleCierre(int id)
-        {
-          var submayores = db.Cire
-            
-        }
+        }    
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -258,8 +247,8 @@ namespace vercom.Controllers
         public JsonResult ListaResumenSubMayores(int cajaId)
         {          
                 try
-                {
-                    var resumen = db.Database
+                {        
+                var resumen = db.Database
                         .SqlQuery<iSubMayoresResumen>(
                             "EXEC sp_ObtenerResumenSubMayoresPorCaja @p0", cajaId
                         )
@@ -281,7 +270,7 @@ namespace vercom.Controllers
         public JsonResult ObtenerHistorialCierres(int? cajaId, DateTime? desde, DateTime? hasta)
         {
             var iData = new List<iCierreCajaResumen>();
-            var cierres = db.CierreCaja.Where(c => c.CajaID == cajaId && c.FechaCierre >= desde && c.FechaCierre <= hasta).ToList();
+            var cierres = db.CierreCaja.Where(c => c.CajaID == cajaId && c.FechaCierre >= desde && c.FechaCierre <= hasta).OrderByDescending(c=>c.FechaCierre).ToList();
             foreach (var c in cierres)
             {
                 iData.Add(new iCierreCajaResumen
@@ -299,6 +288,65 @@ namespace vercom.Controllers
                 });
 
             }
+            return Json(iData, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult ObtenerDetalleCierre(int id)
+        {
+            var cierreActual = db.CierreCaja.Find(id);
+            if (cierreActual == null)
+                return Json(new { error = true, mensaje = "Cierre no encontrado." }, JsonRequestBehavior.AllowGet);
+
+            // Buscar el cierre anterior
+            var fechaInicio = db.CierreCaja
+                .Where(c => c.CajaID == cierreActual.CajaID &&
+                            c.Estado == "Confirmado" &&
+                            c.FechaCierre < cierreActual.FechaCierre)
+                .OrderByDescending(c => c.FechaCierre)
+                .Select(c => c.FechaCierre)
+                .FirstOrDefault();
+
+            if (fechaInicio == default(DateTime))
+                fechaInicio = cierreActual.FechaCierre.AddHours(-8);
+
+            var CierreSubMayores = db.CierreSubMayor
+                .Where(c => c.CierreID == id)
+                .ToList();
+
+            var iData = new List<iCierreSubMayorResumen>();
+
+            foreach (var item in CierreSubMayores)
+            {
+                var movimientos = db.MovimientoCaja
+                    .Where(m => m.SubMayorID == item.SubMayorID &&
+                                m.Fecha > fechaInicio &&
+                                m.Fecha <= cierreActual.FechaCierre)
+                    .OrderBy(m => m.Fecha)
+                    .Select(m => new MovimientoDTO
+                    {
+                        Fecha = m.Fecha,
+                        TipoMovimiento = m.TipoMovimiento,
+                        Monto = m.Monto,              
+                        Concepto = m.Concepto,
+                        Referencia = m.ReferenciaExterna
+                    }).ToList();
+
+                var entradas = movimientos.Where(m => m.TipoMovimiento == "Entrada").ToList();
+                var salidas = movimientos.Where(m => m.TipoMovimiento == "Salida").ToList();
+
+                iData.Add(new iCierreSubMayorResumen
+                {
+                    Id = item.ID,
+                    FechaRegistro = (DateTime)item.FechaRegistro,
+                    CierreID = item.CierreID,
+                    SubMayorID = item.SubMayorID,
+                    SubMayorNombre = item.SubMayor.Nombre,
+                    SaldoFinal = item.SaldoFinal,
+                    Entradas = entradas,
+                    Salidas = salidas
+                });
+            }
+
             return Json(iData, JsonRequestBehavior.AllowGet);
         }
 
@@ -384,21 +432,35 @@ namespace vercom.Controllers
         }
 
         [HttpPost]
-        public JsonResult EliminarMovimiento(int id)
-        {
-            using (var db = new VERCOMEntities())
+        public JsonResult EliminarMultiples(int[] ids)
+        {           
+            var movimientos = db.MovimientoCaja.Where(o => ids.Contains(o.MovimientoID)).ToList();
+            foreach(var item in movimientos)
             {
-                var movimiento = db.MovimientoCaja.Find(id);
-                if (movimiento == null)
-                    return Json(new { exito = false, mensaje = "Movimiento no encontrado." });
+                var validation = db.Database
+                        .SqlQuery<iCajaCierreValidacion>(
+                            "EXEC sp_ValidarCajaCerrada @p0, @p1",
+                            item.SubMayor.CajaID,              // id de la caja
+                            item.Fecha       // fecha/hora del movimiento
+                        )
+                        .FirstOrDefault();
 
-                db.MovimientoCaja.Remove(movimiento);
-                db.SaveChanges(); // Trigger SQL revierte saldos y registra auditoría
+                if (validation != null && validation.EstaCerrada == 1)
+                {
+                    // Ya cerrada: abortar e informar al usuario
+                    var f = validation.FechaHoraCierre?.ToString("yyyy-MM-dd HH:mm");
+                    return Json(new
+                    {
+                        exito = false,
+                        mensaje = $"No se puede eliminar. La caja ya fue cerrada el {validation.FechaHoraCierre}."
+                    });
+                }
 
-                return Json(new { exito = true });
             }
+            db.MovimientoCaja.RemoveRange(movimientos);
+            db.SaveChanges();
+            return Json(new { success = true });
         }
-
         [HttpPost]
         public JsonResult CierreDiario(int cajaId, string usuario, string observaciones)
         {

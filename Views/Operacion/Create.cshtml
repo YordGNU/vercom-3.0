@@ -20,7 +20,7 @@
 </div>
 <div class="row justify-content-center">
     <div class="col-xxl-12">
-        <form id="formOperacion">
+        <form id="formOperacion" role="form" method="post" action="@Url.Action("Create", "Operacion")">
             @Html.AntiForgeryToken()
             <div class="row">
                 <div class="col-xxl-6">
@@ -91,7 +91,7 @@
                         </div> <!-- end card-body-->
                     </div> <!-- end card-->
                 </div> <!-- end col-->
-                <div class="col-xxl-6">
+                <div class="col-xxl-6" id="bloque_producto">
                     <div class="card">
                         <div class="card-header d-block p-3">
                             <h4 class="card-title mb-1">Información del producto</h4>
@@ -205,16 +205,37 @@
                     </div>
                 </div>
                 <div class="col-xxl-12">
-                    <div class="card" data-table="" data-table-rows-per-page="10" id="dtableOperaciones">
-                        <div class="card-header d-block p-3">
-                            <h4 class="card-title mb-1">Organizar</h4>
-                            <p class="text-muted mb-0">
-                                Organice su producto, seleccionando categoría y subcategoría adecuadas.
-                            </p>
-                        </div> <!-- end card-header -->
+                    <div class="card" data-table="" data-table-rows-per-page="100" id="dtableOperaciones">
+                        <div class="card-header border-light justify-content-between">
+                            <div class="d-flex gap-2">
+                                <div class="app-search">
+                                    <input data-table-search="" type="search" class="form-control" placeholder="Buscar por nombre...">
+                                    <i data-lucide="search" class="app-search-icon text-muted"></i>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <!-- Records Per Page -->
+                                <div>
+                                    <select data-table-set-rows-per-page="" class="form-select form-control my-1 my-md-0">
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="150">150</option>
+                                        <option value="200">200</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-1">
+                                <button class="btn btn-success btn-icon" id="btnExportExcel">
+                                    <i data-lucide="file-spreadsheet" class="fs-lg"></i>
+                                </button>
+                                <button class="btn btn-info btn-icon" id="btnPrint">
+                                    <i data-lucide="printer" class="fs-lg"></i>
+                                </button>
+                            </div>
+                        </div>
                         <div class="card-body">
                             <div class="row">
-                                <table id="productos-table"
+                                <table id="tablaProductos"
                                        class="table table-custom table-centered table-select table-hover w-100 mb-0">
                                     <thead class="thead-sm text-uppercase fs-xxs">
                                         <tr class="text-uppercase fs-xxs">
@@ -232,7 +253,11 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="card-footer">
+                        <div class="card-footer border-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div data-table-pagination-info="entradas"></div>
+                                <div data-table-pagination=""></div>
+                            </div>
                             <div class="mt-2 mb-2 d-flex gap-2 justify-content-end">
                                 <a href="@Url.Action("Index")" class="btn btn-soft-dark">
                                     <i data-lucide="arrow-big-left-dash" class="fs-xxl me-2"></i> Regresar
@@ -250,14 +275,15 @@
 </div>
 @section Styles {
     <link href="~/Content/plugins/toastr/toastr.min.css" rel="stylesheet" />
-    <link href="~/Content/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+    <link href="~/Content/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" /> 
+    <link href="~/Content/plugins/chosen/bootstrap-chosen.css" rel="stylesheet" /> 
 }
 
 @section Scripts {
     <script src="~/Scripts/plugins/toastr/toastr.min.js"></script>
     <script src="~/Scripts/plugins/moment/moment.min.js"></script>
     <script src="~/Scripts/plugins/daterangepicker/daterangepicker.js"></script>
-    <script src="~/Scripts/plugins/choices/choices.min.js"></script>
+    <script src="~/Scripts/plugins/chosen/chosen.jquery.min.js"></script>
     <script src="~/Scripts/custom-table.js"></script>
     <script>
         $(document).ready(function () {
@@ -265,11 +291,15 @@
             let index = 0;
             const formato = 'DD/MM/YYYY';
             const selectProductos = document.getElementById('productoid');
-            const choicesProductos = new Choices(selectProductos, {
-                removeItemButton: true,
-                searchEnabled: true,
-                placeholderValue: 'Seleccione un producto',
+
+            $(selectProductos).chosen({
+                disable_search_threshold: 0, // Habilita búsqueda siempre
+                no_results_text: "Producto no encontrado",
+                placeholder_text_single: "Seleccione un producto",
+                search_contains: true, // Permite buscar en cualquier parte del texto
+                allow_single_deselect: true // Permite quitar selección si es select único
             });
+
             $('#fecha').daterangepicker({
                 startDate: moment().startOf('month'),
                 endDate: moment().endOf('month'),
@@ -295,83 +325,103 @@
             }, function (start) {
                 $('#fecha').val(start.format(formato));
             });
+
             $('#fecha').on('change', function () {
                 $("#punto_ventaid").val("0");
                 $("#tipo_operacionid").val("0");
-                $("#totalImporte").textContent = "0";
-                limpiarTablaProductos();
-                // Limpiar opciones del select
-                choicesProductos.clearChoices();
-                choicesProductos.clearStore();
+                $("#totalImporte").text("0"); // ← corregido: textContent no aplica en jQuery
 
+                limpiarTablaProductos();
+
+                // Limpiar opciones del select
+                const $select = $('#productoid');
+                // Eliminar todas las opciones excepto la primera (placeholder)
+                $select.find('option:not(:first)').remove();
+                // Resetear el valor del select
+                $select.val('').trigger('chosen:updated');
             });
+
             $('#tipo_operacionid').on('change', function () {
                 $("#punto_ventaid").val("0");
-                $("#totalImporte").textContent = "0";
+                $("#totalImporte").text("0"); // ← corregido: textContent no aplica en jQuery
+
                 limpiarTablaProductos();
+
                 // Limpiar opciones del select
-                choicesProductos.clearChoices();
-                choicesProductos.clearStore();
+                const $select = $('#productoid');
+                // Eliminar todas las opciones excepto la primera (placeholder)
+                $select.find('option:not(:first)').remove();
+                // Resetear el valor del select
+                $select.val('').trigger('chosen:updated');
             });
+
             $('#punto_ventaid').on('change', function () {
-                const url = '@Url.Action("_productosXpuntoFilCategoria", "Parcial")';
-                const fecha = document.getElementById("fecha").value;
-                const categoria = document.getElementById("categoria_id").value;
+                const url = '@Url.Action("_productoSaldoXpuntoXfechaXcateg", "Parcial")';
+                const fecha = $("#fecha").val();
+                const categoria = $("#categoria_id").val();
                 const operTipo = $("#tipo_operacionid").val();
                 const option = $("#punto_ventaid").val();
-                limpiarTablaProductos();
-                // Limpiar opciones del select
-                choicesProductos.clearChoices();
-                choicesProductos.clearStore();
+
+                activarOverlayEnContenedor('#bloque_producto');
 
                 $.getJSON(url, { id: option, tipo: operTipo, fecha: fecha, categ: categoria }, function (data) {
-                    // Filtrar y validar opciones con ID válido
-                    const opciones = data.filter(item => item.id && item.id !== "" && item.id !== "0").map((item, i) => ({
-                        value: item.id,
-                        label: `( ${item.cod} ) - ${item.nombre}`,
-                        selected: i === 0, // seleccionar el primero automáticamente
-                        customProperties: {
-                            precio: item.precio,
-                            cantidad: item.cant_saldo
-                        }
-                    }));
-                    choicesProductos.setChoices(opciones, 'value', 'label', true);
+                    limpiarTablaProductos();
+                    const $select = $('#productoid');
+                    $select.empty(); // Elimina todas las opciones
+                    // Agrega el placeholder
+                    $select.append('<option value="">Seleccione un producto</option>');
+                    // Agrega las nuevas opciones
+                    data.forEach(item => {
+                        const texto = `${item.cod} ${item.nombre}`;
+                        const optionHTML = `<option value="${item.id}" data-precio="${item.precio}" data-cantidad="${item.cant_saldo}">${texto}</option>`;
+                        $select.append(optionHTML);
+                    });
+                    // Actualiza Chosen visualmente
+                    $select.trigger('chosen:updated');
+                    desactivarOverlayEnContenedor('#bloque_producto');
                 });
             });
+
             $('#categoria_id').on('change', function () {
                 var url = '@Url.Action("_productosXpuntoFilCategoria", "Parcial")';
-                var fecha = document.getElementById("fecha").value;
-                var categoria = document.getElementById("categoria_id").value;
+                var fecha = $("#fecha").val();
+                var categoria = $("#categoria_id").val();
                 var operTipo = $("#tipo_operacionid").val();
                 var option = $("#punto_ventaid").val();
+
+                activarOverlayEnContenedor('#bloque_producto');
                 $.getJSON(url, { id: option, tipo: operTipo, fecha: fecha, categ: categoria }, function (data) {
-                    // Preparar array de opciones para Choices
-                    const opciones = data.map(item => ({
-                        value: item.id,
-                        label: `( ${item.cod} ) - ${item.nombre}`,
-                        customProperties: {
-                            precio: item.precio,
-                            cantidad: item.cant_saldo
-                        }
-                    }));
-                    // Limpiar y actualizar el select
                     limpiarTablaProductos();
-                    choicesProductos.clearChoices();
-                    choicesProductos.setChoices(opciones, 'value', 'label', true);
+                    const $select = $('#productoid');
+                    $select.empty(); // Elimina todas las opciones
+                    // Agrega el placeholder
+                    $select.append('<option value="">Seleccione un producto</option>');
+                    // Agrega las nuevas opciones con atributos personalizados
+                    data.forEach(item => {
+                        const texto = `${item.cod} ${item.nombre}`;
+                        const optionHTML = `<option value="${item.id}" data-precio="${item.precio}" data-cantidad="${item.cant_saldo}">${texto}</option>`;
+                        $select.append(optionHTML);
+                    });
+                    // Refresca Chosen visualmente
+                    $select.val('').trigger('chosen:updated');
+                    desactivarOverlayEnContenedor('#bloque_producto');
                 });
             });
+
             $("#agregarProducto").on('click', function () {
                 const tipoOperacion = $("#tipo_operacionid").val();
-                const seleccion = choicesProductos.getValue();
-                if (!seleccion || !seleccion.value || seleccion.value === "0") {
+                const $select = $("#productoid");
+                const productoID = $select.val();
+
+                if (!productoID || productoID === "0") {
                     alert("Seleccione un producto y agregue una cantidad válida.");
                     return;
                 }
-                const productoID = seleccion.value;
-                const productoNombre = seleccion.label;
-                const customProps = seleccion.customProperties || {};
-                const precioUnitario = parseFloat(customProps.precio) || 0;
-                const cantidadEnPuntoVenta = parseFloat(customProps.cantidad) || 0;
+
+                const $option = $select.find(`option[value='${productoID}']`);
+                const productoNombre = $option.text();
+                const precioUnitario = parseFloat($option.data("precio")) || 0;
+                const EnPunto = parseFloat($option.data("cantidad")) || 0;
                 const nuevaCantidad = parseFloat($("#cantidad").val()) || 0;
                 const ESTADO = (tipoOperacion === "2") ? "" : "disabled";
 
@@ -379,33 +429,25 @@
                 const $filasProducto = productoExisteEnTabla(productoID);
 
                 if ($filaExistente.length > 0) {
-                    // ✅ Ya existe: actualizar cantidad
                     const $inputCantidad = $filaExistente.find("input[id*='.Cantidad']");
                     const cantidadActual = parseFloat($inputCantidad.val()) || 0;
                     const nuevaCantidadTotal = cantidadActual + nuevaCantidad;
                     $inputCantidad.val(nuevaCantidadTotal.toFixed(2));
-                    // 🔁 Disparar actualización
                     actualizarImporte($inputCantidad[0]);
                 } else {
-                    // 🆕 No existe: crear nueva fila
-                    // 🔁 Siempre actualizar cantidad restante global si el producto existe
-
-                    const cantidadRestante = (tipoOperacion === "1" || tipoOperacion === "5")
-                        ? (cantidadEnPuntoVenta + nuevaCantidad).toFixed(2)
-                        : (cantidadEnPuntoVenta - nuevaCantidad).toFixed(2);
+                    const Restante = (tipoOperacion === "1" || tipoOperacion === "5")
+                        ? (EnPunto + nuevaCantidad).toFixed(2)
+                        : (EnPunto - nuevaCantidad).toFixed(2);
 
                     const importeTotal = (nuevaCantidad * precioUnitario).toFixed(2);
 
-                    const fila = crearFilaProducto(index, productoID, productoNombre, cantidadEnPuntoVenta, nuevaCantidad, precioUnitario, cantidadRestante, importeTotal, ESTADO);
-                    $("#productos-table tbody").append(fila);
+                    const fila = crearFilaProducto(index, productoID, productoNombre, EnPunto, nuevaCantidad, precioUnitario, Restante, importeTotal, ESTADO);
+                    $("#tablaProductos tbody").append(fila);
 
                     if ($filasProducto.length > 0) {
-                        // ✅ Ya existe: actualizar cantidad
                         const $inputCantidad = $filasProducto.find("input[id*='.Cantidad']");
                         const cantidadActual = parseFloat($inputCantidad.val()) || 0;
-                        const nuevaCantidadTotal = cantidadActual;
-                        $inputCantidad.val(nuevaCantidadTotal.toFixed(2));
-                        // 🔁 Disparar actualización
+                        $inputCantidad.val(cantidadActual.toFixed(2));
                         actualizarImporte($inputCantidad[0]);
                     }
 
@@ -418,20 +460,21 @@
                         calcularCantidadTotal();
                     });
 
-                    if (parseFloat(cantidadRestante) < 0) {
+                    if (parseFloat(Restante) < 0) {
                         fila.classList.add("bg-danger");
                     }
 
                     index++;
                 }
+
                 calcularImporteTotal();
                 calcularCantidadTotal();
                 refreshTable();
                 $("#cantidad").val("");
             });
+
             $("#formOperacion").on("submit", function (e) {
-                e.preventDefault();
-                const hayError = $("#productos-table tbody tr.bg-danger").length > 0;
+                const hayError = $("#tablaProductos tbody tr.bg-danger").length > 0;
                 if (hayError) {
                     e.preventDefault(); // ⛔ Evita el envío
                     Swal.fire({
@@ -445,10 +488,23 @@
                     var valor = $(this).val().replace(".", ",");
                     $(this).val(valor);
                 });
+
+                @*const operacion = {
+                    fecha: $('#fecha').val(), // formato dd/MM/yyyy o según cultura
+                    tipo_operacionid: parseInt($('#tipo_operacionid').val()),
+                    punto_ventaid: parseInt($('#punto_ventaid').val()),
+                    categoria_id: parseInt($('#categoria_id').val())
+                };
+                const productos = obtenerProductos(); // ← esta función debe devolver un array válido
+                console.log(operacion, productos);
                 $.ajax({
                     url: '@Url.Action("Create", "Operacion")',
                     type: 'POST',
-                    data: $(this).serialize(),
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({
+                        operacion: operacion,
+                        productos: productos
+                    }),
                     success: function (response) {
                         if (response.success) {
                             Swal.fire({
@@ -457,7 +513,7 @@
                                 text: 'Operación agregada correctamente.',
                                 timer: 2000,
                                 showConfirmButton: false
-                            });                     
+                            });
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -473,16 +529,17 @@
                             text: 'Hubo un problema al enviar el formulario.'
                         });
                     }
-                });
+                });*@
             });
         });
+
         $(document).on("click", ".eliminarProducto", function () {
             // Eliminar la fila del DOM
             const fila = this.closest("tr");
             if (fila) fila.remove();
 
             // Reindexar todos los inputs con nombre 'productos[#]'
-            const filas = document.querySelectorAll("#productos-table tbody tr");
+            const filas = document.querySelectorAll("#tablaProductos tbody tr");
             filas.forEach((row, i) => {
                 row.querySelectorAll("input[name^='productos'], select[name^='productos']").forEach(input => {
                     const name = input.getAttribute("name");
@@ -498,30 +555,77 @@
             calcularImporteTotal();
             calcularCantidadTotal();
         });
+        function activarOverlayEnContenedor(contenedorID) {
+            const contenedor = document.querySelector(contenedorID);
+            if (!contenedor) return;
+
+            const cards = contenedor.querySelectorAll('.card');
+            cards.forEach(card => {
+                let overlay = card.querySelector('.card-overlay');
+                if (!overlay) {
+                    overlay = document.createElement('div');
+                    overlay.classList.add(
+                        'card-overlay',
+                        'position-absolute',
+                        'top-0',
+                        'start-0',
+                        'w-100',
+                        'h-100',
+                        'd-flex',
+                        'justify-content-center',
+                        'align-items-center',
+                        'noExport'
+                    );
+
+                    overlay.style.zIndex = '10';
+                    const spinner = document.createElement('div');
+                    spinner.classList.add('spinner-border', 'text-primary');
+                    spinner.setAttribute('role', 'status');
+                    const label = document.createElement('span');
+                    label.classList.add('visually-hidden');
+                    label.textContent = 'Cargando...';
+                    spinner.appendChild(label);
+                    overlay.appendChild(spinner);
+                    card.appendChild(overlay);
+                }
+
+                overlay.style.display = 'flex';
+                $(overlay).hide().fadeIn(200);
+            });
+        }
+        function desactivarOverlayEnContenedor(contenedorID) {
+            const contenedor = document.querySelector(contenedorID);
+            if (!contenedor) return;
+            const overlays = contenedor.querySelectorAll('.card .card-overlay');
+            overlays.forEach(overlay => {
+                $(overlay).fadeOut(200, () => overlay.remove());
+            });
+        }
         function productoYaExiste(productoID, tipoPagoID) {
-            return $("#productos-table tbody tr").filter(function () {
+            return $("#tablaProductos tbody tr").filter(function () {
                 const id = $(this).find("input[name*='.ProductoID']").val();
                 const pago = $(this).find("select[name*='.TipoPagoID']").val();
                 return parseInt(id) === parseInt(productoID) && parseInt(pago) === tipoPagoID;
             });
         }
         function productoExisteEnTabla(productoID) {
-            return $("#productos-table tbody tr").filter(function () {
+            return $("#tablaProductos tbody tr").filter(function () {
                 const id = $(this).find("input[name*='.ProductoID']").val();
                 return parseInt(id) === parseInt(productoID);
             });
         }
-        function crearFilaProducto(index, productoID, productoNombre, cantidadEnPuntoVenta, cantidad, precioUnitario, cantidadRestante, importeTotal, ESTADO) {
+        function crearFilaProducto(index, productoID, productoNombre, EnPunto, cantidad, precioUnitario, Restante, importeTotal, ESTADO) {
 
             const fila = document.createElement("tr");
+            fila.dataset.id = productoID;
             fila.innerHTML = `
                     <td>
                     ${productoNombre}
                     <input type="hidden" id="productos[${index}].ProductoID" name="productos[${index}].ProductoID" value="${productoID}" />
                     </td>
                     <td>
-                    ${cantidadEnPuntoVenta}
-                    <input type="text" class="decimalVAL" name="productos[${index}].CantidadEnPuntoVenta" value="${cantidadEnPuntoVenta}" step="0.01" style="display:none" />
+                    ${EnPunto}
+                    <input type="text" class="decimalVAL" name="productos[${index}].EnPunto" value="${EnPunto}" step="0.01" style="display:none" />
                     </td>
                     <td>
                     <input type="text" class="form-control decimalVAL cantidadProducto"  id="productos[${index}].Cantidad" name="productos[${index}].Cantidad" value="${cantidad}" step="0.01" required="">
@@ -532,8 +636,8 @@
                     </select>
                     </td>
                     <td>
-                    <span class="cantidadRestante">${cantidadRestante}</span>
-                    <input type="text" class="decimalVAL" name="productos[${index}].CantidadRestante" value="${cantidadRestante}" step="0.01" style="display:none" />
+                    <span class="Restante">${Restante}</span>
+                    <input type="text" class="decimalVAL" name="productos[${index}].Restante" value="${Restante}" step="0.01" style="display:none" />
                     </td>
                     <td>
                     ${precioUnitario}
@@ -541,7 +645,7 @@
                     </td>
                     <td>
                     <span class="importeProducto">${importeTotal}</span>
-                    <input type="text" class="decimalVAL" name="productos[${index}].Importe" value="${importeTotal}" step="0.01" style="display:none" />
+                    <input type="text" class="decimalVAL Importe" name="productos[${index}].Importe" value="${importeTotal}" step="0.01" style="display:none" />
                     </td>
                     <td>
                     <div class="d-flex justify-content-center gap-1">
@@ -552,6 +656,31 @@
                     </td>`;
             return fila;
         }
+        function obtenerProductos() {
+            const lista = [];
+            $('#tablaProductos tbody tr').each(function () {
+                const $fila = $(this);
+                const productoID = parseInt($fila.data('id'));
+                const cantidad = parseFloat($fila.find('input[name*=".Cantidad"]').val()?.replace(",", "."));
+                const Restante = parseFloat($fila.find('input[name*=".Restante"]').val()?.replace(",", "."));
+                const EnPunto = parseFloat($fila.find('input[name*=".EnPunto"]').val()?.replace(",", "."));
+                const precioUnitario = parseFloat($fila.find('input[name*=".PrecioUnitario"]').val()?.replace(",", "."));
+                const importe = parseFloat($fila.find('input[name*=".Importe"]').val()?.replace(",", "."));
+                const tipoPagoID = parseInt($fila.find('select[name*=".TipoPagoID"]').val());
+                if (!productoID || isNaN(cantidad)) return; // Evita registros inválidos
+                lista.push({
+                    ProductoID: productoID,
+                    Cantidad: cantidad,
+                    CantidadRestante: Restante,
+                    CantidadEnPuntoVenta: EnPunto,
+                    PrecioUnitario: precioUnitario,
+                    Importe: importe,
+                    TipoPagoID: tipoPagoID
+                });
+            });
+
+            return lista;
+        }
         function actualizarImporte(elemento) {
             const tipoOperacion = document.getElementById("tipo_operacionid").value;
             const fila = elemento.closest("tr");
@@ -559,7 +688,7 @@
 
             // Accede directamente a las celdas por índice
             const precioUnitario = parseFloat(fila.cells[5].textContent) || 0;
-            const cantidadEnPuntoVenta = parseFloat(fila.cells[1].textContent) || 0;
+            const EnPunto = parseFloat(fila.cells[1].textContent) || 0;
 
             // Calcular importe individual
             const importeTotal = (cantidad * precioUnitario).toFixed(2);
@@ -579,7 +708,7 @@
             // 🔁 Recalcular cantidad total vendida (efectivo + transferencia)
             let cantidadTotalVendida = 0;
 
-            const filasProducto = document.querySelectorAll(`#productos-table tbody tr`);
+            const filasProducto = document.querySelectorAll(`#tablaProductos tbody tr`);
             filasProducto.forEach(f => {
                 const id = f.querySelector("input[name*='.ProductoID']")?.value;
                 const tipoPago = f.querySelector("input[name*='.TipoPagoID']")?.value;
@@ -593,19 +722,19 @@
             });
 
             // ➖ Calcular nueva cantidad restante
-            const nuevaCantidadRestante = (tipoOperacion === "1" || tipoOperacion === "5")
-                ? (cantidadEnPuntoVenta + cantidadTotalVendida).toFixed(2)
-                : (cantidadEnPuntoVenta - cantidadTotalVendida).toFixed(2);
+            const nuevaRestante = (tipoOperacion === "1" || tipoOperacion === "5")
+                ? (EnPunto + cantidadTotalVendida).toFixed(2)
+                : (EnPunto - cantidadTotalVendida).toFixed(2);
 
             // 🔁 Actualizar todas las filas con ese ProductoID
             filasProducto.forEach(f => {
                 const id = f.querySelector("input[name*='.ProductoID']")?.value;
                 if (id === productoID) {
-                    const inputRestante = f.querySelector("input[name*='.CantidadRestante']");
-                    const spanRestante = f.querySelector(".cantidadRestante");
-                    if (inputRestante) inputRestante.value = nuevaCantidadRestante;
-                    if (spanRestante) spanRestante.textContent = nuevaCantidadRestante;
-                    if (parseFloat(nuevaCantidadRestante) < 0) {
+                    const inputRestante = f.querySelector("input[name*='.Restante']");
+                    const spanRestante = f.querySelector(".Restante");
+                    if (inputRestante) inputRestante.value = nuevaRestante;
+                    if (spanRestante) spanRestante.textContent = nuevaRestante;
+                    if (parseFloat(nuevaRestante) < 0) {
                         f.classList.add("bg-danger");
                     } else {
                         f.classList.remove("bg-danger");
@@ -622,7 +751,7 @@
             let importeEfectivo = 0;
             let importeTranferencia = 0;
 
-            const filas = document.querySelectorAll("#productos-table tbody tr");
+            const filas = document.querySelectorAll("#tablaProductos tbody tr");
             var operTipo = document.querySelector("#tipo_operacionid").value;
 
             filas.forEach(fila => {
@@ -649,7 +778,7 @@
             let importeEfectivo = 0;
             let importeTranferencia = 0;
 
-            const filas = document.querySelectorAll("#productos-table tbody tr");
+            const filas = document.querySelectorAll("#tablaProductos tbody tr");
             var operTipo = document.querySelector("#tipo_operacionid").value;
 
             filas.forEach(fila => {

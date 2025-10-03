@@ -12,13 +12,15 @@ namespace vercom.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class presupuesto
+    public partial class CierreSubMayor
     {
-        public int id { get; set; }
-        public Nullable<float> saldo { get; set; }
-        public Nullable<System.DateTime> fecha { get; set; }
-        public Nullable<int> areaid { get; set; }
+        public int ID { get; set; }
+        public int CierreID { get; set; }
+        public int SubMayorID { get; set; }
+        public decimal SaldoFinal { get; set; }
+        public Nullable<System.DateTime> FechaRegistro { get; set; }
     
-        public virtual area area { get; set; }
+        public virtual CierreCaja CierreCaja { get; set; }
+        public virtual SubMayor SubMayor { get; set; }
     }
 }

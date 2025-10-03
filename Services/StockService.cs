@@ -50,7 +50,7 @@ namespace vercom.Services
                     db.Notifications.Add(notificacion);
                     // Enviar notificación en tiempo real con SignalR
                     var hubContext = GlobalHost.ConnectionManager.GetHubContext<NotificacionesHub>();
-                    hubContext.Clients.Group(usuario.Rol).RecibirNotificacion(mensaje);
+                    hubContext.Clients.Group(usuario.Rol).recibirNotificacion(mensaje);
                 }               
             }
             db.SaveChanges(); // Guardar cambios en la BD

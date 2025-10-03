@@ -17,6 +17,7 @@ namespace vercom.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public SubMayor()
         {
+            this.CierreSubMayor = new HashSet<CierreSubMayor>();
             this.MovimientoCaja = new HashSet<MovimientoCaja>();
         }
     
@@ -27,6 +28,8 @@ namespace vercom.Models
         public Nullable<bool> Activo { get; set; }
     
         public virtual CajaPrincipal CajaPrincipal { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CierreSubMayor> CierreSubMayor { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MovimientoCaja> MovimientoCaja { get; set; }
     }

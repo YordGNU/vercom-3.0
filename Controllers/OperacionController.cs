@@ -106,131 +106,254 @@ namespace vercom.Controllers
             return View();
         }
 
+        //[HttpPost]
+        //public JsonResult Create(operacion operacion, List<iProductoOperacion> productos)
+        //{
+        //    try
+        //    {
+        //        var cvDateSal = operacion.fecha.Value.AddDays(-1);
+        //        var userName = HttpContext.User.Identity.Name;
+
+        //        var user = db.Users.FirstOrDefault(u => u.UserName == userName);
+        //        if (user == null)
+        //            return Json(new { success = false, message = "Usuario no encontrado." });
+
+        //        var rol = db.UserRoles.Where(u => u.Users.UserName == userName)
+        //                              .Select(u => u.Roles.RoleName)
+        //                              .FirstOrDefault();
+
+        //        var notificacionesParaGuardar = new List<Notifications>();
+        //        var operacionesParaGuardar = new List<operacion>();
+
+        //        var productosDB = db.producto.ToDictionary(x => x.id);
+
+        //        foreach (var item in productos)
+        //        {
+        //            if (!productosDB.ContainsKey(item.ProductoID)) continue;
+
+        //            var producto = productosDB[item.ProductoID];
+        //            var categoriaID = producto.categoriaid;
+
+        //            var existeCierreCategoria = db.operacion.Any(r =>
+        //                r.punto_ventaid == operacion.punto_ventaid &&
+        //                r.fecha == operacion.fecha &&
+        //                r.tipo_operacionid == 5 &&
+        //                r.producto.categoriaid == categoriaID);
+
+        //            if (existeCierreCategoria)
+        //            {
+        //                return Json(new
+        //                {
+        //                    success = false,
+        //                    message = $"No se pueden agregar operaciones: ya existe cierre en la fecha {operacion.fecha.Value:d}."
+        //                });
+        //            }
+
+        //            var puntoVenta = db.punto_venta.FirstOrDefault(p => p.id == operacion.punto_ventaid);
+        //            if (puntoVenta == null) continue;
+
+        //            float? cantidad = ConvertToFloat(item.Cantidad?.ToString());
+        //            float? importe = ConvertToFloat(item.Importe?.ToString());
+
+        //            if (cantidad == null)
+        //            {
+        //                return Json(new { success = false, message = "La cantidad ingresada no es válida." });
+        //            }
+
+        //            var saldo = db.operacion.FirstOrDefault(r =>
+        //                r.punto_ventaid == operacion.punto_ventaid &&
+        //                r.productoid == item.ProductoID &&
+        //                r.tipo_operacionid == 5 &&
+        //                r.fecha == cvDateSal);
+
+        //            var nuevaOperacion = new operacion
+        //            {
+        //                cantidad = cantidad,
+        //                fecha = operacion.fecha,
+        //                importe = importe,
+        //                productoid = item.ProductoID,
+        //                punto_ventaid = operacion.punto_ventaid,
+        //                tipo_operacionid = operacion.tipo_operacionid,
+        //                tipo_pagoid = operacion.tipo_operacionid == 2 ? (int?)item.TipoPagoID : null
+        //            };
+
+        //            operacionesParaGuardar.Add(nuevaOperacion);
+
+        //            var mensaje = $"Nueva operación para el producto {producto.nombre} - {producto.cod} en el punto de venta {puntoVenta.nombre}";
+
+        //            notificacionesParaGuardar.Add(new Notifications
+        //            {
+        //                UserId = user.UserID,
+        //                Message = mensaje,
+        //                CreatedAt = DateTime.Now,
+        //                Role = rol,
+        //                IsRead = false
+        //            });
+
+        //            if (saldo == null && operacion.tipo_operacionid != 5)
+        //            {
+        //                operacionesParaGuardar.Add(new operacion
+        //                {
+        //                    cantidad = 0,
+        //                    fecha = cvDateSal,
+        //                    importe = 0,
+        //                    productoid = item.ProductoID,
+        //                    punto_ventaid = operacion.punto_ventaid,
+        //                    tipo_operacionid = 5
+        //                });
+        //            }
+
+        //            db.trazas.Add(new trazas
+        //            {
+        //                fecha = DateTime.Now,
+        //                usuario = userName,
+        //                accion = "Registro de Operación",
+        //                descripcion = mensaje,
+        //                ip = Request.UserHostAddress,
+        //                modulo = "Operaciones"
+        //            });
+        //        }
+
+        //        db.operacion.AddRange(operacionesParaGuardar);
+        //        db.SaveChanges();
+
+        //        var hubContext = GlobalHost.ConnectionManager.GetHubContext<NotificacionesHub>();
+        //        foreach (var notificacion in notificacionesParaGuardar)
+        //        {
+        //            hubContext.Clients.All.recibirNotificacion(notificacion);
+        //        }
+
+        //        return Json(new { success = true, message = "Operaciones registradas correctamente.", redirectUrl = Url.Action("Index") });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = $"Error interno: {ex.Message}" });
+        //    }
+        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult Create(operacion operacion, List<iProductoOperacion> productos)
+        public ActionResult Create(operacion operacion, List<iProductoOperacion> productos)
         {
-            try
+            var cvDateSal = operacion.fecha.Value.AddDays(-1);
+            var userId = db.Users.Where(u => u.UserName == HttpContext.User.Identity.Name).Select(u => u.UserID).FirstOrDefault();
+            var Rol = db.UserRoles.Where(u => u.Users.UserName == HttpContext.User.Identity.Name).Select(u => u.Roles.RoleName).FirstOrDefault();
+
+            var notificacionesParaGuardar = new List<Notifications>();
+            var operacionesParaGuardar = new List<operacion>();
+            var trazasParaGuardar = new List<trazas>(); // Lista para trazas
+
+
+            // 🔥 Optimizar consultas: Obtener todos los productos en un diccionario
+            var productosDB = db.producto.ToDictionary(x => x.id);
+
+            foreach (var item in productos)
             {
-                var cvDateSal = operacion.fecha.Value.AddDays(-1);
-                var userName = HttpContext.User.Identity.Name;
 
-                var user = db.Users.FirstOrDefault(u => u.UserName == userName);
-                if (user == null)
-                    return Json(new { success = false, message = "Usuario no encontrado." });
+                if (!productosDB.ContainsKey(item.ProductoID)) continue; // Evita registros inválidos
 
-                var rol = db.UserRoles.Where(u => u.Users.UserName == userName)
-                                      .Select(u => u.Roles.RoleName)
-                                      .FirstOrDefault();
+                var producto = productosDB[item.ProductoID];
+                var categoriaID = producto.categoriaid;
+                var precio = producto.precio;
 
-                var notificacionesParaGuardar = new List<Notifications>();
-                var operacionesParaGuardar = new List<operacion>();
+                var existeCierreCategoria = db.operacion.Any(r =>
+                r.punto_ventaid == operacion.punto_ventaid &&
+                r.fecha == operacion.fecha &&
+                r.tipo_operacionid == 5 &&
+                r.producto.categoriaid == categoriaID);
 
-                var productosDB = db.producto.ToDictionary(x => x.id);
-
-                foreach (var item in productos)
+                if (existeCierreCategoria)
                 {
-                    if (!productosDB.ContainsKey(item.ProductoID)) continue;
+                    ViewBag.error = $"No se pueden agregar operaciones a un punto de venta si ya cerró en la fecha: {operacion.fecha.Value:d}";
+                    return View(operacion);
+                }
 
-                    var producto = productosDB[item.ProductoID];
-                    var categoriaID = producto.categoriaid;
+                var puntoVenta = db.punto_venta.Find(operacion.punto_ventaid);
+                if (puntoVenta == null) continue;
 
-                    var existeCierreCategoria = db.operacion.Any(r =>
-                        r.punto_ventaid == operacion.punto_ventaid &&
-                        r.fecha == operacion.fecha &&
-                        r.tipo_operacionid == 5 &&
-                        r.producto.categoriaid == categoriaID);
+                // 🔥 Corrección de formato numérico
+                var cantidadStr = item.Cantidad?.ToString().Replace(",", ".");
+                var importeStr = item.Importe?.ToString().Replace(",", ".");
 
-                    if (existeCierreCategoria)
+                var cantidad = string.IsNullOrWhiteSpace(cantidadStr) ? (float?)null : (float?)Convert.ToDecimal(cantidadStr, CultureInfo.InvariantCulture);
+                var importe = string.IsNullOrWhiteSpace(importeStr) ? (float?)null : (float?)Convert.ToDecimal(importeStr, CultureInfo.InvariantCulture);
+
+                if (cantidad == null)
+                {
+                    ViewBag.error = "Error: La cantidad ingresada no es válida.";
+                    return View(operacion);
+                }
+
+                var saldo = db.operacion.FirstOrDefault(r =>
+                    r.punto_ventaid == operacion.punto_ventaid &&
+                    r.productoid == item.ProductoID &&
+                    r.tipo_operacionid == 5 &&
+                    r.fecha == cvDateSal);
+
+
+
+                var nuevaOperacion = new operacion
+                {
+                    cantidad = cantidad,
+                    fecha = operacion.fecha,
+                    importe = importe,
+                    productoid = item.ProductoID,
+                    punto_ventaid = operacion.punto_ventaid,
+                    tipo_operacionid = operacion.tipo_operacionid,
+                    tipo_pagoid = operacion.tipo_operacionid == 2 ? (int?)item.TipoPagoID : null
+                };
+
+                operacionesParaGuardar.Add(nuevaOperacion);
+
+                var mensaje = $"Nueva operación de SALDO para el producto {producto.nombre} - {producto.cod} en el punto de venta {puntoVenta.nombre}";
+
+                notificacionesParaGuardar.Add(new Notifications
+                {
+                    UserId = userId,
+                    Message = mensaje,
+                    CreatedAt = DateTime.Now,
+                    Role = Rol,
+                    IsRead = false
+                });
+
+                if (saldo == null && operacion.tipo_operacionid != 5)
+                {
+                    var obj_saldo = new operacion
                     {
-                        return Json(new
-                        {
-                            success = false,
-                            message = $"No se pueden agregar operaciones: ya existe cierre de categoría en la fecha {operacion.fecha.Value:d}."
-                        });
-                    }
-
-                    var puntoVenta = db.punto_venta.FirstOrDefault(p => p.id == operacion.punto_ventaid);
-                    if (puntoVenta == null) continue;
-
-                    float? cantidad = ConvertToFloat(item.Cantidad?.ToString());
-                    float? importe = ConvertToFloat(item.Importe?.ToString());
-
-                    if (cantidad == null)
-                    {
-                        return Json(new { success = false, message = "La cantidad ingresada no es válida." });
-                    }
-
-                    var saldo = db.operacion.FirstOrDefault(r =>
-                        r.punto_ventaid == operacion.punto_ventaid &&
-                        r.productoid == item.ProductoID &&
-                        r.tipo_operacionid == 5 &&
-                        r.fecha == cvDateSal);
-
-                    var nuevaOperacion = new operacion
-                    {
-                        cantidad = cantidad,
-                        fecha = operacion.fecha,
-                        importe = importe,
+                        cantidad = 0,
+                        fecha = cvDateSal,
+                        importe = 0,
                         productoid = item.ProductoID,
                         punto_ventaid = operacion.punto_ventaid,
-                        tipo_operacionid = operacion.tipo_operacionid,
-                        tipo_pagoid = operacion.tipo_operacionid == 2 ? (int?)item.TipoPagoID : null
+                        tipo_operacionid = 5,
                     };
-
-                    operacionesParaGuardar.Add(nuevaOperacion);
-
-                    var mensaje = $"Nueva operación para el producto {producto.nombre} - {producto.cod} en el punto de venta {puntoVenta.nombre}";
-
-                    notificacionesParaGuardar.Add(new Notifications
-                    {
-                        UserId = user.UserID,
-                        Message = mensaje,
-                        CreatedAt = DateTime.Now,
-                        Role = rol,
-                        IsRead = false
-                    });
-
-                    if (saldo == null && operacion.tipo_operacionid != 5)
-                    {
-                        operacionesParaGuardar.Add(new operacion
-                        {
-                            cantidad = 0,
-                            fecha = cvDateSal,
-                            importe = 0,
-                            productoid = item.ProductoID,
-                            punto_ventaid = operacion.punto_ventaid,
-                            tipo_operacionid = 5
-                        });
-                    }
-
-                    db.trazas.Add(new trazas
-                    {
-                        fecha = DateTime.Now,
-                        usuario = userName,
-                        accion = "Registro de Operación",
-                        descripcion = mensaje,
-                        ip = Request.UserHostAddress,
-                        modulo = "Operaciones"
-                    });
+                    operacionesParaGuardar.Add(obj_saldo);
                 }
 
-                db.operacion.AddRange(operacionesParaGuardar);
-                db.SaveChanges();
-
-                var hubContext = GlobalHost.ConnectionManager.GetHubContext<NotificacionesHub>();
-                foreach (var notificacion in notificacionesParaGuardar)
+                // 🔥 Agregar trazas simultáneas
+                var trz = new trazas
                 {
-                    hubContext.Clients.All.RecibirNotificacion(notificacion);
-                }
+                    fecha = DateTime.Now,
+                    usuario = HttpContext.User.Identity.Name,
+                    accion = "Registro de Operación",
+                    descripcion = mensaje,
+                    ip = Request.UserHostAddress,
+                    modulo = "Operaciones"
+                };
+                db.trazas.Add(trz);
+            }
+            // 🔥 Guardar todas las operaciones y notificaciones en un solo `SaveChanges()`
+            db.operacion.AddRange(operacionesParaGuardar);
+            db.SaveChanges();
 
-                return Json(new { success = true, message = "Operaciones registradas correctamente.", redirectUrl = Url.Action("Index") });
-            }
-            catch (Exception ex)
+            // 📢 Enviar notificación en tiempo real con SignalR
+            var hubContext = GlobalHost.ConnectionManager.GetHubContext<NotificacionesHub>();
+            foreach (var notificacion in notificacionesParaGuardar)
             {
-                return Json(new { success = false, message = $"Error interno: {ex.Message}" });
+                hubContext.Clients.All.recibirNotificacion(notificacion);
             }
+
+            return RedirectToAction("Index");
         }
 
         private float? ConvertToFloat(string input)
@@ -386,7 +509,7 @@ namespace vercom.Controllers
         }
 
         [HttpPost]
-        public JsonResult Actualizar(int edt_edit, float? edt_cantidad)
+        public JsonResult Actualizar(int edt_edit, int? edt_tipopagoid, float? edt_cantidad)
         {
             var operacion = db.operacion.Where(o => o.id == edt_edit).SingleOrDefault();
 
@@ -407,6 +530,7 @@ namespace vercom.Controllers
 
             var precio = operacion.producto.precio;
             operacion.cantidad = edt_cantidad;
+            if (edt_tipopagoid != 0) operacion.tipo_pagoid = edt_tipopagoid;
             operacion.importe = (float?)(edt_cantidad * precio);        
 
             var mensaje = $"Editar operación {operacion.id} producto {operacion.productoid}  punto de venta {operacion.punto_ventaid}";

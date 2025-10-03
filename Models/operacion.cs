@@ -24,8 +24,8 @@ namespace vercom.Models
         public Nullable<int> tipo_operacionid { get; set; }
     
         public virtual punto_venta punto_venta { get; set; }
+        public virtual producto producto { get; set; }
         public virtual tipo_pago tipo_pago { get; set; }
         public virtual tipo_operacion tipo_operacion { get; set; }
-        public virtual producto producto { get; set; }
     }
 }

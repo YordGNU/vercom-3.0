@@ -105,8 +105,7 @@ namespace vercom.Controllers
 
             return View();
         }
-
-        [HttpGet]
+             
         public ActionResult UsersEdit(int id)
         {
             Users _users = database.Users.Find(id);
@@ -164,19 +163,21 @@ namespace vercom.Controllers
         }
 
 
-        [HttpGet]
-        public JsonResult DeleteUsersReturnPartialView(int UsersId = 0)
+        [HttpPost]
+        public JsonResult DeleteMultipleUsers(int[] ids)
         {
-            bool result = false;
-            Users _users = database.Users.Find(UsersId);
-            if (_users != null)
-            {
-                // eliminina el usuario
-                database.Users.Remove(_users);
-                database.SaveChanges();
-                result = true;
-            }
-            return Json(new { success = result }, JsonRequestBehavior.AllowGet);
+            // 1. Eliminar roles asociados a los usuarios
+            var rolesAsociados = database.UserRoles.Where(r => ids.Contains(r.UserID)).ToList();
+            database.UserRoles.RemoveRange(rolesAsociados);
+
+            // 2. Eliminar los usuarios
+            var usuarios = database.Users.Where(u => ids.Contains(u.UserID)).ToList();
+            database.Users.RemoveRange(usuarios);
+
+            // 3. Guardar cambios
+            database.SaveChanges();
+
+            return Json(new { success = true });
         }
 
         private IEnumerable<Users> GetFilteredUsersList(string _surname)
@@ -204,7 +205,6 @@ namespace vercom.Controllers
             database.Dispose();
             base.Dispose(disposing);
         }
-
 
         [HttpGet]
         [OutputCache(NoStore = true, Duration = 0, VaryByParam = "*")]
@@ -361,6 +361,27 @@ namespace vercom.Controllers
                 database.SaveChanges();
             }
             return RedirectToAction("RoleIndex");
+        }
+
+        [HttpPost]
+        public JsonResult DeleteMultipleRoles(int?[] ids)
+        {
+            // 1. Eliminar usuarios asociados a rol
+            var usuariosAsociados = database.UserRoles.Where(r => ids.Contains(r.RoleID)).ToList();
+            database.UserRoles.RemoveRange(usuariosAsociados);
+
+            // 1. Eliminar permisos asociados al rol
+            var permisosAsociados = database.RolePermissions.Where(r => ids.Contains(r.RoleID)).ToList();
+            database.RolePermissions.RemoveRange(permisosAsociados);
+
+            // 2. Eliminar los roles
+            var roles = database.Roles.Where(u => ids.Contains(u.RoleID)).ToList();
+            database.Roles.RemoveRange(roles);
+
+            // 3. Guardar cambios
+            database.SaveChanges();
+
+            return Json(new { success = true });
         }
 
         [HttpGet]

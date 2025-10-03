@@ -4,54 +4,58 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="61f65376d6574440ababf4c3aab7781b" Name="Diagram1" ZoomLevel="61">
+      <Diagram DiagramId="0a12be85dd6d401fb5a610660f7ec5f6" Name="Diagram1">
         <EntityTypeShape EntityType="VERCOMModel.AlertasSistema" Width="1.5" PointX="0.75" PointY="9.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.area" Width="1.5" PointX="8.75" PointY="12" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.area" Width="1.5" PointX="8.75" PointY="10.75" IsExpanded="true" />
         <EntityTypeShape EntityType="VERCOMModel.AuditoriaMovimientosCaja" Width="1.5" PointX="2.75" PointY="9.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.CajaPrincipal" Width="1.5" PointX="15.75" PointY="5" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.categoria" Width="1.5" PointX="11.75" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.CajaPrincipal" Width="1.5" PointX="13.75" PointY="20.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.categoria" Width="1.5" PointX="8.75" PointY="13.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.CierreCaja" Width="1.5" PointX="16" PointY="16.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.CierreSubMayor" Width="1.5" PointX="18.25" PointY="20.75" IsExpanded="true" />
         <EntityTypeShape EntityType="VERCOMModel.cliente" Width="1.5" PointX="3" PointY="4.125" IsExpanded="true" />
         <EntityTypeShape EntityType="VERCOMModel.cliente_cuenta" Width="1.5" PointX="5.25" PointY="5" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.ConfiguracionHorarioCaja" Width="1.5" PointX="8.75" PointY="9.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.ConfiguracionHorarioCaja" Width="1.5" PointX="10.75" PointY="2.375" IsExpanded="true" />
         <EntityTypeShape EntityType="VERCOMModel.cuenta" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="VERCOMModel.forma_operacion" Width="1.5" PointX="6" PointY="8.375" IsExpanded="true" />
         <EntityTypeShape EntityType="VERCOMModel.medio_pago" Width="1.5" PointX="6" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.MovimientoCaja" Width="1.5" PointX="20.25" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.MovimientoCaja" Width="1.5" PointX="18.25" PointY="27.625" IsExpanded="true" />
         <EntityTypeShape EntityType="VERCOMModel.negocio" Width="1.5" PointX="8.25" PointY="4.125" IsExpanded="true" />
         <EntityTypeShape EntityType="VERCOMModel.Notifications" Width="1.5" PointX="0.75" PointY="14.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.operacion" Width="1.5" PointX="13" PointY="2.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.Permissions" Width="1.5" PointX="13.75" PointY="21.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.presupuesto" Width="1.5" PointX="11" PointY="11.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.producto" Width="1.5" PointX="14" PointY="11.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.operacion" Width="1.5" PointX="13.25" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.Permissions" Width="1.5" PointX="13.75" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.producto" Width="1.5" PointX="11" PointY="9.625" IsExpanded="true" />
         <EntityTypeShape EntityType="VERCOMModel.producto_servicio" Width="1.5" PointX="6" PointY="13.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.punto_venta" Width="1.5" PointX="10.75" PointY="3.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.RegistroDiarioCaja" Width="1.5" PointX="18" PointY="2.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.RolePermissions" Width="1.5" PointX="16" PointY="18.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.Roles" Width="1.5" PointX="13.75" PointY="18" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.SubMayor" Width="1.5" PointX="18" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.punto_venta" Width="1.5" PointX="11" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.RegistroDiarioCaja" Width="1.5" PointX="16" PointY="21" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.RolePermissions" Width="1.5" PointX="16" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.Roles" Width="1.5" PointX="13.75" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.SubMayor" Width="1.5" PointX="16" PointY="24.75" IsExpanded="true" />
         <EntityTypeShape EntityType="VERCOMModel.tipo_cliente" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
         <EntityTypeShape EntityType="VERCOMModel.tipo_factura" Width="1.5" PointX="6" PointY="15.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.tipo_operacion" Width="1.5" PointX="10.75" PointY="6.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.tipo_pago" Width="1.5" PointX="10.75" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.tipo_operacion" Width="1.5" PointX="11" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.tipo_pago" Width="1.5" PointX="11" PointY="17.125" IsExpanded="true" />
         <EntityTypeShape EntityType="VERCOMModel.trazas" Width="1.5" PointX="2.75" PointY="14.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.unidad" Width="1.5" PointX="11.75" PointY="15.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.UserRoles" Width="1.5" PointX="16" PointY="21.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="VERCOMModel.Users" Width="1.5" PointX="13.75" PointY="24.75" IsExpanded="true" />
-        <AssociationConnector Association="VERCOMModel.FK_FKpresupuest533734" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="VERCOMModel.unidad" Width="1.5" PointX="8.75" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.UserRoles" Width="1.5" PointX="16" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="VERCOMModel.Users" Width="1.5" PointX="13.75" PointY="14.625" IsExpanded="true" />
         <AssociationConnector Association="VERCOMModel.FK_FKproducto660940" ManuallyRouted="false" />
-        <AssociationConnector Association="VERCOMModel.FK__RegistroD__CajaI__32767D0B" ManuallyRouted="false" />
-        <AssociationConnector Association="VERCOMModel.FK__SubMayor__CajaID__2704CA5F" ManuallyRouted="false" />
+        <AssociationConnector Association="VERCOMModel.FK__RegistroD__CajaI__04E4BC85" ManuallyRouted="false" />
+        <AssociationConnector Association="VERCOMModel.FK__SubMayor__CajaID__07C12930" ManuallyRouted="false" />
+        <AssociationConnector Association="VERCOMModel.FK_CierreCaja_CajaPrincipal" ManuallyRouted="false" />
         <AssociationConnector Association="VERCOMModel.FK_FKproducto393903" ManuallyRouted="false" />
+        <AssociationConnector Association="VERCOMModel.FK_CierreSubMayor_CierreCaja" ManuallyRouted="false" />
+        <AssociationConnector Association="VERCOMModel.FK_CierreSubMayor_SubMayor" ManuallyRouted="false" />
         <AssociationConnector Association="VERCOMModel.FK_FKcliente_cu555547" ManuallyRouted="false" />
         <AssociationConnector Association="VERCOMModel.FK_FKcliente423992" ManuallyRouted="false" />
         <AssociationConnector Association="VERCOMModel.FK_FKnegocio736135" ManuallyRouted="false" />
         <AssociationConnector Association="VERCOMModel.FK_FKcliente_cu504141" ManuallyRouted="false" />
         <AssociationConnector Association="VERCOMModel.FK_FKnegocio873465" ManuallyRouted="false" />
         <AssociationConnector Association="VERCOMModel.FK_FKnegocio968398" ManuallyRouted="false" />
-        <AssociationConnector Association="VERCOMModel.FK__Movimient__SubMa__2CBDA3B5" ManuallyRouted="false" />
+        <AssociationConnector Association="VERCOMModel.FK__Movimient__SubMa__787EE5A0" ManuallyRouted="false" />
         <AssociationConnector Association="VERCOMModel.FK_FKnegocio542366" ManuallyRouted="false" />
         <AssociationConnector Association="VERCOMModel.FK_FKnegocio549625" ManuallyRouted="false" />
         <AssociationConnector Association="VERCOMModel.FKoperacion168701" ManuallyRouted="false" />
+        <AssociationConnector Association="VERCOMModel.FKoperacion21" ManuallyRouted="false" />
         <AssociationConnector Association="VERCOMModel.FKoperacion273527" ManuallyRouted="false" />
         <AssociationConnector Association="VERCOMModel.FKoperacion325014" ManuallyRouted="false" />
         <AssociationConnector Association="VERCOMModel.FK_FKRolePermis471885" ManuallyRouted="false" />
@@ -59,9 +63,6 @@
         <AssociationConnector Association="VERCOMModel.FK_FKRolePermis48370" ManuallyRouted="false" />
         <AssociationConnector Association="VERCOMModel.FK_FKUserRoles613991" ManuallyRouted="false" />
         <AssociationConnector Association="VERCOMModel.FK_FKUserRoles959420" ManuallyRouted="false" />
-        <AssociationConnector Association="VERCOMModel.FKoperacion21" />
-        <EntityTypeShape EntityType="VERCOMModel.CierreCaja" Width="1.5" PointX="18" PointY="10.625" />
-        <AssociationConnector Association="VERCOMModel.FK_CierreCaja_CajaPrincipal" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

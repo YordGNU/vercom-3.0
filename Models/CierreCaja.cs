@@ -14,6 +14,12 @@ namespace vercom.Models
     
     public partial class CierreCaja
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public CierreCaja()
+        {
+            this.CierreSubMayor = new HashSet<CierreSubMayor>();
+        }
+    
         public int CierreID { get; set; }
         public int CajaID { get; set; }
         public System.DateTime FechaCierre { get; set; }
@@ -27,5 +33,7 @@ namespace vercom.Models
         public decimal SaldoCajaPrincipal { get; set; }
     
         public virtual CajaPrincipal CajaPrincipal { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CierreSubMayor> CierreSubMayor { get; set; }
     }
 }

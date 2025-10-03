@@ -3,8 +3,7 @@
 
     var date = DateTime.Now;
     var oPrimerDiaDelMes = new DateTime(date.Year, date.Month, 1);
-    var oUltimoA = oPrimerDiaDelMes.AddYears(-1);
-
+    var oUltimoDiaDelMes = oPrimerDiaDelMes.AddMonths(1).AddDays(-1);
 }
 <div class="page-title-head d-flex align-items-center">
     <div class="flex-grow-1">
@@ -119,27 +118,7 @@
             <div class="card-header border-dashed card-tabs d-flex align-items-center">
                 <div class="flex-grow-1">
                     <h4 class="card-title">Distribución de ventas</h4>
-                </div>
-                <ul class="nav nav-tabs nav-justified card-header-tabs nav-bordered">
-                    <li class="nav-item">
-                        <a href="#today-ct" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
-                            <i class="ti ti-home d-md-none d-block"></i>
-                            <span class="d-none d-md-block">Hoy</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#monthly-ct" data-bs-toggle="tab" aria-expanded="true" class="nav-link active">
-                            <i class="ti ti-user-circle d-md-none d-block"></i>
-                            <span class="d-none d-md-block">Mensual</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#annual-ct" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
-                            <i class="ti ti-settings d-md-none d-block"></i>
-                            <span class="d-none d-md-block">Anual</span>
-                        </a>
-                    </li>
-                </ul>
+                </div>        
             </div>
             <div class="card-body p-0">
                 <div class="row g-0">
@@ -163,11 +142,6 @@
         <div data-table="" data-table-rows-per-page="5" class="card">
             <div class="card-header justify-content-between align-items-center border-dashed">
                 <h4 class="card-title mb-0">Productos recientes</h4>
-                <div class="d-flex gap-2">
-                    <a href="@Url.Action("Create", "Producto")" class="btn btn-sm btn-soft-secondary">
-                        <i class="ti ti-plus me-1"></i> Agregar Producto                
-                    </a>                   
-                </div>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -193,12 +167,7 @@
     <div class="col-xxl-6" id="bloque-operacionesR">
         <div data-table="" data-table-rows-per-page="5" class="card">
             <div class="card-header justify-content-between align-items-center border-dashed">
-                <h4 class="card-title mb-0">Operaciones recientes</h4>
-                <div class="d-flex gap-2">
-                    <a href="@Url.Action("Create","Operacion")" class="btn btn-sm btn-soft-secondary">
-                        <i class="ti ti-plus me-1"></i> Agregar Operación
-                    </a>                  
-                </div>
+                <h4 class="card-title mb-0">Operaciones recientes</h4>              
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -239,8 +208,8 @@
         let ChartByPunto;
 
         const parametros = {
-            inicio: "@oUltimoA",
-            fin: "@oPrimerDiaDelMes",
+            inicio: "@oPrimerDiaDelMes",
+            fin: "@oUltimoDiaDelMes",
             toper: 2,
             pventa: 0,
             categ: 0,
@@ -425,16 +394,7 @@
                  <span class="text-muted fs-xs">Costo</span>
                  <h5 class="fs-base mt-1 fw-normal">${p.Costo}</h5>
                  </td>
-                   <td style="width: 30px;">
-                   <div class="dropdown">
-                   <a href="#" class="dropdown-toggle text-muted drop-arrow-none card-drop p-0" data-bs-toggle="dropdown">
-                     <i class="ti ti-dots-vertical fs-lg"></i>
-                   </a>
-                   <div class="dropdown-menu dropdown-menu-end">
-                   <a href="@Url.Action("Edit","Producto")/${p.ProductoID}" class="dropdown-item">Editar</a>
-                   </div>
-                   </div>
-                 </td></tr>`;
+                 </tr>`;
                 tbody.insertAdjacentHTML('beforeend', fila);
             });
             desactivarOverlayEnContenedor(bloqueID);
@@ -482,17 +442,7 @@
                  <td>
                  <span class="text-muted fs-xs">Importe</span>
                  <h5 class="fs-base mt-1 fw-normal">${op.Importe}</h5>
-                 </td>
-                 <td style="width: 30px;">
-                 <div class="dropdown">
-                 <a href="#" class="dropdown-toggle text-muted drop-arrow-none card-drop p-0" data-bs-toggle="dropdown">
-                 <i class="ti ti-dots-vertical fs-lg"></i>
-                 </a>
-                 <div class="dropdown-menu dropdown-menu-end">
-                 <a href="@Url.Action("Edit","Operacion")/${op.OperacionID}" class="dropdown-item">Editar</a>
-                 </div>
-                 </div>
-                 </td>
+                 </td>  
                  </tr>`;
                 tbody.insertAdjacentHTML('beforeend', fila);
             });

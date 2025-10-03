@@ -131,6 +131,7 @@ class OperChartByFecha {
             return isNaN(dateObj) ? null : dateObj.toISOString();
         });
        
+        const fachanwq = this.iData.map(item => item.FechaTexto);
         const importes = this.iData.map(item => item.Importe);
         const cantidades = this.iData.map(item => item.Cantidad);  
         return {
@@ -155,23 +156,7 @@ class OperChartByFecha {
                 offsetX: 40
             },
             xaxis: {
-                type: 'datetime',
-                categories: fechas,
-                labels: {
-                    datetimeFormatter: {
-                        day: 'dd MMM',
-                        month: 'MMM yyyy',
-                        year: 'yyyy'
-                    },
-                    formatter: function (val) {
-                        const fecha = new Date(val);
-                        return fecha.toLocaleDateString('es-ES', {
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric'
-                        });
-                    }
-                }
+                categories: fachanwq
             },
             yaxis: [
                 {
@@ -212,7 +197,7 @@ class OperChartByFecha {
                         style: { color: '#00E396' }
                     }
                 }
-            ]        
+            ]       
         };
     }
 

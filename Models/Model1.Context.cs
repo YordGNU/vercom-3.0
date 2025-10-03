@@ -30,6 +30,8 @@ namespace vercom.Models
         public virtual DbSet<AuditoriaMovimientosCaja> AuditoriaMovimientosCaja { get; set; }
         public virtual DbSet<CajaPrincipal> CajaPrincipal { get; set; }
         public virtual DbSet<categoria> categoria { get; set; }
+        public virtual DbSet<CierreCaja> CierreCaja { get; set; }
+        public virtual DbSet<CierreSubMayor> CierreSubMayor { get; set; }
         public virtual DbSet<cliente> cliente { get; set; }
         public virtual DbSet<cliente_cuenta> cliente_cuenta { get; set; }
         public virtual DbSet<ConfiguracionHorarioCaja> ConfiguracionHorarioCaja { get; set; }
@@ -41,7 +43,6 @@ namespace vercom.Models
         public virtual DbSet<Notifications> Notifications { get; set; }
         public virtual DbSet<operacion> operacion { get; set; }
         public virtual DbSet<Permissions> Permissions { get; set; }
-        public virtual DbSet<presupuesto> presupuesto { get; set; }
         public virtual DbSet<producto> producto { get; set; }
         public virtual DbSet<producto_servicio> producto_servicio { get; set; }
         public virtual DbSet<punto_venta> punto_venta { get; set; }
@@ -57,6 +58,5 @@ namespace vercom.Models
         public virtual DbSet<unidad> unidad { get; set; }
         public virtual DbSet<UserRoles> UserRoles { get; set; }
         public virtual DbSet<Users> Users { get; set; }
-        public virtual DbSet<CierreCaja> CierreCaja { get; set; }
     }
 }

@@ -13,7 +13,16 @@ public class NotificacionesHub : Hub
     private VERCOMEntities db = new VERCOMEntities();
 
     // Este método envía notificaciones a los clientes
-   
+    public async Task EnviarNotificacion(string usuarioDestino, Notifications noti)
+    {
+        await Clients.User(usuarioDestino).SendAsync("recibirNotificacion", noti);
+    }
+
+    public async Task BroadcastGlobal(Notifications noti)
+    {
+        await Clients.All.SendAsync("recibirNotificacion", noti);
+    }
+
     public void recibirNotificacion(int userId, string message)
     {
         var Rol = db.UserRoles.Where(u => u.UserID == userId).Select(u => u.Roles.RoleName).FirstOrDefault();
@@ -37,7 +46,7 @@ public class NotificacionesHub : Hub
 
         db.Notifications.Add(notificacion);
         db.SaveChanges();       
-        Clients.All.RecibirNotificacion(notificacionDto);
+        Clients.All.recibirNotificacion(notificacionDto);
     }
 
     public void SendPersistentNotification(string username, string message)
@@ -78,6 +87,7 @@ public class NotificacionesHub : Hub
     {
         await Clients.Group("Admin").SendAsync("ReceiveStockAlert", message);
     }
+
     public void SendNotificationToGroup(string userName, string message)
     {
         var Rol = db.UserRoles.Where(u => u.Users.UserName == userName).Select(u => u.Roles.RoleName).FirstOrDefault();

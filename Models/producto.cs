@@ -33,8 +33,8 @@ namespace vercom.Models
     
         public virtual area area { get; set; }
         public virtual categoria categoria { get; set; }
-        public virtual unidad unidad { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<operacion> operacion { get; set; }
+        public virtual unidad unidad { get; set; }
     }
 }

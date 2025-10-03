@@ -1,3 +1,5 @@
+using Quartz.Impl;
+using Quartz;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +16,25 @@ namespace vercom
         {
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);     
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            // Scheduler Quartz
+            IScheduler scheduler = StdSchedulerFactory.GetDefaultScheduler().Result;
+            scheduler.Start();
+
+            IJobDetail job = JobBuilder.Create<StockJob>()
+                .WithIdentity("stockJob", "inventario")
+                .Build();
+
+            ITrigger trigger = TriggerBuilder.Create()
+                .WithIdentity("stockTrigger", "inventario")
+                .StartNow()
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInMinutes(30) // cada 30 minutos
+                    .RepeatForever())
+                .Build();
+
+            scheduler.ScheduleJob(job, trigger);
         }
     }
 }

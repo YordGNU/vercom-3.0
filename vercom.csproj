@@ -173,7 +173,10 @@
     <Compile Include="Hubs\SignalR.cs" />
     <Compile Include="Interfaces\iCajaCierreValidacion.cs" />
     <Compile Include="Interfaces\iCierreCajaResumen.cs" />
+    <Compile Include="Interfaces\iCierreSubMayorResumen.cs" />
+    <Compile Include="Interfaces\iCodificadores.cs" />
     <Compile Include="Interfaces\iMovimiento.cs" />
+    <Compile Include="Interfaces\iProducto.cs" />
     <Compile Include="Interfaces\iProductosRecientes.cs" />
     <Compile Include="Interfaces\iOperacionesRecientes.cs" />
     <Compile Include="Interfaces\iFlujoResumen.cs" />
@@ -188,6 +191,7 @@
     <Compile Include="Interfaces\iOperacionXtipo.cs" />
     <Compile Include="Interfaces\iProductoOperacion.cs" />
     <Compile Include="Interfaces\iProductosXpunto.cs" />
+    <Compile Include="Interfaces\iPunto.cs" />
     <Compile Include="Interfaces\iPV.cs" />
     <Compile Include="Interfaces\iPVAnalitic.cs" />
     <Compile Include="Interfaces\iResumenFiltrado.cs" />
@@ -211,6 +215,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CierreCaja.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CierreSubMayor.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\cliente.cs">
@@ -259,9 +266,6 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Permissions.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\presupuesto.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\producto.cs">
@@ -386,12 +390,21 @@
     <Content Include="Content\logoanimate.css" />
     <Content Include="Content\plugins\chartist\chartist.min.css" />
     <Content Include="Content\plugins\choices\choices.min.css" />
+    <Content Include="Content\plugins\chosen\bootstrap-chosen.css" />
+    <Content Include="Content\plugins\chosen\chosen-dark.css" />
+    <Content Include="Content\plugins\chosen\chosen-select-dark.png" />
+    <Content Include="Content\plugins\chosen\chosen-select-multiple-dark.png" />
+    <Content Include="Content\plugins\chosen\chosen-sprite%402x.png" />
+    <Content Include="Content\plugins\chosen\chosen-sprite.png" />
+    <Content Include="Content\plugins\chosen\chosen.css" />
+    <Content Include="Content\plugins\chosen\chosen.min.css" />
     <Content Include="logo.png" />
     <Content Include="Models\Model1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Model1.edmx</DependentUpon>
       <LastGenOutput>Model1.Context.cs</LastGenOutput>
     </Content>
+    <Content Include="Models\Model1.edmx.sql" />
     <Content Include="Models\Model1.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Model1.edmx</DependentUpon>
@@ -432,6 +445,10 @@
     <Content Include="Scripts\plugins\chartJs\Chart.min.js" />
     <Content Include="Scripts\plugins\chartJs\chartjs-adapter-date-fns.bundle.min.js" />
     <Content Include="Scripts\plugins\choices\choices.min.js" />
+    <Content Include="Scripts\plugins\chosen\chosen.jquery.js" />
+    <Content Include="Scripts\plugins\chosen\chosen.jquery.min.js" />
+    <Content Include="Scripts\plugins\chosen\chosen.proto.js" />
+    <Content Include="Scripts\plugins\chosen\chosen.proto.min.js" />
     <Content Include="Scripts\plugins\dataTables\dataTables.bootstrap5.min.js" />
     <Content Include="Content\plugins\datatables\datatables.min.css" />
     <Content Include="Scripts\plugins\dataTables\dataTables.min.js" />
@@ -482,9 +499,8 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Caja\Index.cshtml" />
     <Content Include="Views\Codificador\Index.cshtml" />
-    <Content Include="Views\Caja\Create.cshtml" />
     <Content Include="Views\Parcial\_listsubmayores.cshtml" />
-    <Content Include="Views\Caja\HistorialCierres.cshtml" />
+    <Content Include="Views\Caja\Historial.cshtml" />
     <Content Include="Views\Parcial\_listcajas.cshtml" />
     <Content Include="Views\Caja\Cierre.cshtml" />
   </ItemGroup>
@@ -592,15 +608,7 @@
     <Content Include="Views\Presupuesto\Details.cshtml" />
     <Content Include="Views\Presupuesto\Edit.cshtml" />
     <Content Include="Views\Presupuesto\Index.cshtml" />
-    <Content Include="Views\Producto\Create.cshtml" />
-    <Content Include="Views\Producto\Delete.cshtml" />
-    <Content Include="Views\Producto\Details.cshtml" />
-    <Content Include="Views\Producto\Edit.cshtml" />
     <Content Include="Views\Producto\Index.cshtml" />
-    <Content Include="Views\Punto\Create.cshtml" />
-    <Content Include="Views\Punto\Delete.cshtml" />
-    <Content Include="Views\Punto\Details.cshtml" />
-    <Content Include="Views\Punto\Edit.cshtml" />
     <Content Include="Views\Punto\Index.cshtml" />
     <Content Include="Views\Parcial\_listapuntosName.cshtml" />
     <Content Include="Views\Parcial\_listunidadesName.cshtml" />

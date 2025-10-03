@@ -116,7 +116,7 @@
                     <a href="@Url.Action("Create","Operacion")" class="btn btn-secondary btn-icon">
                         <i class="ti ti-plus fs-xxl"></i>
                     </a>
-                    <button class="btn btn-primary btn-icon" id="btnExportExcel">
+                    <button class="btn btn-success btn-icon" id="btnExportExcel">
                         <i data-lucide="file-spreadsheet" class="fs-lg"></i>
                     </button>
                     <button class="btn btn-info btn-icon" id="btnPrint">
@@ -232,13 +232,25 @@
                             </div> <!-- end card-header -->
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-12">
+                                    <div class="col-lg-8">
                                         <div class="mb-3">
                                             <label for="productoid" class="form-label">
                                                 Producto <span class="text-danger">*</span>
                                             </label>
                                             <select class="form-control" id="edt_productoid" name="edt_productoid" data-choices="" disabled>
                                                 @Html.Action("_listtproductos", "Parcial")
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label for="edt_tipopagoid" class="form-label">
+                                                Tipo de pago <span class="text-danger"></span>
+                                            </label>
+                                            <select class="form-control" id="edt_tipopagoid" name="edt_tipopagoid" data-choices="">
+                                                <option value="0">Tipo de pago</option>
+                                             
+                                                @Html.Action("_listtipopago", "Parcial")
                                             </select>
                                         </div>
                                     </div>
@@ -338,7 +350,6 @@
             }, function (start) {
                 $('#fecha').val(start.format(formato));
             });
-
             $('#tipo_operacionid').on('change', function () {
                 var tipo = document.getElementById("tipo_operacionid").value;
                 if (tipo == 2) {
@@ -348,7 +359,6 @@
                     $('#tipPago').hide();
                 }
             });
-
             $('#filterOper').on('click', function () {
                 var url = '@Url.Action("listFilterOperacion", "Operacion")';
                 const bloqueID = '#bloque-Toperaciones';
@@ -378,7 +388,6 @@
                     });
                 }).always(() => desactivarOverlayEnContenedor(bloqueID));
             });
-
             $('#btnActualizarOperacion').on('click', function (e) {
                 const hayError = $("form input.bg-danger").length > 0;
                 if (hayError) {
@@ -396,7 +405,8 @@
                     $(this).val(valor);
                 });
 
-                const datos = $('#formEditarOperacion').serialize();        
+                const datos = $('#formEditarOperacion').serialize();      
+                
                 $.ajax({
                     url: '@Url.Action("Actualizar", "Operacion")',
                     type: 'POST',
@@ -428,7 +438,6 @@
                     }
                 });
             });
-
             $(document).on('click', '.btn_edit', function (e) {
                 e.preventDefault();
                 if ($("#edt_cantidad").hasClass("bg-danger")) {
@@ -453,6 +462,7 @@
                     $('#edt_importe').val(data[0].importe);
                     $('#edt_toperacion').val(data[0].tipo_operacion_id);
                     $('#edt_puntoid').val(data[0].punto_venta_id);
+                    $('#edt_tipopagoid').val(data[0].tipo_pago_id);
                     $('#edt_categoriaid').val(data[0].categoria_id);
                     const url = '@Url.Action("_productoSaldoXpuntoXfechaXcateg", "Parcial")';
                     $.getJSON(url, { idprod: data[0].prod_id, idpunto: data[0].punto_venta_id, fecha: data[0].FechaTexto, categ: data[0].categoria_id }, function (dataOpcion) {
@@ -491,7 +501,6 @@
                     });
                 });
             });
-
             function refreshTable(data) {
                 // 1. Localiza <table> y su instancia
                 const tableEl = document.querySelector('[data-table]');
@@ -535,7 +544,6 @@
                 instance.fullRefresh(rows);
                 setupCheckboxListeners();
             }
-
             function setupCheckboxListeners() {
                 let tableEl = document.querySelector('[data-table]');
                 let btnDeleteSelected = document.querySelector('[data-table-delete-selected]');
@@ -604,49 +612,87 @@
                  <html>
                  <head>
                  <title>IMPRIMIR TABLA OPERACIONES</title>
-                 <style>
-                     body {
-                         font-family: Arial, sans-serif;
-                         margin: 20px;
-                         font-size: 12px;
-                         color: #333;
-                     }
-                     h3 {
-                         margin-bottom: 5px;
-                         color: #004080;
-                     }
-                     p {
-                         margin: 0 0 10px;
-                         font-weight: bold;
-                     }
-                     table {
-                         width: 100%;
-                         border-collapse: collapse;
-                         margin-top: 10px;
-                     }
-                     th, td {
-                         border: 1px solid #999;
-                         padding: 6px 4px;
-                         text-align: center;
-                     }
-                     thead {
-                         background-color: #004080;
-                         color: white;
-                         font-weight: bold;
-                     }
-                     tfoot td {
-                         background-color: #f0f0f0;
-                         font-weight: bold;
-                     }
-                     tr:nth-child(even) td {
-                         background-color: #f9f9f9;
-                     }
-                     media print {
-                         body {
-                             font-size: 12px;
-                         }
-                     }
-                 </style>
+                             <style>
+ body {
+     font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+     margin: 20px;
+     font-size: 13px;
+     color: #2c3e50;
+     background-color: #fdfdfd;
+ }
+
+ h3 {
+     margin-bottom: 8px;
+     color: #2c3e50;
+     font-size: 18px;
+     border-bottom: 2px solid #3498db;
+     padding-bottom: 4px;
+ }
+
+ p {
+     margin: 0 0 12px;
+     font-weight: 600;
+     color: #34495e;
+ }
+
+ table {
+     width: 100%;
+     border-collapse: separate;
+     border-spacing: 0;
+     margin-top: 15px;
+     box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+     border-radius: 6px;
+     overflow: hidden;
+ }
+ table td a,
+ table th a {
+     text-decoration: none;
+     color: inherit; /* opcional: hereda el color del texto de la celda */
+ }
+
+ /* Borde inferior para todas las filas del cuerpo */
+ tbody tr td {
+     border-bottom: 1px solid #ccc;
+     }
+
+ thead {
+     background-color: #3498db;
+     color: white;
+     font-weight: bold;
+     text-transform: uppercase;
+     letter-spacing: 0.5px;
+ }
+
+ thead th {
+     background-color: #3498db;
+     color: white;
+     font-weight: bold;
+     text-transform: uppercase;
+     letter-spacing: 0.5px;
+     border-bottom: 1px solid #2c3e50; /* Borde inferior elegante */
+ }
+
+ th, td {
+     border: none;
+     padding: 10px 8px;
+     text-align: center;
+     transition: background-color 0.3s ease;
+ }
+
+ tbody tr:hover td {
+     background-color: #ecf0f1;
+     }
+
+ tr:nth-child(even) td {
+     background-color: #f9fbfc;
+     }
+
+ tfoot td {
+     background-color: #ecf0f1;
+     font-weight: bold;
+     color: #2c3e50;
+ }
+</style>
                  </head>
                  <body>
                  <h3>📋 Listado de operaciones </h3>
