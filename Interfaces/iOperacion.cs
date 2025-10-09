@@ -15,7 +15,7 @@ namespace vercom.Interfaces
         public string punto_venta { get; set; }
         public int punto_venta_id { get; set; }
         public string prod_cod { get; set; }
-        public int prod_id { get; set; }
+        public int? prod_id { get; set; }
         public string prod_nombre { get; set; }
         public string categoria { get; set; }
         public int categoria_id { get; set; }

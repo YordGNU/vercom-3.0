@@ -344,7 +344,7 @@ namespace vercom.Controllers
                         cod = producto.cod,
                         nombre = producto.nombre,
                         precio = producto.precio,
-                        cant_saldo = (float?)kvp.final_saldo,
+                        cant_saldo = (float?) kvp.final_saldo,
                     };
                     if (produntoPunto.cant_saldo > 0) iData.Add(produntoPunto);
                 }

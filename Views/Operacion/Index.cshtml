@@ -249,7 +249,7 @@
                                             </label>
                                             <select class="form-control" id="edt_tipopagoid" name="edt_tipopagoid" data-choices="">
                                                 <option value="0">Tipo de pago</option>
-                                             
+
                                                 @Html.Action("_listtipopago", "Parcial")
                                             </select>
                                         </div>
@@ -288,7 +288,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>                      
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -369,9 +369,9 @@
                 var categ = document.getElementById("categoriaid").value;
                 var prod = document.getElementById("productoid").value;
                 activarOverlayEnContenedor(bloqueID);
-                $.getJSON(url, { fecha: fecha, tperacion: tperacion, tpago: tpago, pventa: pventa, categ: categ, prod: prod }).done(data => {                  
+                $.getJSON(url, { fecha: fecha, tperacion: tperacion, tpago: tpago, pventa: pventa, categ: categ, prod: prod }).done(data => {
                     if (data.length > 0) {
-                        refreshTable(data); // 💡 Reemplaza con tu lógica actual de pintado en la tabla     
+                        refreshTable(data); // 💡 Reemplaza con tu lógica actual de pintado en la tabla
                         return;
                     } else {
                         Swal.fire({
@@ -405,8 +405,8 @@
                     $(this).val(valor);
                 });
 
-                const datos = $('#formEditarOperacion').serialize();      
-                
+                const datos = $('#formEditarOperacion').serialize();
+
                 $.ajax({
                     url: '@Url.Action("Actualizar", "Operacion")',
                     type: 'POST',
@@ -420,7 +420,7 @@
                                 timer: 2000,
                                 showConfirmButton: false
                             });
-                            $('#modalEditarOperacion').modal('hide');                        
+                            $('#modalEditarOperacion').modal('hide');
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -438,12 +438,13 @@
                     }
                 });
             });
+
             $(document).on('click', '.btn_edit', function (e) {
                 e.preventDefault();
                 if ($("#edt_cantidad").hasClass("bg-danger")) {
                     $("#edt_cantidad").removeClass("bg-danger");
                 }
-                const id = $(this).closest('tr').data('id');         
+                const id = $(this).closest('tr').data('id');
                 $.getJSON(`/Operacion/ObtenerOperacion/${id}`, function (data) {
 
                     activarOverlayEnContenedor('#formEditarOperacion');
@@ -463,12 +464,13 @@
                     $('#edt_toperacion').val(data[0].tipo_operacion_id);
                     $('#edt_puntoid').val(data[0].punto_venta_id);
                     $('#edt_tipopagoid').val(data[0].tipo_pago_id);
-                    $('#edt_categoriaid').val(data[0].categoria_id);
+                    $('#edt_categoriaid').val(data[0].categoria_id);                   
                     const url = '@Url.Action("_productoSaldoXpuntoXfechaXcateg", "Parcial")';
-                    $.getJSON(url, { idprod: data[0].prod_id, idpunto: data[0].punto_venta_id, fecha: data[0].FechaTexto, categ: data[0].categoria_id }, function (dataOpcion) {
+                    $.getJSON(url, { id: data[0].prod_id, tipo: data[0].tipo_operacion_id, fecha: data[0].FechaTexto, categ: data[0].categoria_id }, function (iData) {
                         // Filtrar y validar opciones con ID válido
                         const prodID = String(data[0].prod_id);
-                        const opciones = dataOpcion
+                        console.log(iData);
+                        const opciones = iData
                             .filter(item => item.id && item.id !== "" && item.id !== "0")
                             .map(item => {
                                 const idStr = String(item.id);
@@ -705,6 +707,7 @@
                 ventana.print();
             });
         });
+
         function activarOverlayEnContenedor(contenedorID) {
             const contenedor = document.querySelector(contenedorID);
             if (!contenedor) return;
@@ -761,7 +764,7 @@
         function actualizarVal(elemento, tipo) {
             const nuevoVal = elemento.value ? parseFloat(elemento.value) : 0;
             const valAnterior = parseFloat(elemento.getAttribute('data-val-anterior')) || 0;
-            const cantSaldo = parseFloat($('#edt_saldo').val()) || 0;            
+            const cantSaldo = parseFloat($('#edt_saldo').val()) || 0;
             let total = 0;
             if (tipo === 1) {
                 total = cantSaldo - valAnterior + nuevoVal;
