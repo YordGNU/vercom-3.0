@@ -53,7 +53,7 @@
                 <select class="form-control" name="facturaID" id="facturaID">
                     <option value="0"></option>
                     @Html.Action("_listtipofactura", "Parcial")
-                </select>               
+                </select>
                 @Html.ValidationMessageFor(model => model.facturaID, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -73,10 +73,11 @@
                 @Html.EditorFor(model => model.factura, new { htmlAttributes = new { @class = "form-control", @required = "" } })
                 @Html.ValidationMessageFor(model => model.factura, "", new { @class = "text-danger" })
             </div>
-        </div>       
-        <div class="col-md-12 text-right">
-            <div class="hr-line-dashed"></div>
-            <button type="button" class="btn btn-outline-primary" id="filterMay">FILTRAR</button>
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-primary mb-2" id="filterOper">
+                <i data-lucide="filter" class="fs-lg"></i>
+            </button>
         </div>
     </div>
 </form>

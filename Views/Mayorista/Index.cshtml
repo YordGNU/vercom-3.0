@@ -1,234 +1,259 @@
 ﻿@using Newtonsoft.Json;
 @{
-    ViewBag.Title = "INICIO";
-
-    var date = DateTime.Now;
-    var oPrimerDiaDelMes = new DateTime(date.Year, date.Month, 1);
-    var oUltimoDiaDelMes = oPrimerDiaDelMes.AddMonths(1).AddDays(-1);
-
+    ViewBag.Title = "VENTA MAYORISTA";
 }
-<div class="wrapper wrapper-content">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h5>FILTRAR</h5>
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="fullscreen-link">
-                            <i class="fa fa-expand"></i>
-                        </a>
-                        <a class="close-link">
-                            <i class="fa fa-times"></i>
-                        </a>
+<div class="page-title-head d-flex align-items-center">
+    <div class="flex-grow-1">
+        <h4 class="fs-sm text-uppercase fw-bold m-0">OPERACIONES</h4>
+    </div>
+    <div class="text-end">
+        <ol class="breadcrumb m-0 py-0">
+            <li class="breadcrumb-item">
+                <a href="javascript: void(0);">VERCOM</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="javascript: void(0);">OPERACIONES</a>
+            </li>
+            <li class="breadcrumb-item active">LISTA</li>
+        </ol>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <!-- Simple card -->
+        <div class="card">
+            <div class="card-body">
+                @Html.Action("_filterMayorista", "Mayorista")
+            </div>
+            <!-- end card-body-->
+        </div>
+        <!-- end card-->
+    </div>
+    <!-- end col -->
+</div>   
+<div class="row row-cols-xxl-3 row-cols-md-3 row-cols-1 align-items-center g-1">
+    <div class="col">
+        <div class="card mb-0">
+            <div class="card-body">
+                <h5 title="Total Products">Saldo inicial</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-primary rounded-circle fs-22">
+                            <i class="ti ti-package"></i>
+                        </span>
                     </div>
-                </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            @Html.Action("_filterMayorista", "Mayorista")
-                        </div>
-                    </div>
+                    <h3 class="mb-0" id="dataSaldo">0,00</h3>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-4">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <span class="label label-success float-right">TOTAL</span>
-                    <h5>IMPORTE DE VENTAS</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"><label id="label_totalimporte">@ViewData["total_impventas"]</label></h1>
-                    <div class="stat-percent font-bold text-info">@ViewData["total_impventas"] <i class="fa fa-level-up"></i></div>
-                    <small>IMPORTE</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <span class="label label-info float-right">TOTAL</span>
-                    <h5>COSTO TOTAL</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"><label id="label_totalcosto">@ViewData["total_costventas"]</label></h1>
-                    <div class="stat-percent font-bold text-info">@ViewData["porciento_costo"]% <i class="fa fa-level-up"></i> </div>
-                    <small>COSTO</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <span class="label label-danger float-right">TOTAL</span>
-                    <h5>UTILIDADES</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"><label id="label_totalutilidades">@ViewData["utilidades"]</label></h1>
-                    <div class="stat-percent font-bold text-navy">@ViewData["porciento_util"]%<i class="fa fa-level-up"></i></div>
-                    <small>UTILIDADES</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h5>CLIENTE MÁS FRECUENTE</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"></h1>
-                    <h5><label id="label_modCliente">@ViewData["modaCliente"].ToString() </label></h5>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h5>PRODUCTO MÁS VENDIDO</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"></h1>
-                    <h5><label id="label_modProducto">@ViewData["modaServiProducto"].ToString() </label></h5>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h5>CANAL DE PREFERENCIA</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins"></h1>
-                    <h5><label id="label_modCanal">@ViewData["modaFormaOperacion"].ToString()</label></h5>
+    <div class="col">
+        <div class="card mb-0">
+            <div class="card-body">
+                <h5 title="Customer Orders">Entradas</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-secondary rounded-circle fs-22">
+                            <i class="ti ti-shopping-bag-plus"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0" id="dataEntradas">0,00</h3>
+                    <span class="badge badge-soft-secondary fw-medium ms-2 fs-xs ms-auto" id="dataPorcE"></span>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox ">
-                <div class="ibox-title">
+    <div class="col">
+        <div class="card mb-0">
+            <div class="card-body">
+                <h5 title="Sales Today">Ventas</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-success rounded-circle fs-22">
+                            <i class="ti ti-currency-dollar"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0" id="dataVentas">0,00</h3>
+                    <span class="badge badge-soft-success fw-medium ms-2 fs-xs ms-auto" id="dataPorcV"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card mb-1">
+            <div class="card-body">
+                <h5 title="Customer Count">Devoluciones</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-info rounded-circle fs-22">
+                            <i class="ti ti-arrow-back-up-double"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0" id="dataDevol">0,00</h3>
+                    <span class="badge badge-soft-info fw-medium ms-2 fs-xs ms-auto" id="dataPorcD"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card mb-1">
+            <div class="card-body">
+                <h5 title="Total Revenue">Saldo final</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-warning rounded-circle fs-22">
+                            <i class="ti ti-package-export"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0" id="dataSaldoF">0,00</h3>
+                    <span class="badge badge-soft-warning fw-medium ms-2 fs-xs ms-auto"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card mb-1">
+            <div class="card-body">
+                <h5 title="Total Revenue">Saldo final</h5>
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <div class="avatar-md flex-shrink-0">
+                        <span class="avatar-title text-bg-warning rounded-circle fs-22">
+                            <i class="ti ti-package-export"></i>
+                        </span>
+                    </div>
+                    <h3 class="mb-0" id="dataSaldoF">0,00</h3>
+                    <span class="badge badge-soft-warning fw-medium ms-2 fs-xs ms-auto"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!-- end row -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card ">
+            <div class="card-header">
+                <div class="card-title">
                     <h5>VENTAS</h5>
-                    <div class="float-right">
-                        <div class="btn-group">
-                            <button type="button" value="day" onclick="updateChar(this)" class="btn btn-xs btn-info">Hoy</button>
-                            <button type="button" value="month" onclick="updateChar(this)" class="btn btn-xs btn-info">Este Mes</button>
-                            <button type="button" value="year" onclick="updateChar(this)" class="btn btn-xs btn-info">Este Año</button>
-                        </div>
+                </div>
+                <div class="float-right">
+                    <div class="btn-group">
+                        <button type="button" value="day" onclick="updateChar(this)" class="btn btn-xs btn-info">Hoy</button>
+                        <button type="button" value="month" onclick="updateChar(this)" class="btn btn-xs btn-info">Este Mes</button>
+                        <button type="button" value="year" onclick="updateChar(this)" class="btn btn-xs btn-info">Este Año</button>
                     </div>
                 </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <div class="chart-container">
-                                <div id="spinner1" class="spinner-overlay" style="display:none">
-                                    <div class="sk-spinner sk-spinner-wave">
-                                        <div class="sk-rect1"></div>
-                                        <div class="sk-rect2"></div>
-                                        <div class="sk-rect3"></div>
-                                        <div class="sk-rect4"></div>
-                                        <div class="sk-rect5"></div>
-                                    </div>
-                                </div>
-                                <canvas id="clientes"></canvas>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="chart-container">
-                                <div id="spinner2" class="spinner-overlay" style="display:none">
-                                    <div class="sk-spinner sk-spinner-wave">
-                                        <div class="sk-rect1"></div>
-                                        <div class="sk-rect2"></div>
-                                        <div class="sk-rect3"></div>
-                                        <div class="sk-rect4"></div>
-                                        <div class="sk-rect5"></div>
-                                    </div>
-                                </div>
-                                <canvas id="tcliente" height="550"></canvas>
-                            </div>
-                        </div>
-                        <div class="col-lg-12 hr-line-dashed"></div>
-                        <div class="col-lg-8">
-                            <div class="chart-container">
-                                <div id="spinner3" class="spinner-overlay" style="display:none">
-                                    <div class="sk-spinner sk-spinner-wave">
-                                        <div class="sk-rect1"></div>
-                                        <div class="sk-rect2"></div>
-                                        <div class="sk-rect3"></div>
-                                        <div class="sk-rect4"></div>
-                                        <div class="sk-rect5"></div>
-                                    </div>
-                                </div>
-                                <canvas id="foperacion"></canvas>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="chart-container">
-                                <div id="spinner4" class="spinner-overlay" style="display:none">
-                                    <div class="sk-spinner sk-spinner-wave">
-                                        <div class="sk-rect1"></div>
-                                        <div class="sk-rect2"></div>
-                                        <div class="sk-rect3"></div>
-                                        <div class="sk-rect4"></div>
-                                        <div class="sk-rect5"></div>
-                                    </div>
-                                </div>
-                                <canvas id="mpago" height="550"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="chart-container">
+                            <div id="spinner1" class="spinner-overlay" style="display:none">
+                                <div class="sk-spinner sk-spinner-wave">
+                                    <div class="sk-rect1"></div>
+                                    <div class="sk-rect2"></div>
+                                    <div class="sk-rect3"></div>
+                                    <div class="sk-rect4"></div>
+                                    <div class="sk-rect5"></div>
+                                </div>
+                            </div>
+                            <canvas id="clientes"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="chart-container">
+                            <div id="spinner2" class="spinner-overlay" style="display:none">
+                                <div class="sk-spinner sk-spinner-wave">
+                                    <div class="sk-rect1"></div>
+                                    <div class="sk-rect2"></div>
+                                    <div class="sk-rect3"></div>
+                                    <div class="sk-rect4"></div>
+                                    <div class="sk-rect5"></div>
+                                </div>
+                            </div>
+                            <canvas id="tcliente" height="550"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 hr-line-dashed"></div>
+                    <div class="col-lg-8">
+                        <div class="chart-container">
+                            <div id="spinner3" class="spinner-overlay" style="display:none">
+                                <div class="sk-spinner sk-spinner-wave">
+                                    <div class="sk-rect1"></div>
+                                    <div class="sk-rect2"></div>
+                                    <div class="sk-rect3"></div>
+                                    <div class="sk-rect4"></div>
+                                    <div class="sk-rect5"></div>
+                                </div>
+                            </div>
+                            <canvas id="foperacion"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="chart-container">
+                            <div id="spinner4" class="spinner-overlay" style="display:none">
+                                <div class="sk-spinner sk-spinner-wave">
+                                    <div class="sk-rect1"></div>
+                                    <div class="sk-rect2"></div>
+                                    <div class="sk-rect3"></div>
+                                    <div class="sk-rect4"></div>
+                                    <div class="sk-rect5"></div>
+                                </div>
+                            </div>
+                            <canvas id="mpago" height="550"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 @section Styles {
-    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
-    @Styles.Render("~/plugins/dataPickerStyles")
-    <style>
-        .chart-container {
-            position: relative;
-            min-height: 550px; /* Asegura el espacio del gráfico incluso mientras carga */
-        }
-
-        .spinner-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-            display: none;
-        }
-    </style>
+    <link href="~/Content/plugins/toastr/toastr.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
 }
 
+
 @section Scripts {
-    @Scripts.Render("~/plugins/dataPicker")
-    @Scripts.Render("~/plugins/chosen")
-    <script src="@Url.Content("~/Scripts/plugins/chartJs/chart.js")"></script>
-    <script src="@Url.Content("~/Scripts/plugins/chartJs/chartjs-adapter-date-fns.bundle.min.js")"></script>
-    <script src="@Url.Content("~/Scripts/decimal.js")"></script>
+    <script src="~/Scripts/plugins/toastr/toastr.min.js"></script>
+    <script src="~/Scripts/plugins/moment/moment.min.js"></script>
+    <script src="~/Scripts/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/Scripts/plugins/choices/choices.min.js"></script>
+    <script src="~/Scripts/plugins/table2excel/table2excel.js"></script>
+    <script src="~/Scripts/custom-table.js"></script>
     <script type="text/javascript">
-
         $(document).ready(function () {
+            const formato = 'DD/MM/YYYY';
+            $('#datePickerRange').daterangepicker({
+                startDate: moment().startOf('month'),
+                endDate: moment().endOf('month'),
+                singleDatePicker: false,
+                showDropdowns: true,
+                autoUpdateInput: true,
+                cancelClass: "btn-light",
+                applyButtonClasses: "btn-success",
+                opens: 'center',
+                locale: {
+                    format: formato,
+                    separator: ' - ',
+                    applyLabel: 'Aplicar',
+                    cancelLabel: 'Cancelar',
+                    fromLabel: 'Desde',
+                    toLabel: 'Hasta',
+                    customRangeLabel: 'Personalizado',
+                    daysOfWeek: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+                    monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                    firstDay: 1
+                }
+            }, function (start, end) {
+                $('#start').val(start.format(formato));
+                $('#end').val(end.format(formato));
+            });
 
-            $('#data_1 .input-daterange')
-                .datepicker({
-                    locale: 'es',
-                    keyboardNavigation: false,
-                    forceParse: false,
-                    format: 'dd/mm/yyyy'
-                });
+            productoChoices = new Choices('#productoID');
 
-            $('.chosen-select').chosen({ width: "100%" });
-
-            var barData1 = {
+            @*var barData1 = {
                 labels: [],
                 datasets: [
                     {
@@ -616,7 +641,7 @@
                 data2.sort((a, b) => b.Cantidad - a.Cantidad);
                 data3.sort((a, b) => b.Porcentaje - a.Porcentaje);
                 data4.sort((a, b) => b.Utilidad - a.Utilidad);
-                data5.sort((a, b) => b.Porcentaje - a.Porcentaje);               
+                data5.sort((a, b) => b.Porcentaje - a.Porcentaje);
 
                 const Graf1newLabel = data2.map(i => i.grp);
                 const Graf1newData = data2.map(i => i.Cantidad);
@@ -631,11 +656,11 @@
                 $("#clientes").fadeIn();
 
                 const Graf2newLabel = data3.map(i => i.grp + ' - (' + i.Porcentaje.toFixed(2) + '%)');
-                const Graf2newData = data3.map(i => i.Porcentaje.toFixed(2));            
+                const Graf2newData = data3.map(i => i.Porcentaje.toFixed(2));
 
                 graf2.data.labels = Graf2newLabel;
                 graf2.data.datasets[0].data = Graf2newData;
-             
+
                 graf2.update();
 
                 $("#spinner2").hide();
@@ -654,18 +679,18 @@
                 $("#foperacion").fadeIn();
 
                 const Graf4newLabel = data5.map(i => i.grp + ' - (' + i.Porcentaje.toFixed(2) + '%)');
-                const Graf4newData = data5.map(i => i.Porcentaje.toFixed(2));   
+                const Graf4newData = data5.map(i => i.Porcentaje.toFixed(2));
 
                 graf4.data.labels = Graf4newLabel;
                 graf4.data.datasets[0].data = Graf4newData;
-               
+
                 graf4.update();
 
                 $("#spinner4").hide();
-                $("#mpago").fadeIn();        
+                $("#mpago").fadeIn();
 
-            }
+            }*@
         });
-    </script>    
+    </script>
 }
 

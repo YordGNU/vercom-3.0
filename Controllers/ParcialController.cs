@@ -216,7 +216,7 @@ namespace vercom.Controllers
                         cod = item.cod,
                         nombre = item.nombre,
                         precio = item.precio,
-                        cant_saldo = (float?)saldo,
+                        cant_saldo = (float?) saldo,
                     };
                     iData.Add(iVal);
                 }
