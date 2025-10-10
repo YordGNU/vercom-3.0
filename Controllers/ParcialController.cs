@@ -196,55 +196,48 @@ namespace vercom.Controllers
 
         public ContentResult _productosXpuntoFilCategoria(int id, int tipo, string fecha, int categ)
         {
-            List<iProductosXpunto> iData = new List<iProductosXpunto>();
-            var cvFecha = Convert.ToDateTime(fecha);
+            var cvFecha = DateTime.Parse(fecha);
             var cvFechaSaldo = cvFecha.AddDays(-1);
-
-            // Obtener el saldo anterior
-            var saldo = db.operacion
-                .Where(r => r.fecha == cvFechaSaldo && r.punto_ventaid == id && r.tipo_operacionid == 5)
-                .GroupBy(r => r.productoid)
-                .Select(g => new { ProductoId = g.Key, Cantidad = g.Sum(r => r.cantidad) })
-                .ToDictionary(s => s.ProductoId, s => s.Cantidad);
-
-            // Obtener las entradas desde la fecha dada
-            var entradas = db.operacion
-                .Where(r => r.fecha >= cvFecha && r.punto_ventaid == id && r.tipo_operacionid == 1)
-                .GroupBy(r => r.productoid)
-                .Select(g => new { ProductoId = g.Key, Cantidad = g.Sum(r => r.cantidad) })
-                .ToDictionary(e => e.ProductoId, e => e.Cantidad);
+            db.Database.CommandTimeout = 120;
+            var iData = new List<iProductosXpunto>();
+            var data = IPVHelper.GenerarAnaliticoDesdeSP(cvFechaSaldo, cvFecha, id, categ);
 
             if (tipo == 5 || tipo == 1)
             {
-                var productos = db.producto.ToList();
+                var productos = db.producto.Where(x => x.categoriaid == categ && x.activo == true);
+
                 foreach (var item in productos)
                 {
+                    var saldo = data.FirstOrDefault(d => d.id == item.id)?.final_saldo ?? 0;
+
                     iProductosXpunto iVal = new iProductosXpunto
                     {
                         id = item.id,
                         cod = item.cod,
                         nombre = item.nombre,
                         precio = item.precio,
-                        cant_saldo = (saldo.ContainsKey(item.id) ? saldo[item.id] : 0) +
-                                     (entradas.ContainsKey(item.id) ? entradas[item.id] : 0),
+                        cant_saldo = (float?)saldo,
                     };
                     iData.Add(iVal);
                 }
             }
             else
             {
-                var productosFiltrados = saldo.Keys.ToList()
-                    .Where(pid => saldo[pid] > 0 || entradas.ContainsKey(pid) && db.producto.First(p => p.id == pid).categoriaid == categ)
-                    .Select(pid => new iProductosXpunto
-                    {
-                        id = (int)pid,
-                        cod = db.producto.First(p => p.id == pid).cod,
-                        nombre = db.producto.First(p => p.id == pid).nombre,
-                        precio = db.producto.First(p => p.id == pid).precio,
-                        cant_saldo = saldo[pid] + (entradas.ContainsKey(pid) ? entradas[pid] : 0),
-                    }).ToList();
 
-                iData.AddRange(productosFiltrados);
+                foreach (var kvp in data)
+                {
+                    var producto = db.producto.Where(p => p.id == kvp.id).SingleOrDefault();
+                    // 🛠 Constructor de respuesta
+                    var produntoPunto = new iProductosXpunto
+                    {
+                        id = producto.id,
+                        cod = producto.cod,
+                        nombre = producto.nombre,
+                        precio = producto.precio,
+                        cant_saldo = (float?) kvp.final_saldo,
+                    };
+                    if (produntoPunto.cant_saldo > 0) iData.Add(produntoPunto);
+                }
             }
 
             return Content(JsonConvert.SerializeObject(iData), "application/json");
@@ -305,13 +298,13 @@ namespace vercom.Controllers
             return Content(JsonConvert.SerializeObject(iData), "application/json");
         }
 
-        public ContentResult _productoSaldoXpuntoXfechaXcateg(int id, int tipo, string fecha, int categ)
+        public ContentResult _productoSaldoXpuntoXfechaXcateg(int id, int tipo, int punto, string fecha, int categ)
         {
             var cvFecha = DateTime.Parse(fecha);
             var cvFechaSaldo = cvFecha.AddDays(-1);
             db.Database.CommandTimeout = 120;
             var iData = new List<iProductosXpunto>();
-            var data = IPVHelper.GenerarAnaliticoDesdeSP(cvFechaSaldo, cvFecha, id, categ);
+            var data = IPVHelper.GenerarAnaliticoDesdeSP(cvFechaSaldo, cvFecha, punto, categ);
 
             if (tipo == 5 || tipo == 1)
             {
@@ -320,6 +313,7 @@ namespace vercom.Controllers
                 foreach (var item in productos)
                 {
                     var saldo = data.FirstOrDefault(d => d.id == item.id)?.final_saldo ?? 0;
+
                     iProductosXpunto iVal = new iProductosXpunto
                     {
                         id = item.id,
@@ -352,7 +346,31 @@ namespace vercom.Controllers
 
             return Content(JsonConvert.SerializeObject(iData), "application/json");
         }
+        public ContentResult _productoSaldoXpuntoXfechaXcategEdit(int id, int punto, string fecha, int categ)
+        {
+            var cvFecha = DateTime.Parse(fecha);
+            var cvFechaSaldo = cvFecha.AddDays(-1);
+            db.Database.CommandTimeout = 120;
+            var iData = new List<iProductosXpunto>();
+            var data = IPVHelper.GenerarAnaliticoDesdeSP(cvFechaSaldo, cvFecha, punto, categ);
 
+            foreach (var kvp in data.Where(x=> x.id == id).ToList())
+            {
+                var producto = db.producto.Where(p => p.id == kvp.id).SingleOrDefault();
+                // 🛠 Constructor de respuesta
+                var produntoPunto = new iProductosXpunto
+                {
+                    id = producto.id,
+                    cod = producto.cod,
+                    nombre = producto.nombre,
+                    precio = producto.precio,
+                    cant_saldo = (float?)kvp.final_saldo,
+                };
+                if (produntoPunto.cant_saldo > 0) iData.Add(produntoPunto);
+            }
+
+            return Content(JsonConvert.SerializeObject(iData), "application/json");
+        }
         protected override void Dispose(bool disposing)
         {
             db.Dispose();

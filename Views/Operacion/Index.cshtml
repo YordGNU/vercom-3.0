@@ -465,8 +465,8 @@
                     $('#edt_puntoid').val(data[0].punto_venta_id);
                     $('#edt_tipopagoid').val(data[0].tipo_pago_id);
                     $('#edt_categoriaid').val(data[0].categoria_id);                   
-                    const url = '@Url.Action("_productoSaldoXpuntoXfechaXcateg", "Parcial")';
-                    $.getJSON(url, { id: data[0].prod_id, tipo: data[0].tipo_operacion_id, fecha: data[0].FechaTexto, categ: data[0].categoria_id }, function (iData) {
+                    const url = '@Url.Action("_productoSaldoXpuntoXfechaXcategEdit", "Parcial")';
+                    $.getJSON(url, { id: data[0].prod_id, punto: data[0].punto_venta_id, fecha: data[0].FechaTexto, categ: data[0].categoria_id }, function (iData) {
                         // Filtrar y validar opciones con ID válido
                         const prodID = String(data[0].prod_id);
                         console.log(iData);
