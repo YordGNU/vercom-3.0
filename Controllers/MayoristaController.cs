@@ -169,21 +169,163 @@ namespace vercom.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult CreateCliente(cliente cliente, List<cliente_cuenta> cliente_Cuentas)
+        public JsonResult CreateCliente(cliente cliente, List<cuenta> cuentas)
         {
-            var existe = db.producto_servicio.Any(r => r.nombre == producto.nombre);
-            if (!existe)
+            using (var transaction = db.Database.BeginTransaction())
             {
-                db.producto_servicio.Add(producto);
-                db.SaveChanges();
-                return Json(new { success = true, redirectUrl = Url.Action("Index") });
-            }
+                try
+                {
+                    var existe = db.cliente.Any(r => r.nombre == cliente.nombre);
+                    if (existe)
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = $"El cliente: {cliente.nombre} ya existe"
+                        });
+                    }
 
-            return Json(new
+                    // Guardar cliente
+                    db.cliente.Add(cliente);
+                    db.SaveChanges();
+
+                    List<cliente_cuenta> asociaciones = new List<cliente_cuenta>();
+                    foreach (var cuenta in cuentas)
+                    {
+                        db.cuenta.Add(cuenta);
+                        db.SaveChanges();
+                        asociaciones.Add(new cliente_cuenta
+                        {
+                            clienteid = cliente.id,
+                            cuentaid = cuenta.id
+                        });
+                    }
+
+                    // Guardar asociaciones
+                    db.cliente_cuenta.AddRange(asociaciones);
+                    db.SaveChanges();
+                    transaction.Commit();        
+                    return Json(new { success = true});
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Error al guardar el cliente: " + ex.Message
+                    });
+                }
+            }
+        }
+
+        [HttpPost]      
+        public JsonResult EditCliente(cliente cliente, List<cuenta> cuentas)
+        {
+            using (var db = new VERCOMEntities())
             {
-                success = false,
-                message = $"El producto: {producto.nombre} ya existe"
+                if (cliente == null || cuentas == null)
+                {
+                    return Json(new { error = true, message = "Debe ingresar al menos una cuenta bancaria" }, JsonRequestBehavior.AllowGet);                 
+                }
+
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        // 🔥 Actualizar los datos del cliente
+                        db.Entry(cliente).State = EntityState.Modified;
+                        db.SaveChanges();
+
+                        // ✅ Obtener todas las cuentas actuales del cliente
+                        var cuentasActuales = db.cliente_cuenta.Where(cc => cc.clienteid == cliente.id).Select(cc => cc.cuentaid).ToList();
+
+                        // 🔥 Identificar cuentas eliminadas
+                        var idsCuentasRecibidas = cuentas.Select(c => c.id).ToList();
+                        var cuentasAEliminar = cuentasActuales.Select(c => c.Value).Except(idsCuentasRecibidas).ToList();
+
+                        // ✅ Eliminar relaciones cliente-cuenta para cuentas eliminadas
+                        foreach (var cuentaId in cuentasAEliminar)
+                        {
+                            var relacion = db.cliente_cuenta.FirstOrDefault(cc => cc.clienteid == cliente.id && cc.cuentaid == cuentaId);
+                            if (relacion != null)
+                            {
+                                db.cliente_cuenta.Remove(relacion);
+                            }
+                        }
+                        db.SaveChanges();
+
+                        // 🔥 Verificar cuentas nuevas y mantener existentes
+                        foreach (var cuenta in cuentas)
+                        {
+                            var cuentaExistente = db.cuenta.FirstOrDefault(c => c.no == cuenta.no);
+
+                            if (cuentaExistente == null)
+                            {
+                                db.cuenta.Add(cuenta);
+                                db.SaveChanges();
+                                cuentaExistente = cuenta;
+                            }
+
+                            var asociacionExiste = db.cliente_cuenta.Any(a => a.clienteid == cliente.id && a.cuentaid == cuentaExistente.id);
+
+                            if (!asociacionExiste)
+                            {
+                                db.cliente_cuenta.Add(new cliente_cuenta
+                                {
+                                    clienteid = cliente.id,
+                                    cuentaid = cuentaExistente.id
+                                });
+                            }
+                        }
+                        db.SaveChanges();
+                        transaction.Commit();
+                        return Json(new { success = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        return Json(new { success = false, message = "Error al editar: " + ex.Message });
+                    }
+                }
+            }
+        }
+
+        [HttpGet]
+        public JsonResult ObtenerClientePorId(int id)
+        {
+            var m = db.cliente.Find(id);
+            if (m == null) return Json(new { exito = false, mensaje = "Cliente no encontrado." }, JsonRequestBehavior.AllowGet);
+            var iData = new List<iCliente>();         
+            var DTOCuentas = db.cliente_cuenta.Where(c => c.clienteid == id).Select(c => new DTOCuenta
+            {
+              CuentaID = c.cuentaid,
+              No = c.cuenta.no,
+              Banco =c.cuenta.banco,
+              Agencia = c.cuenta.agencia,
+              Direccion = c.cuenta.titular,
+              Tipo = c.cuenta.tipo_cuenta,
+              Titular = c.cuenta.titular,
+            }).ToList();
+
+            iData.Add(new iCliente
+            {
+                ClienteID = m.id,
+                Nombre = m.nombre,
+                Nacionalidad = m.nacionalidad,
+                Direccion = m.direccion,
+                Provincia = m.provincia,
+                Localidad = m.localidad,
+                Municipio = m.municipio,
+                NIT = m.nit,
+                REEUP = m.reeup,
+                RENAE = m.renae,
+                TipoClienteID = m.tipoClienteID,
+                Tipo = m.tipo_cliente.tipo,
+                Cuentas = DTOCuentas,
             });
+
+            return Json(new { exito = true, iData }, JsonRequestBehavior.AllowGet);
         }
         #endregion
 
@@ -289,191 +431,7 @@ namespace vercom.Controllers
             db.producto_servicio.RemoveRange(productosServi);
             db.SaveChanges();
             return Json(new { success = true });
-        }            
-
-        //CREAR CLIENTE 
-        [RBAC]
-        public ActionResult CreateCliente()
-        {
-            ViewBag.tipoClienteID = new SelectList(db.tipo_cliente, "id", "tipo");
-            return View();                 
-        }
-
-        // Asegúrate de importar esta librería
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult CreateCliente(cliente cliente, List<cuenta> cuentas)
-        {
-        using (var db = new VERCOMEntities())
-        {
-            if (cliente == null || cuentas == null || cuentas.Count == 0)
-            {
-                ModelState.AddModelError("", "Debe ingresar al menos una cuenta bancaria.");
-                return View(cliente);
-            }
-
-            using (var transaction = db.Database.BeginTransaction())
-            {
-                try
-                {
-                    // Guardar el cliente
-                    db.cliente.Add(cliente);
-                    db.SaveChanges();
-
-                    // Guardar las cuentas y asociarlas con el cliente
-                    List<cliente_cuenta> asociaciones = new List<cliente_cuenta>();
-                    foreach (var cuenta in cuentas)
-                    {
-                        db.cuenta.Add(cuenta);
-                        db.SaveChanges();
-
-                        asociaciones.Add(new cliente_cuenta
-                        {
-                            clienteid = cliente.id,
-                            cuentaid = cuenta.id
-                        });
-                    }
-
-                    // Guardar asociaciones
-                    db.cliente_cuenta.AddRange(asociaciones);
-                    db.SaveChanges();
-
-                    transaction.Commit();
-                    ViewBag.SuccessMessage = "Cliente y cuentas bancarias registradas exitosamente.";
-                    return RedirectToAction("Cliente");
-                }
-                catch (DbEntityValidationException ex)
-                {
-                    transaction.Rollback();
-
-                    // Capturar detalles de los errores
-                    foreach (var validationErrors in ex.EntityValidationErrors)
-                    {
-                        foreach (var error in validationErrors.ValidationErrors)
-                        {
-                            ModelState.AddModelError("", $"Propiedad: {error.PropertyName} - Error: {error.ErrorMessage}");
-                        }
-                    }
-
-                    return View(cliente);
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    ModelState.AddModelError("", "Ocurrió un error inesperado: " + ex.Message);
-                    return View(cliente);
-                }
-            }
-        }        
-        }
-        //EDITAR CLIENTE
-        [RBAC]
-        public ActionResult DetailsCliente(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            cliente cliente = db.cliente.Find(id);
-            if (cliente == null)
-            {
-                return HttpNotFound();
-            }
-            return View(cliente);
-        }
-
-        [RBAC]
-        public ActionResult EditCliente(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            cliente cliente = db.cliente.Find(id);
-            if (cliente == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.tipoClienteID = new SelectList(db.tipo_cliente, "id", "tipo", cliente.tipoClienteID);
-            return View(cliente);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult EditCliente(cliente cliente, List<cuenta> cuentas)
-        {
-            using (var db = new VERCOMEntities())
-            {
-                if (cliente == null || cuentas == null)
-                {
-                    ModelState.AddModelError("", "Debe ingresar al menos una cuenta bancaria.");
-                    return View(cliente);
-                }
-
-                using (var transaction = db.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        // 🔥 Actualizar los datos del cliente
-                        db.Entry(cliente).State = EntityState.Modified;
-                        db.SaveChanges();
-
-                        // ✅ Obtener todas las cuentas actuales del cliente
-                        var cuentasActuales = db.cliente_cuenta.Where(cc => cc.clienteid == cliente.id).Select(cc => cc.cuentaid).ToList();
-
-                        // 🔥 Identificar cuentas eliminadas
-                        var idsCuentasRecibidas = cuentas.Select(c => c.id).ToList();
-                        var cuentasAEliminar = cuentasActuales.Select(c => c.Value).Except(idsCuentasRecibidas).ToList();
-
-                        // ✅ Eliminar relaciones cliente-cuenta para cuentas eliminadas
-                        foreach (var cuentaId in cuentasAEliminar)
-                        {
-                            var relacion = db.cliente_cuenta.FirstOrDefault(cc => cc.clienteid == cliente.id && cc.cuentaid == cuentaId);
-                            if (relacion != null)
-                            {
-                                db.cliente_cuenta.Remove(relacion);
-                            }
-                        }
-                        db.SaveChanges();
-
-                        // 🔥 Verificar cuentas nuevas y mantener existentes
-                        foreach (var cuenta in cuentas)
-                        {
-                            var cuentaExistente = db.cuenta.FirstOrDefault(c => c.no == cuenta.no);
-
-                            if (cuentaExistente == null)
-                            {
-                                db.cuenta.Add(cuenta);
-                                db.SaveChanges();
-                                cuentaExistente = cuenta;
-                            }
-
-                            var asociacionExiste = db.cliente_cuenta.Any(a => a.clienteid == cliente.id && a.cuentaid == cuentaExistente.id);
-
-                            if (!asociacionExiste)
-                            {
-                                db.cliente_cuenta.Add(new cliente_cuenta
-                                {
-                                    clienteid = cliente.id,
-                                    cuentaid = cuentaExistente.id
-                                });
-                            }
-                        }
-                        db.SaveChanges();
-
-                        transaction.Commit();
-                        ViewBag.SuccessMessage = "Cliente y cuentas actualizadas exitosamente.";
-                        return RedirectToAction("Cliente");
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        ModelState.AddModelError("", "Ocurrió un error inesperado: " + ex.Message);
-                        return View(cliente);
-                    }
-                }
-            }
-        }
+        }  
 
         //CREAR NEGOCIO
         [RBAC]

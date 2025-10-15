@@ -17,6 +17,20 @@ namespace vercom.Interfaces
         public string NIT { get; internal set; }
         public string REEUP { get; internal set; }
         public string RENAE { get; internal set; }
+        public int? TipoClienteID { get; internal set; }
         public string Tipo { get; internal set; }
+
+        public List<DTOCuenta> Cuentas;
+    }
+
+    public class DTOCuenta
+    {
+        public int? CuentaID { get; internal set; }
+        public string No { get; internal set; }
+        public string Tipo { get; internal set; }
+        public string Agencia { get; internal set; }
+        public string Banco { get; internal set; }
+        public string Titular { get; internal set; }
+        public string Direccion { get; internal set; }
     }
 }
