@@ -177,6 +177,7 @@
     <Compile Include="Interfaces\iCodificadores.cs" />
     <Compile Include="Interfaces\iMovimiento.cs" />
     <Compile Include="Interfaces\iProducto.cs" />
+    <Compile Include="Interfaces\iProductoServi.cs" />
     <Compile Include="Interfaces\iProductosRecientes.cs" />
     <Compile Include="Interfaces\iOperacionesRecientes.cs" />
     <Compile Include="Interfaces\iFlujoResumen.cs" />

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -132,60 +133,105 @@ namespace vercom.Controllers
         }
         [RBAC]
         public ActionResult ProductoServi()
-        {
-            var productos_servicio = db.producto_servicio.ToList();
-            return View(productos_servicio);
-        }
-
-        //CREAR PRODUCTOS Y SERVICIOS
-        [RBAC]
-        public ActionResult CreateProductoServi()
-        {
+        {           
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult CreateProductoServi([Bind(Include = "id,nombre,precio,costo")] producto_servicio producto_servicio)
+        [HttpGet]
+        public JsonResult GetProductoServi(int cantidad = 1000)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.producto_servicio.Add(producto_servicio);
-                db.SaveChanges();
-                return RedirectToAction("ProductoServi");
+                var iData = new List<iProductoServi>();
+                var productosServi = db.producto_servicio.OrderByDescending(p => p.id).Take(cantidad).ToList();
+                foreach (var item in productosServi) {
+                    iData.Add(new iProductoServi { 
+                        ProductoID = item.id,
+                        Nombre = item.nombre,
+                        Precio = item.precio,
+                        Costo = item.costo,                    
+                    });
+                
+                }
+                return Json(iData, JsonRequestBehavior.AllowGet);
             }
-
-            return View(producto_servicio);
-        }
-
-        //EDITAR PROUCTOS Y SERVICIOS
-        [RBAC]
-        public ActionResult EditProductoServi(int? id)
-        {
-            if (id == null)
+            catch (Exception ex)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                // 🛠️ Loguear el error si tienes sistema de logs
+                return Json(new { error = true, message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
-            producto_servicio producto_servicio = db.producto_servicio.Find(id);
-            if (producto_servicio == null)
-            {
-                return HttpNotFound();
-            }
-            return View(producto_servicio);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditProductoServi([Bind(Include = "id,nombre,precio,costo")] producto_servicio producto_servicio)
+        public JsonResult CreateProductoServi(producto_servicio producto)
         {
-            if (ModelState.IsValid)
-            {
-                db.Entry(producto_servicio).State = EntityState.Modified;
+            var existe = db.producto_servicio.Any(r => r.nombre == producto.nombre);
+            if (!existe)
+            {              
+                db.producto_servicio.Add(producto);
                 db.SaveChanges();
-                return RedirectToAction("ProductoServi");
+                return Json(new { success = true, redirectUrl = Url.Action("Index") });
             }
-            return View(producto_servicio);
+
+            return Json(new
+            {
+                success = false,
+                message = $"El producto: {producto.nombre} ya existe"
+            });
         }
+
+
+        [HttpPost] 
+        public JsonResult EditarProductoServi(int Edit_ProductoID, string Edit_Nombre, decimal Edit_Precio, decimal Edit_Costo)
+        {
+            try
+            {
+
+                var productoServi = db.producto_servicio.Find(Edit_ProductoID);
+                if (productoServi == null)
+                    return Json(new { success = false, message = "Producto/Servicio no encontrado." });
+
+                // Actualización de campos              
+                productoServi.nombre = Edit_Nombre;
+                productoServi.precio = (float?) Edit_Precio;
+                productoServi.costo = (float?) Edit_Costo; 
+                db.SaveChanges();
+                return Json(new { exito = true, mensaje = "Producto/Servicio editado correctamente." });
+            }
+            catch (Exception ex)
+            {
+                // Log opcional
+                return Json(new { success = false, message = "Error al editar: " + ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public JsonResult ObtenerProductoServiPorId(int id)
+        {
+            var m = db.producto_servicio.Find(id);
+            if (m == null) return Json(new { exito = false, mensaje = "Producto/Servicio no encontrado." }, JsonRequestBehavior.AllowGet);
+            var iData = new List<iProductoServi>();
+            iData.Add(new iProductoServi{
+            
+                ProductoID = m.id,
+                Nombre = m.nombre,               
+                Precio = m.precio,
+                Costo = m.costo
+              
+            });
+
+            return Json(new { exito = true, iData }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult EliminarMultiplesProductoServi(int[] ids)
+        {
+            var productosServi = db.producto_servicio.Where(o => ids.Contains(o.id)).ToList();
+            db.producto_servicio.RemoveRange(productosServi);
+            db.SaveChanges();
+            return Json(new { success = true });
+        }            
 
         //CREAR CLIENTE 
         [RBAC]

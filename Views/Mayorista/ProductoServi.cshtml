@@ -2,200 +2,580 @@
 @{
     ViewBag.Title = "PRODUCTOS Y SERV.";
 }
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-        <h2>PRODUCTOS Y SERVICIOS</h2>
-        <ol class="breadcrumb">
+<div class="page-title-head d-flex align-items-center">
+    <div class="flex-grow-1">
+        <h4 class="fs-sm text-uppercase fw-bold m-0">VENTA MAYORISTA</h4>
+    </div>
+    <div class="text-end">
+        <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item">
-                <a href="@Url.Action("Index", "Home")">Inicio</a>
+                <a href="javascript: void(0);">VERCOM</a>
             </li>
             <li class="breadcrumb-item">
-                    <a href="@Url.Action("Index", "Mayorista")">Venta mayorista</a>
+                <a href="javascript: void(0);">VENTA MAYORISTA</a>
             </li>
-            <li class="active breadcrumb-item">
-                <strong>Productos y servicios</strong>
-            </li>
+            <li class="breadcrumb-item active">PRODUCTOS Y SERVICIOS</li>
         </ol>
     </div>
 </div>
-<div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h5>LISTADO DE PRODUCTOS Y SERVICIOS <small class="m-l-sm"> @DateTime.Today.Day/@DateTime.Now.Month/@DateTime.Now.Year</small></h5>
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="fullscreen-link">
-                            <i class="fa fa-expand"></i>
-                        </a>
-                        <a class="close-link">
-                            <i class="fa fa-times"></i>
-                        </a>
+<div class="row">
+    <div class="col-12">
+        <div data-table="" data-table-rows-per-page="50" class="card" id="bloque-Tproductos">
+            <div class="card-header border-light justify-content-between">
+                <div class="d-flex gap-2">
+                    <div class="app-search">
+                        <input data-table-search="" type="search" class="form-control" placeholder="Buscar por nombre...">
+                        <i data-lucide="search" class="app-search-icon text-muted"></i>
+                    </div>
+                    <button data-table-delete-selected="" data-table-delete-url="@Url.Action("EliminarMultiplesProductoServi","Mayorista")" type="button" class="btn btn-danger btn-icon d-none">
+                        <i class="ti ti-trash fs-xl"></i>
+                    </button>
+                </div>
+                <div class="d-flex align-items-center gap-2">              
+                    <div class="app-search">
+                        <select data-table-range-filter="precio" class="form-select form-control my-1 my-md-0">
+                            <option value="">Rango de precio</option>
+                            <option value="0-500">$0 - $500</option>
+                            <option value="510-1500">$510 - $1500</option>
+                            <option value="1510-5000">$1510 - $5000</option>
+                            <option value="5000+">$5000+</option>
+                        </select>
+                        <i data-lucide="dollar-sign" class="app-search-icon text-muted"></i>
+                    </div>
+                    <div>
+                        <select data-table-set-rows-per-page="" class="form-select form-control my-1 my-md-0">
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                        </select>
                     </div>
                 </div>
-                <div class="ibox-content">
-                    <div style="text-align: right">
-                        <a class="btn btn-outline-primary btn-rounded btn-block" style="width: 10%;" href="@Url.Action("CreateProductoServi", "Mayorista")"><i class="fa fa-plus"></i> AGREGAR </a>
-                    </div>
-                    <hr class="hr-line-dashed" />
-                    <div style="width: 100%; padding-left: -0px; ">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover dt-responsive display nowrap DataTable" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            NOMBRE
-                                        </th>
-                                        <th>
-                                            PRECIO
-                                        </th>
-                                        <th>
-                                            COSTO
-                                        </th>                                      
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model)
-                                    {
-                                        <tr id="row_@item.id">
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.nombre)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.precio)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.costo)
-                                            </td>
-                                            <td class="text-right">
-                                                <div class="btn-group">
-                                                    @Html.AntiForgeryToken()
-                                                    <a class="btn-outline-success btn btn-xs" href="@Url.Action("EditProductoServi", "Mayorista", new {id = item.id})"><i class="fa fa-edit"></i></a>
-                                                    <button data-id="@item.id" class="deleteButton btn-outline-danger btn btn-xs"><i class="fa fa-trash"></i></button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                <div class="d-flex gap-1">
+                    <button class="btn btn-secondary btn-icon" id="btnAgregarProductoServi">
+                        <i class="ti ti-plus fs-xxl"></i>
+                    </button>
+                    <button class="btn btn-success btn-icon" id="btnExportExcel">
+                        <i data-lucide="file-spreadsheet" class="fs-lg"></i>
+                    </button>
+                    <button class="btn btn-info btn-icon" id="btnPrint">
+                        <i data-lucide="printer" class="fs-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom table-centered table-select table-hover w-100 mb-0" id="productosServiTable">
+                    <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                        <tr class="text-uppercase fs-xxs">
+                            <th class="ps-3 noExport" style="width: 1%;" data-exclude="true">
+                                <input data-table-select-all="" class="form-check-input form-check-input-light fs-14 mt-0" type="checkbox" id="select-all" value="option">
+                            </th>                          
+                            <th data-table-sort="" data-column="prod">PRODUCTO</th>                           
+                            <th data-table-sort="" data-column="precio">PRECIO</th>
+                            <th data-table-sort="" data-column="costo">COSTO</th>
+                            <th class="text-center noExport" style="width: 1%;">ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div data-table-pagination-info="entradas"></div>
+                    <div data-table-pagination=""></div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </div><!-- end col -->
+</div><!-- end row -->
+<div class="modal fade" id="modalAgregarProductoServi" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">Agregar producto</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formAgregarProductoServi">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xxl-12">
+                            <div class="card">
+                                <div class="card-header d-block p-3">
+                                    <h4 class="card-title mb-1">Información del producto</h4>
+                                    <p class="text-muted mb-0">
+                                        Para agregar un nuevo producto, proporcione los detalles necesarios en los campos a continuación.
+                                    </p>
+                                </div> <!-- end card-header -->
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="nombre" class="form-label">Nombre del producto <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Entre el nombre del producto" required="">
+                                            </div>                                         
+                                        </div>      
+                                        <div class="col-6">
+                                            <div class="mb-3">
+                                                <label for="precio" class="form-label">Precio <span class="text-danger">*</span></label>
+                                                <div class="app-search">
+                                                    <input type="text" class="form-control decimalVAL" id="precio" name="precio" step="0.01" placeholder="Precio (Ejemplo, 199,99)" required="">
+                                                    <i data-lucide="dollar-sign" class="app-search-icon text-muted"></i>
+                                                </div>
+                                            </div>                                           
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="mb-3">
+                                                <label for="costo" class="form-label">Costo <span class="text-danger">*</span></label>
+                                                <div class="app-search">
+                                                    <input type="text" class="form-control decimalVAL" id="costo" name="costo" step="0.01" placeholder="Costo (Ejemplo, 99,99)" required="">
+                                                    <i data-lucide="hand-coins" class="app-search-icon text-muted"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> <!-- end card-body-->
+                            </div> <!-- end card-->
+                        </div> <!-- end col-->                       
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" id="btnGuardarMovimiento" class="btn btn-primary">Agregar</button>
+                </div>
+            </form>
+        </div>
+    </div> <!-- end modal dialog-->
+</div> <!-- end modal-->
+<div class="modal fade" id="modalEditarProductoServi" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">Editar producto</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formEditarProductoServi">             
+                <input type="hidden" id="Edit_ProductoID" name="Edit_ProductoID" />
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xxl-12">
+                            <div class="card">
+                                <div class="card-header d-block p-3">
+                                    <h4 class="card-title mb-1">Información del producto</h4>
+                                </div> <!-- end card-header -->
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="Edit_Nombre" class="form-label">Nombre del producto <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="Edit_Nombre" name="Edit_Nombre" placeholder="Entre el nombre del producto" required="">
+                                            </div>   
+                                        </div>       
+                                        <div class="col-6">
+                                            <div class="mb-3">
+                                                <label for="Edit_Precio" class="form-label">Precio <span class="text-danger">*</span></label>
+                                                <div class="app-search">
+                                                    <input type="text" class="form-control decimalVAL" id="Edit_Precio" name="Edit_Precio" step="0.01" placeholder="Precio (Ejemplo, 199,99)" required="">
+                                                    <i data-lucide="dollar-sign" class="app-search-icon text-muted"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="mb-3">
+                                                <label for="Edit_Costo" class="form-label">Costo <span class="text-danger">*</span></label>
+                                                <div class="app-search">
+                                                    <input type="text" class="form-control decimalVAL" id="Edit_Costo" name="Edit_Costo" step="0.01" placeholder="Costo (Ejemplo, 99,99)" required="">
+                                                    <i data-lucide="hand-coins" class="app-search-icon text-muted"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> <!-- end card-body-->
+                            </div> <!-- end card-->
+                        </div> <!-- end col-->                             
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" id="btnGuardarMovimiento" class="btn btn-primary">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div> <!-- end modal dialog-->
+</div> <!-- end modal-->
 @section Styles {
-    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-    @Styles.Render("~/plugins/sweetAlertStyles")
-    <style>
-        div.dataTables_wrapper div.dataTables_filter input {
-            width: 500px;
-        }
-    </style>
+    <link href="~/Content/plugins/toastr/toastr.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
 }
 
 @section Scripts {
-    @Scripts.Render("~/plugins/dataTables")
-    @Scripts.Render("~/plugins/sweetAlert")
+    <script src="~/Scripts/plugins/toastr/toastr.min.js"></script>
+    <script src="~/Scripts/plugins/table2excel/table2excel.js"></script>
+    <script src="~/Scripts/custom-table.js"></script>
     <script>
- $(document).ready(function () {
-     $(document).on('click', '.deleteButton', function () {
-         var id = $(this).data('id');
-         swal({
-             title: "Estas seguro?",
-             text: "Esta acción es irrebercible!",
-             type: "warning",
-             showCancelButton: true,
-             confirmButtonColor: "#DD6B55",
-             confirmButtonText: "Si, eliminar!",
-             cancelButtonText: "No, cancelar!",
-             closeOnConfirm: true,
-         },
-             function (isConfirm) {
-                 if (isConfirm) {
-                     $.ajax({
-                         url: '@Url.Action("DeleteProductoServi", "Mayorista")',
-                         type: 'GET',
-                         data: { id: id },
-                         success: function (response) {
-                             if (response.success) {
-                                 $('#row_' + id).remove();
-                             } else {
-                             }
-                         },
-                         error: function (xhr, status, error) {
-                         }
-                     });
-                 }
-             });
-     });
- });
-    </script>
-    <script type="text/javascript">
         $(document).ready(function () {
+            window.customTable = new CustomTable();
+            iniciarVista();
 
-            $('.DataTable').DataTable({
-                pageLength: 25,
-                dom: '<"html5buttons"B>lTfgitp',
-                header: true,
-                fixedHeader: {
-                    header: true,
-                    headerOffset: 120
-                },
-                buttons: [
-                    { extend: 'excel', text: 'EXP. EXCEL' ,title: 'Listado de productos y servicios ' + '@System.DateTime.Now.ToString("d")' },
-                    {
-                        extend: 'print',
-                        text: 'IMPRIMIR',
-                        title: 'Listado de productos y servicios ' + '@System.DateTime.Now.ToString("d")',
-                        exportOptions: {
-                            orientation: 'landscape',
-                            columns: [0,1,2,3,4,5,6,7]
-                        },
-                        customize: function (win) {
-                            var css = '@Page { size: landscape; }',
-                                head = win.document.head || win.document.getElementsByTagName('head')[0],
-                                style = win.document.createElement('style');
-                            style.type = 'text/css';
-                            style.media = 'print';
-                            if (style.styleSheet) {
-                                style.styleSheet.cssText = css;
-                            } else {
-                                style.appendChild(win.document.createTextNode(css));
-                            }
-                            head.appendChild(style);
+            $('#productosServiTable').on('click', '.btnEditar', function (e) {
+                const id = $(this).closest('tr').data('id');
+                const bloqueID = '#formEditarProductoServi';
+                activarOverlayEnContenedor(bloqueID);
+                $.getJSON(`/Mayorista/ObtenerProductoServiPorId/${id}`, function (res) {
+                    //Asignar valores al modal
+                    const m = res.iData[0];
+                    $('#Edit_ProductoID').val(m.ProductoID);
+                    $('#Edit_Nombre').val(m.Nombre);
+                    $('#Edit_Precio').val(m.Precio);
+                    $('#Edit_Costo').val(m.Costo);
+                    $('#modalEditarProductoServi').modal('show');
+                }).fail(function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de conexión',
+                        text: 'No se pudo consultar los datos. Verifica tu conexión o intenta nuevamente.'
+                    });
+                }).always(() => desactivarOverlayEnContenedor(bloqueID));
+            });
+            $('#btnAgregarProductoServi').on('click', function (e) {
+                e.preventDefault();
+                $('#modalAgregarProductoServi').modal('show');
+            });
+            $('#formAgregarProductoServi').on("submit", function (e) {
+                $(".decimalVAL").each(function () {
+                    var valor = $(this).val().replace(".", ",");
+                    $(this).val(valor);
+                });
+                e.preventDefault();
+                $('#modalAgregarProductoServi').modal('hide');
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("CreateProductoServi", "Mayorista")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Producto/Servicio agregado',
+                                text: 'Producto/Servicio agregado correctamente',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            cargarTablaProductosServi();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '¡Error!',
+                                text: response.message
+                            });
                         }
-                    }
-                ], language: {
-                    "sProcessing": "Procesando...",
-                    "sLengthMenu": "Mostrar _MENU_ registros",
-                    "sZeroRecords": "No se encontraron resultados",
-                    "sEmptyTable": "Ningún dato disponible en esta tabla",
-                    "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                    "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                    "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                    "sInfoPostFix": "",
-                    "sSearch": "Buscar:",
-                    "sUrl": "",
-                    "sInfoThousands": ",",
-                    "sLoadingRecords": "Cargando...",
-                    "oPaginate": {
-                        "sFirst": "Primero",
-                        "sLast": "Último",
-                        "sNext": "Siguiente",
-                        "sPrevious": "Anterior"
                     },
-                    "oAria": {
-                        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Hubo un problema al enviar el formulario.'
+                        });
                     }
-                }
+                });
+            });
+            $('#formEditarProductoServi').on('submit', function (e) {
+                e.preventDefault();
+                $(".decimalVAL").each(function () {
+                    var valor = $(this).val().replace(".", ",");
+                    $(this).val(valor);
+                });
 
+                const datos = $('#formEditarProductoServi').serialize();
+                console.log(datos);
+
+                $.ajax({
+                    url: '@Url.Action("EditarProductoServi", "Mayorista")',
+                    type: 'POST',
+                    data: datos,
+                    success: function (res) {
+                        if (res.exito) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Producto/Servicio actualizado',
+                                text: res.mensaje,
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            $('#modalEditarProductoServi').modal('hide');
+                            cargarTablaProductosServi(); // Recarga la tabla
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: res.mensaje
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Hubo un problema al actualizar el movimiento.'
+                        });
+                    }
+                });
+            });
+
+            function iniciarVista() {
+                // 🧠 Ejecutar en cascada sin dependencia entre ellas
+                try { cargarTablaProductosServi(); } catch (e) { console.error("Error al optener listado:", e.message); }
+            }
+            async function cargarTablaProductosServi() {
+                const url = '@Url.Action("GetProductoServi", "Mayorista")';
+                const bloqueID = '#bloque-Tproductos';
+                const datos = await OptenerData(url, bloqueID);
+                if (datos) {
+                    refreshTable(datos, bloqueID);
+                }
+            }
+            async function OptenerData(url, bloqueID) {
+                activarOverlayEnContenedor(bloqueID);
+                try {
+                    const response = await fetch(url, { method: "GET" });
+
+                    const tipo = response.headers.get("content-type") || "";
+                    if (!response.ok) {
+                        console.warn(`⚠️ Error HTTP ${response.status} en ${url}`);
+                        const texto = await response.text();
+                        console.log("Contenido devuelto:", texto.slice(0, 200));
+                        return null;
+                    }
+
+
+                    if (!tipo.includes("application/json")) {
+                        const texto = await response.text();
+                        console.error("❌ Respuesta no es JSON válida:", texto.slice(0, 200));
+                        return null;
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error(`❌ Error de red o fetch en ${url}:`, error);
+                    return null;
+                }
+            }
+            function refreshTable(data, bloqueID) {
+                const tableEl = document.querySelector('[data-table]');
+                const instance = window.customTable.tables.find(t => t.table === tableEl);
+
+                const tbody = tableEl.querySelector("tbody");
+                tbody.innerHTML = "";
+                const rows = data.map(item => {
+                    const tr = document.createElement('tr');
+                    tr.id = `${item.ProductoID}`;
+                    tr.dataset.id = item.ProductoID;
+                    tr.innerHTML = `
+                    <td class="noExport">
+                    <input class="form-check-input form-check-input-light fs-14 product-item-check mt-0" type="checkbox" value="${item.ProductoID}">
+                    </td>
+                    <td>${item.Nombre}</td>
+                    <td>${formatearNumero(item.Precio)}</td >
+                    <td>${formatearNumero(item.Costo)}</td>
+                    <td class="noExport">
+                    <div class="d-flex justify-content-center gap-1">
+                    <button class="btn btn-light btn-icon btn-sm rounded-circle btnEditar"><i class="ti ti-edit fs-lg"></i></button>
+                    </div></td>`;
+                    return tr;
+                });
+
+                instance.fullRefresh(rows);
+                setupCheckboxListeners();
+            }
+            function setupCheckboxListeners() {
+                let tableEl = document.querySelector('[data-table]');
+                let btnDeleteSelected = document.querySelector('[data-table-delete-selected]');
+                let e = tableEl.querySelector("tbody");
+                let checkAllCheckBox = document.querySelector("#select-all");
+                let t = e.querySelectorAll('input[type="checkbox"]');
+                let rows = Array.from(e.querySelectorAll("tr"));
+                let filteredRows = [...rows];
+
+                checkAllCheckBox &&
+                    0 < t.length &&
+                    t.forEach((e) => {
+                        e.addEventListener("change", () => {
+                            var e = Array.from(t).some((e) => e.checked);
+                            btnDeleteSelected &&
+                                0 < filteredRows.length &&
+                                btnDeleteSelected.classList.toggle("d-none", !e);
+                        });
+                    });
+            }
+            function activarOverlayEnContenedor(contenedorID) {
+                const contenedor = document.querySelector(contenedorID);
+                if (!contenedor) return;
+
+                const cards = contenedor.querySelectorAll('.card');
+                cards.forEach(card => {
+                    let overlay = card.querySelector('.card-overlay');
+                    if (!overlay) {
+                        overlay = document.createElement('div');
+                        overlay.classList.add(
+                            'card-overlay',
+                            'position-absolute',
+                            'top-0',
+                            'start-0',
+                            'w-100',
+                            'h-100',
+                            'd-flex',
+                            'justify-content-center',
+                            'align-items-center',
+                            'noExport'
+                        );
+
+                        overlay.style.zIndex = '10';
+                        const spinner = document.createElement('div');
+                        spinner.classList.add('spinner-border', 'text-primary');
+                        spinner.setAttribute('role', 'status');
+                        const label = document.createElement('span');
+                        label.classList.add('visually-hidden');
+                        label.textContent = 'Cargando...';
+                        spinner.appendChild(label);
+                        overlay.appendChild(spinner);
+                        card.appendChild(overlay);
+                    }
+
+                    overlay.style.display = 'flex';
+                    $(overlay).hide().fadeIn(200);
+                });
+            }
+            function desactivarOverlayEnContenedor(contenedorID) {
+                const contenedor = document.querySelector(contenedorID);
+                if (!contenedor) return;
+                const overlays = contenedor.querySelectorAll('.card .card-overlay');
+                overlays.forEach(overlay => {
+                    $(overlay).fadeOut(200, () => overlay.remove());
+                });
+            }
+            function formatearNumero(valor) {
+                if (valor == Math.floor(valor)) {
+                    return valor;
+                } else {
+                    return valor.toFixed(2);
+                }
+            }
+            document.getElementById("btnExportExcel").addEventListener("click", function () {
+                const exporter = new Table2Excel();
+                // Clona la tabla para no afectar el original
+                let tablaClonada = $("#productosServiTable").clone();
+                // Elimina las columnas que no deseas
+                tablaClonada.find("th:nth-child(1), td:nth-child(1)").remove(); // 1
+                tablaClonada.find("th:nth-child(4), td:nth-child(4)").remove(); // 9
+                // Export tabla
+                exporter.export(tablaClonada, "listado de productos y servicios", {
+                    exclude: ".noExport",
+                    name: "Exportación",
+                    filename: "listado de productos y servicios.xlsx",
+                    preserveColors: true
+                });
+
+            });
+            document.getElementById("btnPrint").addEventListener("click", function () {
+                let tablaClonada = $("#productosServiTable").clone();
+                tablaClonada.find(".noExport").remove();
+                const ventana = window.open('', '', 'height=1080,width=1920');
+                ventana.document.write(`
+                 <html>
+                 <head>
+                 <title>IMPRIMIR TABLA OPERACIONES</title>
+                             <style>
+ body {
+     font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+     margin: 20px;
+     font-size: 13px;
+     color: #2c3e50;
+     background-color: #fdfdfd;
+ }
+
+ h3 {
+     margin-bottom: 8px;
+     color: #2c3e50;
+     font-size: 18px;
+     border-bottom: 2px solid #3498db;
+     padding-bottom: 4px;
+ }
+
+ p {
+     margin: 0 0 12px;
+     font-weight: 600;
+     color: #34495e;
+ }
+
+ table {
+     width: 100%;
+     border-collapse: separate;
+     border-spacing: 0;
+     margin-top: 15px;
+     box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+     border-radius: 6px;
+     overflow: hidden;
+ }
+ table td a,
+ table th a {
+     text-decoration: none;
+     color: inherit; /* opcional: hereda el color del texto de la celda */
+ }
+
+ /* Borde inferior para todas las filas del cuerpo */
+ tbody tr td {
+     border-bottom: 1px solid #ccc;
+     }
+
+ thead {
+     background-color: #3498db;
+     color: white;
+     font-weight: bold;
+     text-transform: uppercase;
+     letter-spacing: 0.5px;
+ }
+
+ thead th {
+     background-color: #3498db;
+     color: white;
+     font-weight: bold;
+     text-transform: uppercase;
+     letter-spacing: 0.5px;
+     border-bottom: 1px solid #2c3e50; /* Borde inferior elegante */
+ }
+
+ th, td {
+     border: none;
+     padding: 10px 8px;
+     text-align: center;
+     transition: background-color 0.3s ease;
+ }
+
+ tbody tr:hover td {
+     background-color: #ecf0f1;
+     }
+
+ tr:nth-child(even) td {
+     background-color: #f9fbfc;
+     }
+
+ tfoot td {
+     background-color: #ecf0f1;
+     font-weight: bold;
+     color: #2c3e50;
+ }
+</style>
+                 </head>
+                 <body>
+                 <h3>📋 Listado de productos y servicios </h3>
+                 ${tablaClonada[0].outerHTML}
+                 </body>
+                 </html>
+                 `);
+                ventana.document.close();
+                ventana.focus();
+                ventana.print();
             });
         });
     </script>

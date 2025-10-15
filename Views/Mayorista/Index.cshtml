@@ -4,17 +4,14 @@
 }
 <div class="page-title-head d-flex align-items-center">
     <div class="flex-grow-1">
-        <h4 class="fs-sm text-uppercase fw-bold m-0">OPERACIONES</h4>
+        <h4 class="fs-sm text-uppercase fw-bold m-0">VENTA MAYORISTA</h4>
     </div>
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item">
                 <a href="javascript: void(0);">VERCOM</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="javascript: void(0);">OPERACIONES</a>
-            </li>
-            <li class="breadcrumb-item active">LISTA</li>
+            </li>           
+            <li class="breadcrumb-item active">VENTA MAYORISTA</li>
         </ol>
     </div>
 </div>
@@ -23,14 +20,89 @@
         <!-- Simple card -->
         <div class="card">
             <div class="card-body">
-                @Html.Action("_filterMayorista", "Mayorista")
+                @{
+                    var date = DateTime.Now;
+                    var oPrimerDiaDelMes = new DateTime(date.Year, date.Month, 1);
+                    var oUltimoDiaDelMes = oPrimerDiaDelMes.AddMonths(1).AddDays(-1);
+                }
+                <form>
+                    <div class="row gy-2 gx-2 justify-content-end">
+                        <div class="col-3">
+                            <div class="input-group">
+                                <div class="input-daterange input-group" id="datePickerRange">
+                                    <div class="input-group-text">
+                                        <i data-lucide="calendar"
+                                           class="app-search-icon text-muted"></i>
+                                    </div>
+                                    <input type="text" class="form-control date" id="start" name="start" placeholder="Desde"
+                                           value="@oPrimerDiaDelMes.ToString("d")" data-toggle="date-picker"
+                                           data-single-date-picker="true">
+                                    <div class="input-group-text"> AL </div>
+                                    <input type="text" class="form-control date" id="end" name="end" placeholder="Hasta"
+                                           data-toggle="date-picker" data-single-date-picker="true"
+                                           value="@oUltimoDiaDelMes.ToString("d")">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-5">
+                            <div class="form-group">
+                                <select class="form-control" name="productoID" id="productoID">
+                                    <option value="0">Producto - Servicio</option>
+                                    @Html.Action("_listproductos_servicios", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <select class="form-control" name="clienteID" id="clienteID">
+                                    <option value="0">Cliente</option>
+                                    @Html.Action("_listclientes", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <select class="form-control" name="operacionID" id="operacionID">
+                                    <option value="0">Forma de operación</option>
+                                    @Html.Action("_listformaoperacion", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <select class="form-control" name="facturaID" id="facturaID">
+                                    <option value="0">Tipo de factura</option>
+                                    @Html.Action("_listtipofactura", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <select class="form-control" name="medioPagoID" id="medioPagoID">
+                                    <option value="0">Medio de pago</option>
+                                    @Html.Action("_listmediopago", "Parcial")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <input type="text" name="factura" id="factura" placeholder="No. Factura" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-primary mb-2" id="filterOper">
+                                <i data-lucide="filter" class="fs-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
             <!-- end card-body-->
         </div>
         <!-- end card-->
     </div>
     <!-- end col -->
-</div>   
+</div>
 <div class="row row-cols-xxl-3 row-cols-md-3 row-cols-1 align-items-center g-1">
     <div class="col">
         <div class="card mb-0">
