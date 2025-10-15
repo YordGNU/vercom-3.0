@@ -125,12 +125,68 @@ namespace vercom.Controllers
             var negocio = db.negocio.Include(n => n.cliente).Include(n => n.forma_operacion).Include(n => n.medio_pago).Include(n => n.tipo_factura);
             return View(negocio.ToList());
         }
+        #region CLIENTE
         [RBAC]
         public ActionResult Cliente()
         {
             var cliente = db.cliente.Include(c => c.tipo_cliente);
             return View(cliente.ToList());
         }
+       
+        [HttpGet]
+        public JsonResult GetClientes(int cantidad = 1000)
+        {
+            try
+            {
+                var iData = new List<iCliente>();
+                var clientes = db.cliente.OrderByDescending(p => p.id).Take(cantidad).ToList();
+                foreach (var item in clientes)
+                {
+                    iData.Add(new iCliente
+                    {
+                        ClienteID = item.id,
+                        Nombre = item.nombre,
+                        Nacionalidad = item.nacionalidad,
+                        Direccion = item.direccion,
+                        Provincia = item.provincia,
+                        Localidad = item.localidad,
+                        Municipio = item.municipio,
+                        NIT = item.nit,
+                        REEUP = item.reeup,
+                        RENAE = item.renae,
+                        Tipo = item.tipo_cliente.tipo,
+                    });
+
+                }
+                return Json(iData, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                // 🛠️ Loguear el error si tienes sistema de logs
+                return Json(new { error = true, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult CreateCliente(cliente cliente, List<cliente_cuenta> cliente_Cuentas)
+        {
+            var existe = db.producto_servicio.Any(r => r.nombre == producto.nombre);
+            if (!existe)
+            {
+                db.producto_servicio.Add(producto);
+                db.SaveChanges();
+                return Json(new { success = true, redirectUrl = Url.Action("Index") });
+            }
+
+            return Json(new
+            {
+                success = false,
+                message = $"El producto: {producto.nombre} ya existe"
+            });
+        }
+        #endregion
+
         [RBAC]
         public ActionResult ProductoServi()
         {           
@@ -161,6 +217,8 @@ namespace vercom.Controllers
                 return Json(new { error = true, message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
