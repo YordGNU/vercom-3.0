@@ -114,6 +114,11 @@ namespace vercom.Controllers
             var consulta = from r in db.tipo_cliente orderby r.tipo ascending select r;
             return PartialView("_listtiposclientes", consulta.ToList()); // Ajusta el nombre de la vista parcial
         }
+        public ActionResult _listtiposclientesName()
+        {
+            var consulta = from r in db.tipo_cliente orderby r.tipo ascending select r;
+            return PartialView("_listtiposclientesName", consulta.ToList()); // Ajusta el nombre de la vista parcial
+        }
 
         public ActionResult _listproductos_servicios()
         {

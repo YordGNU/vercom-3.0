@@ -168,44 +168,88 @@ namespace vercom.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public JsonResult CreateCliente(cliente cliente, List<cuenta> cuentas)
+        public JsonResult CreateCliente(string nombre, string nacionalidad, string direccion, string provincia, string municipio, string localidad, int tipoClienteID, string nit, string reeup, string renae, List<cuenta> cuentas)
         {
             using (var transaction = db.Database.BeginTransaction())
             {
                 try
                 {
-                    var existe = db.cliente.Any(r => r.nombre == cliente.nombre);
-                    if (existe)
+                    // Validación de existencia
+                    if (db.cliente.Any(r => r.nombre == nombre))
                     {
                         return Json(new
                         {
                             success = false,
-                            message = $"El cliente: {cliente.nombre} ya existe"
+                            message = $"El cliente '{nombre}' ya existe."
                         });
                     }
 
-                    // Guardar cliente
-                    db.cliente.Add(cliente);
-                    db.SaveChanges();
+                    // Crear cliente
+                    var cliente = new cliente
+                    {
+                        nombre = nombre,
+                        nacionalidad = nacionalidad,
+                        direccion = direccion,
+                        provincia = provincia,
+                        municipio = municipio,
+                        localidad = localidad,
+                        tipoClienteID = tipoClienteID,
+                        nit = nit,
+                        reeup = reeup,
+                        renae = renae
+                    };
 
-                    List<cliente_cuenta> asociaciones = new List<cliente_cuenta>();
+                    db.cliente.Add(cliente);
+                    db.SaveChanges(); // Necesario para obtener cliente.id
+
+                    var asociaciones = new List<cliente_cuenta>();
+
                     foreach (var cuenta in cuentas)
                     {
-                        db.cuenta.Add(cuenta);
-                        db.SaveChanges();
-                        asociaciones.Add(new cliente_cuenta
+                        // Buscar cuenta existente por número
+                        var cuentaExistente = db.cuenta.FirstOrDefault(c => c.no == cuenta.no);
+
+                        if (cuentaExistente == null)
                         {
-                            clienteid = cliente.id,
-                            cuentaid = cuenta.id
-                        });
+                            db.cuenta.Add(cuenta);
+                            db.SaveChanges(); // Obtener cuenta.id
+                            cuentaExistente = cuenta;
+                        }
+                        else
+                        {
+                            // Actualizar datos si ya existe
+                            cuentaExistente.tipo_cuenta = cuenta.tipo_cuenta;
+                            cuentaExistente.titular = cuenta.titular;
+                            cuentaExistente.agencia = cuenta.agencia;
+                            cuentaExistente.banco = cuenta.banco;
+                            cuentaExistente.direccion = cuenta.direccion;
+                            db.SaveChanges();
+                        }
+
+                        // Verificar si la asociación ya existe
+                        bool asociacionExiste = db.cliente_cuenta
+                            .Any(a => a.clienteid == cliente.id && a.cuentaid == cuentaExistente.id);
+
+                        if (!asociacionExiste)
+                        {
+                            asociaciones.Add(new cliente_cuenta
+                            {
+                                clienteid = cliente.id,
+                                cuentaid = cuentaExistente.id
+                            });
+                        }
                     }
 
-                    // Guardar asociaciones
-                    db.cliente_cuenta.AddRange(asociaciones);
-                    db.SaveChanges();
-                    transaction.Commit();        
-                    return Json(new { success = true});
+                    // Guardar asociaciones en bloque
+                    if (asociaciones.Any())
+                    {
+                        db.cliente_cuenta.AddRange(asociaciones);
+                        db.SaveChanges();
+                    }
+
+                    transaction.Commit();
+
+                    return Json(new { success = true });
                 }
                 catch (Exception ex)
                 {
@@ -220,11 +264,11 @@ namespace vercom.Controllers
         }
 
         [HttpPost]      
-        public JsonResult EditCliente(cliente cliente, List<cuenta> cuentas)
+        public JsonResult EditCliente(int Edit_ClienteID, string Edit_nombre, string Edit_nacionalidad, string Edit_direccion, string Edit_provincia, string Edit_municipio, string Edit_localidad, int Edit_tipoClienteID, string Edit_nit, string Edit_reeup, string Edit_renae, List<cuenta> cuentas)
         {
             using (var db = new VERCOMEntities())
             {
-                if (cliente == null || cuentas == null)
+                if (cuentas == null)
                 {
                     return Json(new { error = true, message = "Debe ingresar al menos una cuenta bancaria" }, JsonRequestBehavior.AllowGet);                 
                 }
@@ -233,7 +277,20 @@ namespace vercom.Controllers
                 {
                     try
                     {
+                        var cliente = db.cliente.Find(Edit_ClienteID);
+                        if (cliente == null)   return Json(new { success = false, message = "Cliente no encontrado." });
+
                         // 🔥 Actualizar los datos del cliente
+                        cliente.nombre = Edit_nombre;
+                        cliente.nacionalidad = Edit_nacionalidad;
+                        cliente.direccion = Edit_direccion;
+                        cliente.provincia = Edit_provincia;
+                        cliente.municipio = Edit_municipio;
+                        cliente.localidad = Edit_localidad;
+                        cliente.tipoClienteID = Edit_tipoClienteID;
+                        cliente.nit = Edit_nit;
+                        cliente.reeup = Edit_reeup;
+                        cliente.renae = Edit_renae;
                         db.Entry(cliente).State = EntityState.Modified;
                         db.SaveChanges();
 
@@ -266,6 +323,16 @@ namespace vercom.Controllers
                                 db.SaveChanges();
                                 cuentaExistente = cuenta;
                             }
+                            else
+                            {
+                                cuentaExistente.tipo_cuenta = cuenta.tipo_cuenta;                                
+                                cuentaExistente.titular = cuenta.titular;
+                                cuentaExistente.agencia = cuenta.agencia;
+                                cuentaExistente.banco = cuenta.banco;
+                                cuentaExistente.direccion = cuenta.direccion;
+                                db.SaveChanges();
+                            }
+
 
                             var asociacionExiste = db.cliente_cuenta.Any(a => a.clienteid == cliente.id && a.cuentaid == cuentaExistente.id);
 
@@ -327,6 +394,16 @@ namespace vercom.Controllers
 
             return Json(new { exito = true, iData }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult EliminarMultiplesClientes(int[] ids)
+        {
+            var clientes = db.cliente.Where(o => ids.Contains(o.id)).ToList();
+            db.cliente.RemoveRange(clientes);
+            db.SaveChanges();
+            return Json(new { success = true });
+        }
+
         #endregion
 
         [RBAC]

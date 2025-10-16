@@ -33,14 +33,10 @@
                 </div>
                 <div class="d-flex align-items-center gap-2">
                     <div class="app-search">
-                        <select data-table-range-filter="precio" class="form-select form-control my-1 my-md-0">
-                            <option value="">Rango de precio</option>
-                            <option value="0-500">$0 - $500</option>
-                            <option value="510-1500">$510 - $1500</option>
-                            <option value="1510-5000">$1510 - $5000</option>
-                            <option value="5000+">$5000+</option>
+                        <select data-table-range-filter="tipo" class="form-select form-control my-1 my-md-0">
+                            <option value="">Tipo de cliente</option>
+                             @Html.Action("_listtiposclientesName", "Parcial")
                         </select>
-
                     </div>
                     <div>
                         <select data-table-set-rows-per-page="" class="form-select form-control my-1 my-md-0">
@@ -100,8 +96,7 @@
                 <h4 class="modal-title" id="standard-modalLabel">Agregar cliente</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="formAgregarCliente">
-                @Html.AntiForgeryToken()
+            <form id="formAgregarCliente">           
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-xxl-7">
@@ -136,7 +131,7 @@
                                                     <option value="chilena">Chilena</option>
                                                     <option value="china">China</option>
                                                     <option value="colombiana">Colombiana</option>
-                                                    <option value="cubana">Cubana</option>
+                                                    <option value="cubana" selected="">Cubana</option>
                                                     <option value="danesa">Danesa</option>
                                                     <option value="egipcia">Egipcia</option>
                                                     <option value="española">Española</option>
@@ -241,7 +236,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" id="btnGuardarMovimiento" class="btn btn-primary">Agregar</button>
+                    <button type="submit" id="btnGuardarCliente" class="btn btn-primary">Agregar</button>
                 </div>
             </form>
         </div>
@@ -382,8 +377,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="row" id="EditCuentasContainer">
-
+                                    <div class="row" id="EditCuentasContainer">                                        
                                     </div>
                                 </div> <!-- end card-body-->
                             </div> <!-- end card-->
@@ -392,7 +386,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" id="btnGuardarMovimiento" class="btn btn-primary">Actualizar</button>
+                    <button type="submit" id="btnActualizarCliente" class="btn btn-primary">Actualizar</button>
                 </div>
             </form>
         </div>
@@ -426,22 +420,23 @@
                 $.getJSON(`/Mayorista/ObtenerClientePorId/${id}`, function (res) {
                     //Asignar valores al modal
                     const m = res.iData[0];
-                    $('#Edit_ClienteID').val(m.clienteID);
-                    $('#Edit_nombre').val(m.Nombre);                
+                    $('#Edit_ClienteID').val(m.ClienteID);
+                    $('#Edit_nombre').val(m.Nombre);
                     $('#Edit_nacionalidad').val(m.Nacionalidad);
-                    $('#Edit_direccion').val(m.Direccion);                
-                    $('#Edit_provincia').val(m.Provincia);                
-                    $('#Edit_municipio').val(m.Municipio);                
-                    $('#Edit_localidad').val(m.Localidad);                
+                    $('#Edit_direccion').val(m.Direccion);
+                    $('#Edit_provincia').val(m.Provincia);
+                    $('#Edit_municipio').val(m.Municipio);
+                    $('#Edit_localidad').val(m.Localidad);
                     $('#Edit_nit').val(m.NIT);
-                    $('#Edit_reeup').val(m.REEUP);                
-                    $('#Edit_renae').val(m.RENAE);                
-                    $('#Edit_tipoClienteID').val(m.TipoClienteID);             
+                    $('#Edit_reeup').val(m.REEUP);
+                    $('#Edit_renae').val(m.RENAE);
+                    $('#Edit_tipoClienteID').val(m.TipoClienteID);
                     let container = document.getElementById("EditCuentasContainer");
+                    container.innerHTML = ``;
                     m.Cuentas.forEach(i => {
                         let div = document.createElement("div");
                         div.setAttribute("id", `cuenta_${cuentaIndexEdit}`);
-                        div.classList.add("cuenta-bloque", "col-lg-6");
+                        div.classList.add("cuentaEdit-bloque", "col-lg-6");
                         div.innerHTML = `
                         <div class="col-12">
                         <div class="mb-1">
@@ -452,7 +447,8 @@
                        <div class="col-12">
                        <div class="mb-1">
                          <label for="cuentas[${cuentaIndexEdit}].tipo_cuenta" class="form-label">Ttipo de cuenta <span class="text-danger">*</span></label>
-                         <select name="cuentas[${cuentaIndexEdit}].tipo_cuenta" class="form-control" required value="${i.Tipo}">
+                         <select name="cuentas[${cuentaIndexEdit}].tipo_cuenta" class="form-control" required>
+                           <option value="${i.Tipo}" selected>${i.Tipo}</option>
                            <option value="CUP">CUP</option>
                            <option value="USD">USD</option>
                            <option value="MLC">MLC</option>
@@ -462,7 +458,7 @@
                        <div class="col-12">
                        <div class="mb-1">
                        <label for="cuentas[${cuentaIndexEdit}].titular" class="form-label">Titular <span class="text-danger">*</span></label>
-                       <input type="text" name="cuentas[${cuentaIndexEdit}].titular" class="form-control" required value="${i.Titular}"/>                                  
+                       <input type="text" name="cuentas[${cuentaIndexEdit}].titular" class="form-control" required value="${i.Titular}"/>
                        </div>
                        </div>
                        <div class="col-12">
@@ -482,13 +478,13 @@
                             <label for="cuentas[${cuentaIndexEdit}].direccion" class="form-label">Dirección <span class="text-danger">*</span></label>
                               <input type="text" name="cuentas[${cuentaIndexEdit}].direccion" class="form-control" required value="${i.Direccion}"/>
                            </div>
-                           </div>
-                           <div class="col-12">
-                           <div class="mb-1">
-                           <button type="button" onclick="eliminarCuenta(${cuentaIndexEdit})" class="btn btn-outline-danger btn-sm mt-2">
-                             <i class="fa fa-trash"></i> Eliminar </button>
-                          </div>
-                          </div>
+                         </div>
+                         <div class="border-top border-dashed my-3"></div>
+                         <div class="col-12">
+                           <div class="d-grid mb-1">
+                             <button class="btn btn-sm btn-danger" onclick="eliminarCuenta(${cuentaIndexEdit})" ><i class="ti ti-trash fs-xxl"></i></button>
+                            </div>
+                         </div>
                           `;
                         container.appendChild(div);
                         Inputmask({
@@ -514,19 +510,50 @@
                 e.preventDefault();
                 $('#modalAgregarCliente').modal('show');
             });
-
-            $('#formAgregarCliente').on("submit", function (e) {
+            $('#formAgregarCliente').on("submit", function (b) {
                 $(".decimalVAL").each(function () {
                     var valor = $(this).val().replace(".", ",");
                     $(this).val(valor);
                 });
-                e.preventDefault();
-                $('#modalAgregarCliente').modal('hide');
-                e.preventDefault();
+                b.preventDefault();
+
+                var cuentas = [];
+
+                $('.cuenta-bloque').each(function () {
+                    var cuenta = {
+                        no: $(this).find('input[name*="no"]').val(),
+                        tipo_cuenta: $(this).find('select[name*="tipo_cuenta"]').val(),
+                        titular: $(this).find('input[name*="titular"]').val(),
+                        agencia: $(this).find('input[name*="agencia"]').val(),
+                        banco: $(this).find('input[name*="banco"]').val(),
+                        direccion: $(this).find('input[name*="direccion"]').val()
+                    };
+                    cuentas.push(cuenta);
+                });
+
+                // Datos del formulario
+                var data = {
+                    nombre: $('#nombre').val(),
+                    nacionalidad: $('#nacionalidad').val(),
+                    direccion: $('#direccion').val(),
+                    provincia: $('#provincia').val(),
+                    municipio: $('#municipio').val(),
+                    localidad: $('#localidad').val(),
+                    tipoClienteID: parseInt($("#tipoClienteID").val()),
+                    nit: $('#nit').val(),
+                    reeup: $('#reeup').val(),
+                    renae: $('#renae').val(),
+                    cuentas: cuentas
+                };             
+                
+                console.log(data);
+                console.log(JSON.stringify(data));
+
                 $.ajax({
-                    url: '@Url.Action("CreateCliente", "Mayorista")',
+                    url: '/Mayorista/CreateCliente',
                     type: 'POST',
-                    data: $(this).serialize(),
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(data),
                     success: function (response) {
                         if (response.success) {
                             Swal.fire({
@@ -537,6 +564,7 @@
                                 showConfirmButton: false
                             });
                             cargarTablaClientes();
+                            $('#modalAgregarCliente').modal('hide');
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -561,15 +589,45 @@
                     $(this).val(valor);
                 });
 
-                const datos = $('#formEditarCliente').serialize();
-                console.log(datos);
+                var cuentas = [];
 
+                $('.cuentaEdit-bloque').each(function () {
+                    var cuenta = {
+                        no: $(this).find('input[name*="no"]').val(),
+                        tipo_cuenta: $(this).find('select[name*="tipo_cuenta"]').val(),
+                        titular: $(this).find('input[name*="titular"]').val(),
+                        agencia: $(this).find('input[name*="agencia"]').val(),
+                        banco: $(this).find('input[name*="banco"]').val(),
+                        direccion: $(this).find('input[name*="direccion"]').val()
+                    };
+                    cuentas.push(cuenta);
+                });
+
+                // Datos del formulario
+                var data = {
+                    Edit_ClienteID: $('#Edit_ClienteID').val(),
+                    Edit_nombre: $('#Edit_nombre').val(),
+                    Edit_nacionalidad: $('#Edit_nacionalidad').val(),
+                    Edit_direccion: $('#Edit_direccion').val(),
+                    Edit_provincia: $('#Edit_provincia').val(),
+                    Edit_municipio: $('#Edit_municipio').val(),
+                    Edit_localidad: $('#Edit_localidad').val(),
+                    Edit_tipoClienteID: $('#Edit_tipoClienteID').val(),
+                    Edit_nit: $('#Edit_nit').val(),
+                    Edit_reeup: $('#Edit_reeup').val(),
+                    Edit_renae: $('#Edit_renae').val(),
+                    cuentas: cuentas
+                };
+
+                console.log(data);
+                console.log(JSON.stringify(data));
                 $.ajax({
-                    url: '@Url.Action("EditarCliente", "Mayorista")',
+                    url: '/Mayorista/EditCliente',
                     type: 'POST',
-                    data: datos,
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(data),
                     success: function (res) {
-                        if (res.exito) {
+                        if (res.success) {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'cliente/Servicio actualizado',
@@ -743,12 +801,12 @@
                 let tablaClonada = $("#clientesTable").clone();
                 // Elimina las columnas que no deseas
                 tablaClonada.find("th:nth-child(1), td:nth-child(1)").remove(); // 1
-                tablaClonada.find("th:nth-child(4), td:nth-child(4)").remove(); // 9
+                tablaClonada.find("th:nth-child(8), td:nth-child(8)").remove(); // 8
                 // Export tabla
-                exporter.export(tablaClonada, "listado de clientes y servicios", {
+                exporter.export(tablaClonada, "listado de clientes", {
                     exclude: ".noExport",
                     name: "Exportación",
-                    filename: "listado de clientes y servicios.xlsx",
+                    filename: "listado de clientes.xlsx",
                     preserveColors: true
                 });
 
@@ -760,7 +818,7 @@
                 ventana.document.write(`
                  <html>
                  <head>
-                 <title>IMPRIMIR TABLA OPERACIONES</title>
+                 <title>MD.MAYORISTRA - IMPRIMIR TABLA CLIENTES</title>
                  <style>
                  body {
                      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
@@ -769,7 +827,7 @@
                      color: #2c3e50;
                      background-color: #fdfdfd;
                  }
-                 
+
                  h3 {
                      margin-bottom: 8px;
                      color: #2c3e50;
@@ -777,13 +835,13 @@
                      border-bottom: 2px solid #3498db;
                      padding-bottom: 4px;
                  }
-                 
+
                  p {
                      margin: 0 0 12px;
                      font-weight: 600;
                      color: #34495e;
                  }
-                 
+
                  table {
                      width: 100%;
                      border-collapse: separate;
@@ -793,18 +851,18 @@
                      border-radius: 6px;
                      overflow: hidden;
                  }
-                 
+
                  table td a,
                  table th a {
                      text-decoration: none;
                      color: inherit; /* opcional: hereda el color del texto de la celda */
                  }
-                 
+
                  /* Borde inferior para todas las filas del cuerpo */
                  tbody tr td {
                      border-bottom: 1px solid #ccc;
                      }
-                     
+
                 thead {
                     background-color: #3498db;
                     color: white;
@@ -812,31 +870,31 @@
                     text-transform: uppercase;
                     letter-spacing: 0.5px;
                 }
-                
+
                 thead th {
                     background-color: #3498db;
                     color: white;
                     font-weight: bold;
                     text-transform: uppercase;
                     letter-spacing: 0.5px;
-                    border-bottom: 1px solid #2c3e50; /* Borde inferior elegante */ 
+                    border-bottom: 1px solid #2c3e50; /* Borde inferior elegante */
                 }
-                
+
                 th, td {
                     border: none;
                     padding: 10px 8px;
                     text-align: center;
                     transition: background-color 0.3s ease;
                 }
-                
+
                 tbody tr:hover td {
                     background-color: #ecf0f1;
                 }
-                
+
                 tr:nth-child(even) td {
                     background-color: #f9fbfc;
                 }
-                
+
                 tfoot td {
                     background-color: #ecf0f1;
                     font-weight: bold;
@@ -845,7 +903,7 @@
                 </style>
                  </head>
                  <body>
-                 <h3>📋 Listado de clientes y servicios </h3>
+                 <h3>📋 Listado de clientes </h3>
                  ${tablaClonada[0].outerHTML}
                  </body>
                  </html>
@@ -857,17 +915,14 @@
         });
     </script>
     <script>
-
         let cuentaIndex = 0; 
-        let cuentaIndexEdit = $("#EditCuentasContainer .cuenta-bloque").length; 
-
+        let cuentaIndexEdit = $("#EditCuentasContainer .cuentaEdit-bloque").length; 
         document.getElementById("btnAgregarCuenta").addEventListener("click", function () {
-            let container = document.getElementById("cuentasContainer");
+            let container = document.getElementById("cuentasContainer");         
             let div = document.createElement("div");
             div.setAttribute("id", `cuenta_${cuentaIndex}`);
             div.classList.add("cuenta-bloque", "col-lg-6");
-            div.innerHTML = `
-                              <div class="col-12">
+            div.innerHTML = `<div class="col-12">
                                 <div class="mb-1">
                                  <label for="cuentas[${cuentaIndex}].no" class="form-label">No. Cuenta <span class="text-danger">*</span></label>
                                   <input type="text" name="cuentas[${cuentaIndex}].no" data-mask="9999999999999999" class="form-control" required />
@@ -907,11 +962,11 @@
                                          <input type="text" name="cuentas[${cuentaIndex}].direccion" class="form-control" required />
                                       </div>
                                 </div>
+                                <div class="border-top border-dashed my-3"></div>
                                 <div class="col-12">
-                                     <div class="mb-1">
-                                        <button type="button" onclick="eliminarCuenta(${cuentaIndex})" class="btn btn-outline-danger btn-sm mt-2">
-                                        <i class="fa fa-trash"></i> Eliminar </button>
-                                     </div>
+                                   <div class="d-grid mb-1">   
+                                    <button class="btn btn-danger" onclick="eliminarCuenta(${cuentaIndex})" ><i class="ti ti-trash fs-xxl"></i></button>
+                                    </div>
                                 </div>
                             `;
             container.appendChild(div);
@@ -928,7 +983,7 @@
             let container = document.getElementById("EditCuentasContainer");
             let div = document.createElement("div");
             div.setAttribute("id", `cuenta_${cuentaIndexEdit}`);
-            div.classList.add("cuenta-bloque", "col-lg-6");
+            div.classList.add("cuentaEdit-bloque", "col-lg-6");
             div.innerHTML = `
                        <div class="col-12">
                          <div class="mb-1">

@@ -506,6 +506,7 @@
     <Content Include="Views\Caja\Historial.cshtml" />
     <Content Include="Views\Parcial\_listcajas.cshtml" />
     <Content Include="Views\Caja\Cierre.cshtml" />
+    <Content Include="Views\Parcial\_listtiposclientesName.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
