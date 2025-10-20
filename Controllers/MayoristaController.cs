@@ -119,13 +119,139 @@ namespace vercom.Controllers
             return View();
         }
         // INDEX NEGOCIO, CLEINTE, PRODUCTOS y SERVICIOS
+
+        #region NEGOCIOS
+
         [RBAC]
         public ActionResult Negocio()
         {
-            var negocio = db.negocio.Include(n => n.cliente).Include(n => n.forma_operacion).Include(n => n.medio_pago).Include(n => n.tipo_factura);
-            return View(negocio.ToList());
+              return View();
         }
+
+        [HttpPost]      
+        public JsonResult CreateNegocio(negocio negocio)
+        {
+            var existe = db.negocio.Any(r => r.fecha == negocio.fecha && r.factura == negocio.factura);
+            if (!existe)
+            {
+                db.negocio.Add(negocio);
+                db.SaveChanges();
+                return Json(new { success = true});
+            }
+
+            return Json(new
+            {
+                success = false,
+                message = $"El negocio con la factura {negocio.factura} ya existe"
+            });
+        }
+
+
+        [HttpGet]
+        public JsonResult GetNegocios(int cantidad = 1000)
+        {
+            try
+            {
+                var iData = new List<iNegocio>();
+                var productosServi = db.negocio.OrderByDescending(p => p.id).Take(cantidad).ToList();
+                foreach (var item in productosServi)
+                {
+                    iData.Add(new iNegocio
+                    {
+                        NegocioID = item.id,
+                        Fecha = item.fecha,
+                        Cliente = item.cliente.nombre,
+                        ClienteID = item.clienteID,
+                        ProductoServi = item.producto_servicio.nombre,
+                        Cantidad = item.cantidad,
+                        Importe = item.producto_servicio.precio * item.cantidad,
+                        FOperacion = item.forma_operacion.forma,
+                        TFactura = item.tipo_factura.tipo,
+                        MPago = item.medio_pago.medio,
+                        Factura = item.factura,
+                    });
+
+                }
+                return Json(iData, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                // 🛠️ Loguear el error si tienes sistema de logs
+                return Json(new { error = true, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [HttpPost]
+        public JsonResult EditarNegocio(int Edit_NegocioID, string Edit_fecha, int? Edit_clienteID, int? Edit_productoID, float? Edit_cantidad, int? Edit_medioPagoID, int? Edit_operacionID, int? Edit_facturaID, string Edit_factura)
+        {
+            try
+            {
+
+                var negocio = db.negocio.Find(Edit_NegocioID);
+                if (negocio == null)
+                    return Json(new { success = false, message = "Negocio no encontrado." });
+
+                var cvDate = Convert.ToDateTime(Edit_fecha);
+                // Actualización de campos              
+                negocio.fecha = cvDate;
+                negocio.productoID = Edit_productoID;
+                negocio.clienteID = Edit_clienteID;              
+                negocio.cantidad = Edit_cantidad;
+                negocio.medioPagoID = Edit_medioPagoID;
+                negocio.operacionID = Edit_operacionID;
+                negocio.facturaID = Edit_facturaID;
+                negocio.factura = Edit_factura;      
+                db.SaveChanges();
+                return Json(new { exito = true, mensaje = "Producto/Servicio editado correctamente." });
+            }
+            catch (Exception ex)
+            {
+                // Log opcional
+                return Json(new { success = false, message = "Error al editar: " + ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public JsonResult ObtenerNegocioPorId(int id)
+        {
+            var m = db.negocio.Find(id);
+            if (m == null) return Json(new { exito = false, mensaje = "Nogocio no encontrado." }, JsonRequestBehavior.AllowGet);
+            var iData = new List<iNegocio>();
+            iData.Add(new iNegocio
+            {
+
+                NegocioID = m.id,
+                Fecha = m.fecha,
+                Cliente = m.cliente.nombre,
+                ClienteID = m.clienteID,
+                ProductoServi = m.producto_servicio.nombre,
+                ProductoServiID = m.productoID,
+                Cantidad =  m.cantidad,
+                Importe = m.producto_servicio.precio * m.cantidad,
+                FOperacion = m.forma_operacion.forma,
+                FOperacionID = m.operacionID,
+                TFactura = m.tipo_factura.tipo,
+                TFacturaID = m.facturaID,
+                MPago = m.medio_pago.medio,
+                MPagoID = m.medioPagoID,
+                Factura = m.factura,
+            });
+            return Json(new { exito = true, iData }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult EliminarMultiplesNegocio(int[] ids)
+        {
+            var negocio = db.negocio.Where(o => ids.Contains(o.id)).ToList();
+            db.negocio.RemoveRange(negocio);
+            db.SaveChanges();
+            return Json(new { success = true });
+        }
+        #endregion
+
         #region CLIENTE
+
         [RBAC]
         public ActionResult Cliente()
         {
@@ -399,12 +525,20 @@ namespace vercom.Controllers
         public JsonResult EliminarMultiplesClientes(int[] ids)
         {
             var clientes = db.cliente.Where(o => ids.Contains(o.id)).ToList();
+            foreach(var item in clientes)
+            {
+                var cuentas_asosiadas = db.cliente_cuenta.Where(a => a.clienteid == item.id).ToList();
+                db.cliente_cuenta.RemoveRange(cuentas_asosiadas);           
+            }
+        
             db.cliente.RemoveRange(clientes);
             db.SaveChanges();
             return Json(new { success = true });
         }
 
         #endregion
+
+        #region PRODUCTOS-SERVICIOS
 
         [RBAC]
         public ActionResult ProductoServi()
@@ -508,7 +642,9 @@ namespace vercom.Controllers
             db.producto_servicio.RemoveRange(productosServi);
             db.SaveChanges();
             return Json(new { success = true });
-        }  
+        }
+
+        #endregion
 
         //CREAR NEGOCIO
         [RBAC]
@@ -522,24 +658,6 @@ namespace vercom.Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult CreateNegocio([Bind(Include = "id,fecha,productoID,clienteID,cantidad,operacionID,facturaID,medioPagoID,factura")] negocio negocio)
-        {
-           if(negocio.productoID != null)
-            {
-                db.negocio.Add(negocio);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }               
-            
-            ViewBag.productoID = new SelectList(db.producto_servicio, "id", "nombre");
-            ViewBag.clienteID = new SelectList(db.cliente, "id", "nombre", negocio.clienteID);
-            ViewBag.operacionID = new SelectList(db.forma_operacion, "id", "forma", negocio.operacionID);
-            ViewBag.medioPagoID = new SelectList(db.medio_pago, "id", "medio", negocio.medioPagoID);
-            ViewBag.facturaID = new SelectList(db.tipo_factura, "id", "tipo", negocio.facturaID);
-            return View(negocio);
-        }
 
         [RBAC]
         public ActionResult DetailsNegocio(int? id)

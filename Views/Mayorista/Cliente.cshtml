@@ -31,13 +31,7 @@
                         <i class="ti ti-trash fs-xl"></i>
                     </button>
                 </div>
-                <div class="d-flex align-items-center gap-2">
-                    <div class="app-search">
-                        <select data-table-range-filter="tipo" class="form-select form-control my-1 my-md-0">
-                            <option value="">Tipo de cliente</option>
-                             @Html.Action("_listtiposclientesName", "Parcial")
-                        </select>
-                    </div>
+                <div class="d-flex align-items-center gap-2">                               
                     <div>
                         <select data-table-set-rows-per-page="" class="form-select form-control my-1 my-md-0">
                             <option value="50">50</option>
@@ -69,7 +63,7 @@
                             <th data-table-sort="" data-column="nombre">NOMBRE</th>
                             <th data-table-sort="" data-column="nacionalidad">NACIONALIDAD</th>
                             <th data-table-sort="" data-column="direccion">DIRECCIÓN</th>
-                            <th data-table-sort="" data-column="tipo">T.CLIENTE</th>
+                            <th data-table-sort="" data-column="T.CLIENTE">T.CLIENTE</th>
                             <th data-table-sort="" data-column="nit">NIT</th>
                             <th data-table-sort="" data-column="reeup">REEUP</th>
                             <th data-table-sort="" data-column="renae">RENAE</th>
@@ -618,9 +612,7 @@
                     Edit_renae: $('#Edit_renae').val(),
                     cuentas: cuentas
                 };
-
-                console.log(data);
-                console.log(JSON.stringify(data));
+                              
                 $.ajax({
                     url: '/Mayorista/EditCliente',
                     type: 'POST',
@@ -730,7 +722,6 @@
                 let t = e.querySelectorAll('input[type="checkbox"]');
                 let rows = Array.from(e.querySelectorAll("tr"));
                 let filteredRows = [...rows];
-
                 checkAllCheckBox &&
                     0 < t.length &&
                     t.forEach((e) => {

@@ -107,14 +107,14 @@
     <div class="col">
         <div class="card mb-0">
             <div class="card-body">
-                <h5 title="Total Products">Saldo inicial</h5>
+                <h5 title="Total Products">Importe de venta</h5>
                 <div class="d-flex align-items-center gap-2 my-3">
                     <div class="avatar-md flex-shrink-0">
                         <span class="avatar-title text-bg-primary rounded-circle fs-22">
                             <i class="ti ti-package"></i>
                         </span>
                     </div>
-                    <h3 class="mb-0" id="dataSaldo">0,00</h3>
+                    <h3 class="mb-0" id="label_totalImporte">0,00</h3>
                 </div>
             </div>
         </div>
@@ -122,15 +122,14 @@
     <div class="col">
         <div class="card mb-0">
             <div class="card-body">
-                <h5 title="Customer Orders">Entradas</h5>
+                <h5 title="Customer Orders">Costo</h5>
                 <div class="d-flex align-items-center gap-2 my-3">
                     <div class="avatar-md flex-shrink-0">
                         <span class="avatar-title text-bg-secondary rounded-circle fs-22">
                             <i class="ti ti-shopping-bag-plus"></i>
                         </span>
                     </div>
-                    <h3 class="mb-0" id="dataEntradas">0,00</h3>
-                    <span class="badge badge-soft-secondary fw-medium ms-2 fs-xs ms-auto" id="dataPorcE"></span>
+                    <h3 class="mb-0" id="label_totalCosto">0,00</h3>             
                 </div>
             </div>
         </div>
@@ -138,15 +137,14 @@
     <div class="col">
         <div class="card mb-0">
             <div class="card-body">
-                <h5 title="Sales Today">Ventas</h5>
+                <h5 title="Sales Today">Utilidades</h5>
                 <div class="d-flex align-items-center gap-2 my-3">
                     <div class="avatar-md flex-shrink-0">
                         <span class="avatar-title text-bg-success rounded-circle fs-22">
                             <i class="ti ti-currency-dollar"></i>
                         </span>
                     </div>
-                    <h3 class="mb-0" id="dataVentas">0,00</h3>
-                    <span class="badge badge-soft-success fw-medium ms-2 fs-xs ms-auto" id="dataPorcV"></span>
+                    <h3 class="mb-0" id="label_utilidades">0,00</h3>         
                 </div>
             </div>
         </div>
@@ -154,15 +152,14 @@
     <div class="col">
         <div class="card mb-1">
             <div class="card-body">
-                <h5 title="Customer Count">Devoluciones</h5>
+                <h5 title="Customer Count">Cliente más frecuente</h5>
                 <div class="d-flex align-items-center gap-2 my-3">
                     <div class="avatar-md flex-shrink-0">
                         <span class="avatar-title text-bg-info rounded-circle fs-22">
                             <i class="ti ti-arrow-back-up-double"></i>
                         </span>
                     </div>
-                    <h3 class="mb-0" id="dataDevol">0,00</h3>
-                    <span class="badge badge-soft-info fw-medium ms-2 fs-xs ms-auto" id="dataPorcD"></span>
+                    <h3 class="mb-0" id="label_modaCliente"></h3>         
                 </div>
             </div>
         </div>
@@ -170,15 +167,14 @@
     <div class="col">
         <div class="card mb-1">
             <div class="card-body">
-                <h5 title="Total Revenue">Saldo final</h5>
+                <h5 title="Total Revenue">Producto más vendido</h5>
                 <div class="d-flex align-items-center gap-2 my-3">
                     <div class="avatar-md flex-shrink-0">
                         <span class="avatar-title text-bg-warning rounded-circle fs-22">
                             <i class="ti ti-package-export"></i>
                         </span>
                     </div>
-                    <h3 class="mb-0" id="dataSaldoF">0,00</h3>
-                    <span class="badge badge-soft-warning fw-medium ms-2 fs-xs ms-auto"></span>
+                    <h3 class="mb-0" id="label_modaServiProducto"></h3>              
                 </div>
             </div>
         </div>
@@ -186,15 +182,14 @@
     <div class="col">
         <div class="card mb-1">
             <div class="card-body">
-                <h5 title="Total Revenue">Saldo final</h5>
+                <h5 title="Total Revenue">Canal de preferencia</h5>
                 <div class="d-flex align-items-center gap-2 my-3">
                     <div class="avatar-md flex-shrink-0">
                         <span class="avatar-title text-bg-warning rounded-circle fs-22">
                             <i class="ti ti-package-export"></i>
                         </span>
                     </div>
-                    <h3 class="mb-0" id="dataSaldoF">0,00</h3>
-                    <span class="badge badge-soft-warning fw-medium ms-2 fs-xs ms-auto"></span>
+                    <h3 class="mb-0" id="label_modaFormaOperacion"></h3>     
                 </div>
             </div>
         </div>
@@ -207,7 +202,7 @@
                 <div class="card-title">
                     <h5>VENTAS</h5>
                 </div>
-                <div class="float-right">
+                <div class="justify-content-end">
                     <div class="btn-group">
                         <button type="button" value="day" onclick="updateChar(this)" class="btn btn-xs btn-info">Hoy</button>
                         <button type="button" value="month" onclick="updateChar(this)" class="btn btn-xs btn-info">Este Mes</button>
@@ -294,6 +289,140 @@
     <script src="~/Scripts/plugins/table2excel/table2excel.js"></script>
     <script src="~/Scripts/custom-table.js"></script>
     <script type="text/javascript">
+        window.onload = function () {
+            iniciarDashboard();
+        };
+
+        let parametros = {
+            inicio: $('#start').val(),
+            fin: $('#end').val(),
+            ProductoID: $('#productoID').val(),
+            ClienteID: $('#clienteID').val(),
+            OperacionID: $('#operacionID').val(),
+            FacturaID: $('#facturaID').val(),
+            MedioPagoID: $('#medioPagoID').val(),
+            NoFactura: $('#factura').val()
+        };
+
+        function iniciarDashboard() {
+            try { cargarKPIsDashboard(); } catch (e) { console.error("Error en KPIs:", e.message); }
+            //try { cargarDistribucionPorFecha(); } catch (e) { console.error("Error en Fecha:", e.message); }
+            //try { cargarDistribucionPorPunto(); } catch (e) { console.error("Error en Punto:", e.message); }
+            //try { cargarProductosRecientes(); } catch (e) { console.error("Error en Punto:", e.message); }
+            //try { cargarOperacionesRecientes(); } catch (e) { console.error("Error en Punto:", e.message); }
+        }
+
+        async function cargarKPIsDashboard() {
+            const url = '@Url.Action("iResumenMayorista", "Analisis")';
+            const bloqueID = '#bloque-resumen';
+            const datos = await OptenerData(url, bloqueID, parametros);
+            if (datos) {
+                actualizarEtiquetas(datos, bloqueID);
+            }
+        }
+
+       async function OptenerData(url, bloqueID, parametros = {}) {
+            const queryParams = new URLSearchParams(parametros).toString();
+            const fullUrl = `${url}?${queryParams}`;
+            activarOverlayEnContenedor(bloqueID);
+            try {
+                const response = await fetch(fullUrl, { method: "GET" });
+
+                const tipo = response.headers.get("content-type") || "";
+                if (!response.ok) {
+                    console.warn(`⚠️ Error HTTP ${response.status} en ${url}`);
+                    const texto = await response.text();
+                    console.log("Contenido devuelto:", texto.slice(0, 200));
+                    return null;
+                }
+
+                if (!tipo.includes("application/json")) {
+                    const texto = await response.text();
+                    console.error("❌ Respuesta no es JSON válida:", texto.slice(0, 200));
+                    return null;
+                }
+                return await response.json();
+            } catch (error) {
+                console.error(`❌ Error de red o fetch en ${url}:`, error);
+                return null;
+            }
+        }
+
+       function formatearNumero(valor) {
+            return new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }).format(valor || 0);
+        }
+
+        function actualizarEtiquetas(data, bloqueID) {
+            $('#label_totalImporte').empty();
+            $('#label_totalCosto').empty();
+            $('#label_utilidades').empty();
+            $('#label_modaCliente').empty();
+            $('#label_modaServiProducto').empty();
+            $('#label_modaFormaOperacion').empty();
+            console.log(data);
+            $('#label_totalImporte').append(formatearNumero(data.ImporteVenta));
+            $('#label_totalCosto').append(formatearNumero(data.CostoTotal));
+            $('#label_utilidades').append(formatearNumero(data.Utilidad));
+            $('#label_modaCliente').append(data.ClienteFrecuente);
+            $('#label_modaServiProducto').append(data.ProductoPopular);
+            $('#label_modaFormaOperacion').append(data.CanalPreferido);
+            desactivarOverlayEnContenedor(bloqueID);
+        }
+
+        function activarOverlayEnContenedor(contenedorID) {
+            const contenedor = document.querySelector(contenedorID);
+            if (!contenedor) return;
+
+            const cards = contenedor.querySelectorAll('.card');
+            cards.forEach(card => {
+                let overlay = card.querySelector('.card-overlay');
+                if (!overlay) {
+                    overlay = document.createElement('div');
+                    overlay.classList.add(
+                        'card-overlay',
+                        'position-absolute',
+                        'top-0',
+                        'start-0',
+                        'w-100',
+                        'h-100',
+                        'd-flex',
+                        'justify-content-center',
+                        'align-items-center',
+                        'noExport'
+                    );
+                    overlay.style.zIndex = '10';
+
+                    const spinner = document.createElement('div');
+                    spinner.classList.add('spinner-border', 'text-primary');
+                    spinner.setAttribute('role', 'status');
+
+                    const label = document.createElement('span');
+                    label.classList.add('visually-hidden');
+                    label.textContent = 'Cargando...';
+
+                    spinner.appendChild(label);
+                    overlay.appendChild(spinner);
+                    card.appendChild(overlay);
+                }
+
+                overlay.style.display = 'flex';
+                $(overlay).hide().fadeIn(200);
+            });
+        }
+
+        function desactivarOverlayEnContenedor(contenedorID) {
+            const contenedor = document.querySelector(contenedorID);
+            if (!contenedor) return;
+
+            const overlays = contenedor.querySelectorAll('.card .card-overlay');
+            overlays.forEach(overlay => {
+                $(overlay).fadeOut(200, () => overlay.remove());
+            });
+        }
+
         let productoChoices;
         $(document).ready(function () {
             const formato = 'DD/MM/YYYY';
@@ -323,446 +452,21 @@
                 $('#start').val(start.format(formato));
                 $('#end').val(end.format(formato));
             });
-
             productoChoices = new Choices('#productoID');
 
-            @*var barData1 = {
-                labels: [],
-                datasets: [
-                    {
-                        label: "UNIDADES",
-                        backgroundColor: "rgba(26,179,148,1)", // Color verde como en la imagen
-                        borderColor: "rgba(47,64,80,1)",
-                        data: [],
-                        yAxisID: 'y',
-                    },
-                    {
-                        label: "UTILIDAD",
-                        type: 'bar',
-                        backgroundColor: "rgba(35,198,200,0.7)", // Azul claro
-                        borderColor: "rgba(35,198,200,0.7)",
-                        data: [],
-                        yAxisID: 'y1',
-                    }
-                ]
-            };
-
-            var barOptions1 = {
-                responsive: true,
-                maintainAspectRatio: true,
-                indexAxis: 'x', // Cambia la orientación a vertical
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                stacked: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'DISTRIBUCIÓN DE UINDADES/UTILIDAD POR CLIENTE'
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Unidades vendidas'
-                        }
-                    },
-                    y1: {
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'Utilidad ($)'
-                        },
-                        grid: {
-                            drawOnChartArea: false
-                        },
-                        ticks: {
-                            callback: function (value) {
-                                return value.toLocaleString();
-                            }
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            autoSkip: false,
-                        }
-                    }
-                }
-
-            };
-
-            var barData2 = {
-                labels: [],
-                datasets: [
-                    {
-                        label: "PORCENTAJE",
-                        backgroundColor: "rgba(26,179,148,1)",
-                        borderColor: "rgba(47,64,80,1)",
-                        data: [],
-                        tension: 0.5,
-                        yAxisID: 'y',
-                    },
-                    {
-                        label: "UTILIDAD",
-                        type: 'bar',
-                        backgroundColor: "rgba(35,198,200,0.7)", // Azul claro
-                        borderColor: "rgba(35,198,200,0.7)",
-                        data: [],
-                        yAxisID: 'y1',
-                    }
-                ]
-            };
-
-            var barOptions2 = {
-                responsive: true,
-                maintainAspectRatio: true,
-                indexAxis: 'x', // Cambia la orientación a vertical
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                stacked: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'DISTRIBUCIÓN DE PORCENTAJE/UTILIDAD POR FORMA DE OPERACIÓN'
-                    },
-                    datalabels: {
-                        anchor: 'end',
-                        align: 'top',
-                        formatter: (value) => value.toFixed(2) + '%',
-                        color: '#000',
-                        font: {
-                            weight: 'bold'
-                        }
-                    },
-                    annotation: {
-                        annotations: {
-                            textoPersonalizado: {
-                                type: 'label',
-                                position: { x: '50%', y: '50%' },
-                                content: ['¡Dato importante aquí!'],
-                                font: { size: 14, weight: 'bold' },
-                                color: 'red',
-                                padding: 5,
-                                borderRadius: 4,
-                                backgroundColor: 'white',
-                                borderWidth: 1,
-                                borderColor: 'black'
-                            }
-                        }
-                    }
-
-                },
-                scales: {
-                    y: {
-                        position: 'left',
-                        beginAtZero: true,
-                        max: 100, // Establece el límite superior de la escala en 100
-                        title: {
-                            display: true,
-                            text: 'Porcentaje (%)'
-                        }
-                    },
-                    y1: {
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'Utilidad ($)'
-                        },
-                        grid: {
-                            drawOnChartArea: false
-                        },
-                        ticks: {
-                            callback: function (value) {
-                                return value.toLocaleString();
-                            }
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            autoSkip: false,
-                        }
-                    }
-                }
-            };
-
-            var piedata1 = {
-                labels: [],
-                datasets: [{
-                    label: '%',
-                    data: [],
-                    backgroundColor: [],
-                    hoverOffset: 4
-                }]
-            };
-
-            var pieOptions1 = {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom' // Mueve las etiquetas debajo del gráfico
-                    }
-                }
-
-            };
-
-            var piedata2 = {
-                labels: [],
-                datasets: [{
-                    label: '%',
-                    data: [],
-                    backgroundColor: [],
-                    hoverOffset: 4
-                }]
-            };
-
-            var pieOptions2 = {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom' // Mueve las etiquetas debajo del gráfico
-                    }
-                }
-
-            };
-
-            var ctx0 = document.getElementById("clientes").getContext("2d");
-            var ctx1 = document.getElementById("tcliente").getContext("2d");
-            var ctx2 = document.getElementById("foperacion").getContext("2d");
-            var ctx3 = document.getElementById("mpago").getContext("2d");
-
-            var graf1 = new Chart(ctx0, { type: 'bar', data: barData1, options: barOptions1 });
-            var graf2 = new Chart(ctx1, { type: 'doughnut', data: piedata1, options: pieOptions1 });
-            var graf3 = new Chart(ctx2, { type: 'bar', data: barData2, options: barOptions2 });
-            var graf4 = new Chart(ctx3, { type: 'doughnut', data: piedata2, options: pieOptions2 });
-
-            var data = @Html.Raw(ViewData["dist_vcliente"]);
-            var dataTcliente = @Html.Raw(ViewData["dist_tcliente"]);
-            var dataMpago = @Html.Raw(ViewData["dist_mpago"]);
-            var dataCventa = @Html.Raw(ViewData["dist_cventa"]);
-
-            data.sort((a, b) => b.Utilidad - a.Utilidad);
-            dataTcliente.sort((a, b) => b.Porcentaje - a.Porcentaje);
-            dataMpago.sort((a, b) => b.Porcentaje - a.Porcentaje);
-            dataCventa.sort((a, b) => b.Utilidad - a.Utilidad);
-
-            function getRandomRgb() {
-                var num = Math.round(0xffffff * Math.random());
-                var r = num >> 0 & 30;
-                var g = num >> r & 255;
-                var b = num >> g & 184;
-                return 'rgb(' + r + ', ' + g + ', ' + b + ', ' + 0.3 + ')';
-            }
-
-            $.each(data, function (i, item) {
-                barData1.labels.push(item.grp);
-                barData1.datasets[0].data.push(item.Cantidad);
-                barData1.datasets[1].data.push(item.Utilidad);
+            $('#filterOper').on('click', function () {
+                parametros = {
+                    inicio: $('#start').val(),
+                    fin: $('#end').val(),
+                    ProductoID: $('#productoID').val(),
+                    ClienteID: $('#clienteID').val(),
+                    OperacionID: $('#operacionID').val(),
+                    FacturaID: $('#facturaID').val(),
+                    MedioPagoID: $('#medioPagoID').val(),
+                    NoFactura: $('#factura').val()
+                };
+                iniciarDashboard();
             });
-
-            $.each(dataTcliente, function (i, item) {
-                var colorRGB = getRandomRgb();
-                piedata1.labels.push(item.grp + ' - (' + item.Porcentaje.toFixed(2) + '%)');
-                piedata1.datasets[0].data.push(item.Porcentaje.toFixed(2));
-                piedata1.datasets[0].backgroundColor.push(colorRGB);
-            });
-
-            $.each(dataMpago, function (i, item) {
-                var colorRGB = getRandomRgb();
-                piedata2.labels.push(item.grp + ' - (' + item.Porcentaje.toFixed(2) + '%)');
-                piedata2.datasets[0].data.push(item.Porcentaje.toFixed(2));
-                piedata2.datasets[0].backgroundColor.push(colorRGB);
-            });
-
-            $.each(dataCventa, function (i, item) {
-                barData2.labels.push(item.grp);
-                barData2.datasets[0].data.push(item.Porcentaje.toFixed(2));
-                barData2.datasets[1].data.push(item.Utilidad);
-            });
-
-
-            if (graf1) {
-                graf1.destroy();
-                graf1 = new Chart(ctx0, { type: 'bar', data: barData1, options: barOptions1 });
-            } else {
-                graf1 = new Chart(ctx0, { type: 'bar', data: barData1, options: barOptions1 });
-            }
-
-            if (graf2) {
-                graf2.destroy();
-                graf2 = new Chart(ctx1, { type: 'doughnut', data: piedata1, options: pieOptions1 });
-            } else {
-                graf2 = new Chart(ctx1, { type: 'doughnut', data: piedata1, options: pieOptions1 });
-            }
-
-            if (graf3) {
-                graf3.destroy();
-                graf3 = new Chart(ctx2, { type: 'bar', data: barData2, options: barOptions2 });
-            } else {
-                graf3 = new Chart(ctx2, { type: 'bar', data: barData2, options: barOptions2 });
-            }
-
-            if (graf4) {
-                graf4.destroy();
-                graf4 = new Chart(ctx3, { type: 'doughnut', data: piedata2, options: pieOptions2 });
-            } else {
-                graf4 = new Chart(ctx3, { type: 'doughnut', data: piedata2, options: pieOptions2 });
-            }
-
-            $('#filterMay').click(async function () {
-                try {
-               // Obtener valores de entrada en un solo objeto
-               var parametros = {
-                   inicio: $('#star').val(),
-                   fin: $('#end').val(),
-                   productoID: $("#productoID").val(),
-                   clienteID: $("#clienteID").val(),
-                   operacionID: $("#operacionID").val(),
-                   facturaID: $("#facturaID").val(),
-                   medioPagoID: $("#medioPagoID").val(),
-                   factura: $("#factura").val()
-               };
-
-               // URLs de los servicios
-               var url1 = '@Url.Action("MayoristaGeneralData", "Mayorista")';
-               var url2 = '@Url.Action("MayoristaDistVCliente", "Mayorista")';
-               var url3 = '@Url.Action("MayoristaDistTipoCliente", "Mayorista")';
-               var url4 = '@Url.Action("MayoristaDistVCanal", "Mayorista")';
-               var url5 = '@Url.Action("MayoristaDistMedioPago", "Mayorista")';
-
-               async function obtenerDatos(url, parametros) {
-                   const queryParams = new URLSearchParams(parametros).toString();
-                   try {
-                       let response = await fetch(`${url}?${queryParams}`, { method: "GET" }); // Agregar parámetros a la URL
-                       if (!response.ok) throw new Error(`Error en ${url}: ${response.status}`);
-                       return await response.json();
-                   } catch (error) {
-                       console.error(`Error al obtener datos de ${url}:`, error);
-                       return null;
-                   }
-               }
-
-
-               // Obtener datos en paralelo con async/await
-               const [data1, data2, data3, data4, data5] = await Promise.all([
-                   obtenerDatos(url1, parametros),
-                   obtenerDatos(url2, parametros),
-                   obtenerDatos(url3, parametros),
-                   obtenerDatos(url4, parametros),
-                   obtenerDatos(url5, parametros),
-               ]);
-
-               actualizarEtiquetas(data1);
-               actualizarGraficos(data2, data3, data4,  data5);
-
-           } catch (error) {
-               console.error("Error al obtener los datos:", error);
-           }
-       });
-
-       // Función para actualizar etiquetas
-            function actualizarEtiquetas(data) {
-
-           $('#label_totalimporte').empty();
-           $('#label_totalcosto').empty();
-           $('#label_totalutilidades').empty();
-
-           $('#label_modCliente').empty();
-           $('#label_modProducto').empty();
-           $('#label_modCanal').empty();
-
-           $.each(data,
-               function (i, item) {
-
-                   $('#label_totalimporte').append(item.TotalImpVentas.toFixed(2));
-                   //$('#label_porcienImporte').append(item.pcien_importe);
-
-                   $('#label_totalcosto').append(item.TotalCostVentas.toFixed(2));
-                   //$('#label_porcienCosto').append(item.pcien_costo);
-
-                   $('#label_totalutilidades').append(item.TotalUtilidades.toFixed(2));
-                   //$('#label_porcienutilidades').append(item.pcien_utilidad);
-
-                   $('#label_modCliente').append(item.modaClienteNombre);
-                   $('#label_modProducto').append(item.modaProductoServi);
-                   $('#label_modCanal').append(item.modaFormaOperacion);
-
-               });
-            }
-
-         // Función para actualizar la tabla y el gráfico
-            function actualizarGraficos(data2, data3, data4, data5) {
-
-                // Mostrar spinners
-                $("#spinner1").show();
-                $("#spinner2").show();
-                $("#spinner3").show();
-                $("#spinner4").show();
-
-                // Ocultar canvas si se desea
-                $("#clientes").hide();
-                $("#tcliente").hide();
-                $("#foperacion").hide();
-                $("#mpago").hide();
-
-                data2.sort((a, b) => b.Cantidad - a.Cantidad);
-                data3.sort((a, b) => b.Porcentaje - a.Porcentaje);
-                data4.sort((a, b) => b.Utilidad - a.Utilidad);
-                data5.sort((a, b) => b.Porcentaje - a.Porcentaje);
-
-                const Graf1newLabel = data2.map(i => i.grp);
-                const Graf1newData = data2.map(i => i.Cantidad);
-                const Graf1newData2 = data2.map(i => i.Utilidad);
-
-                graf1.data.labels = Graf1newLabel;
-                graf1.data.datasets[0].data = Graf1newData;
-                graf1.data.datasets[1].data = Graf1newData2;
-                graf1.update();
-
-                $("#spinner1").hide();
-                $("#clientes").fadeIn();
-
-                const Graf2newLabel = data3.map(i => i.grp + ' - (' + i.Porcentaje.toFixed(2) + '%)');
-                const Graf2newData = data3.map(i => i.Porcentaje.toFixed(2));
-
-                graf2.data.labels = Graf2newLabel;
-                graf2.data.datasets[0].data = Graf2newData;
-
-                graf2.update();
-
-                $("#spinner2").hide();
-                $("#tcliente").fadeIn();
-
-                const Graf3newLabel = data4.map(i => i.grp);
-                const Graf3newData = data4.map(i => i.Porcentaje.toFixed(2));
-                const Graf3newData2 = data4.map(i => i.Utilidad);
-
-                graf3.data.labels = Graf3newLabel;
-                graf3.data.datasets[0].data = Graf3newData;
-                graf3.data.datasets[1].data = Graf3newData2;
-                graf3.update();
-
-                $("#spinner3").hide();
-                $("#foperacion").fadeIn();
-
-                const Graf4newLabel = data5.map(i => i.grp + ' - (' + i.Porcentaje.toFixed(2) + '%)');
-                const Graf4newData = data5.map(i => i.Porcentaje.toFixed(2));
-
-                graf4.data.labels = Graf4newLabel;
-                graf4.data.datasets[0].data = Graf4newData;
-
-                graf4.update();
-
-                $("#spinner4").hide();
-                $("#mpago").fadeIn();
-
-            }*@
         });
     </script>
 }

@@ -177,6 +177,7 @@
     <Compile Include="Interfaces\iCliente.cs" />
     <Compile Include="Interfaces\iCodificadores.cs" />
     <Compile Include="Interfaces\iMovimiento.cs" />
+    <Compile Include="Interfaces\iNegocio.cs" />
     <Compile Include="Interfaces\iProducto.cs" />
     <Compile Include="Interfaces\iProductoServi.cs" />
     <Compile Include="Interfaces\iProductosRecientes.cs" />
@@ -197,6 +198,7 @@
     <Compile Include="Interfaces\iPV.cs" />
     <Compile Include="Interfaces\iPVAnalitic.cs" />
     <Compile Include="Interfaces\iResumenFiltrado.cs" />
+    <Compile Include="Interfaces\iResumenMayoristaDTO.cs" />
     <Compile Include="Interfaces\iSpIpvBaseResult.cs" />
     <Compile Include="Interfaces\iSubMayoresResumen.cs" />
     <Compile Include="Jobs\QuartzScheduler.cs" />

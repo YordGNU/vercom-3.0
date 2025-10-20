@@ -144,6 +144,7 @@ namespace vercom.Controllers
             return PartialView("_listformaoperacion", consulta.ToList()); // Ajusta el nombre de la vista parcial
         }
 
+ 
         public ActionResult _listcajas()
         {
             var consulta = from r in db.CajaPrincipal orderby r.CajaID ascending select r;

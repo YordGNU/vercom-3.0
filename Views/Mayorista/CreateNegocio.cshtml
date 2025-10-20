@@ -161,41 +161,13 @@
             var selectProductos = $("#productoID").chosen();
 
             $("#cantidad").on("keyup", function () {
+                if ($("#productoID").val() === 0) return false;
                 calcularImporte();
             });
 
             $("#productoID").on("change", function () {
+                if ($("#cantidad").val() < 0) return false;
                 calcularImporte(); // Sigue funcionando cuando se selecciona otro producto
-            });
-
-            $('#cantidad').change(function () {
-                let precio = document.getElementById("precio").value;
-                let cantidad = document.getElementById("cantidad").value;
-                let cantidadp = document.getElementById("cantidadp").value;
-                let operacion = document.getElementById("tipo_operacionid").value;
-                var cantEnt = cantidad;
-                var tmpCanP = cantidadp;
-                cantidad = cantidad.replace(",", ".");
-                let a = new Decimal(precio);
-                let b = new Decimal(cantidad);
-                let c = a.mul(b).toNumber();
-                let d = cantidadp - cantidad;
-                let e = new Decimal(cantidadp);
-                if (cantidadp == 0) {
-                    document.getElementById("cantidadp").value = cantidad;
-                    document.getElementById("cantrest").value = 0;
-                    document.getElementById("importe").value = c;
-                } else {
-                    if (operacion == 1) {
-                        $('#cantidadp').empty();
-                        let oper = (parseFloat(b) + parseFloat(e));
-                        document.getElementById("cantidadp").value = oper;
-                        document.getElementById("importe").value = c;
-                    } else {
-                        document.getElementById("cantrest").value = d;
-                        document.getElementById("importe").value = c;
-                    }
-                }
             });
 
             function calcularImporte() {

@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using vercom.Interfaces;
 using vercom.Models;
@@ -92,7 +93,29 @@ namespace vercom.Controllers
 
             return Json(new { iData }, JsonRequestBehavior.AllowGet);
         }
-       
+
+        [HttpGet]
+        public JsonResult iResumenMayorista(string inicio, string fin, int ProductoID = 0, int ClienteID = 0, int OperacionID = 0, int FacturaID = 0, int MedioPagoID = 0, string NoFactura = null)
+        {
+
+            DateTime.TryParse(inicio, out DateTime cvDateINI);
+            DateTime.TryParse(fin, out DateTime cvDateFIN);
+            db.Database.CommandTimeout = 120;
+            var resultado = db.Database.SqlQuery<iResumenMayoristaDTO>(
+                "EXEC sp_ResumenMayorista @FechaInicio, @FechaFin, @ProductoID, @ClienteID, @OperacionID, @FacturaID, @MedioPagoID, @NoFactura",
+                new SqlParameter("@FechaInicio", cvDateINI),
+                new SqlParameter("@FechaFin", cvDateFIN),
+                new SqlParameter("@ProductoID", ProductoID),
+                new SqlParameter("@ClienteID", ClienteID),
+                new SqlParameter("@OperacionID", OperacionID),
+                new SqlParameter("@FacturaID", FacturaID),
+                new SqlParameter("@MedioPagoID", MedioPagoID),
+                new SqlParameter("@NoFactura", NoFactura)              
+            ).FirstOrDefault();
+                 
+            return Json(resultado, JsonRequestBehavior.AllowGet);            
+        }
+
         [HttpGet]    
         public JsonResult GetProductosRecientes(int cantidad = 20)
         {
