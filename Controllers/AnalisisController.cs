@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
@@ -16,30 +17,50 @@ namespace vercom.Controllers
     public class AnalisisController : Controller
     {
         VERCOMEntities db = new VERCOMEntities();
+        #region DASHBOARD
 
+        [HttpGet]
+        public JsonResult GetProductosRecientes(int cantidad = 20)
+        {
+            try
+            {
+                var productos = db.Database.SqlQuery<iProductoRecientes>(
+                    "EXEC sp_ObtenerProductosRecientes @Cantidad",
+                    new SqlParameter("@Cantidad", cantidad)
+                ).ToList();
+                return Json(productos, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                // 🛠️ Loguear el error si tienes sistema de logs
+                return Json(new { error = true, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult GetOperacionesRecientes(int cantidad = 20)
+        {
+            try
+            {
+                var operaciones = db.Database.SqlQuery<iOperacionesRecientes>(
+                    "EXEC sp_ObtenerOperacionesRecientes @Cantidad",
+                    new SqlParameter("@Cantidad", cantidad)
+                ).ToList();
+                return Json(operaciones, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                // 🛠️ Loguear el error si tienes sistema de logs
+                return Json(new { error = true, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        #endregion
+        #region A-OPERACIONES
         [RBAC]
         public ActionResult Index()
         {
             return View();
-        }
-
-        public ActionResult Incremento()
-        {
-            return View();
-        }
-
-        public ContentResult _productosXpuntoFTdate(string inicio, string fin, int toper = 0, int pventa = 0, int categ = 0, int producto = 0, int tpago = 0, int area = 0)
-        {
-            List<iProductosXpunto> iData = new List<iProductosXpunto>();
-            var cvDateINI = Convert.ToDateTime(inicio);
-            var cvDateFIN = Convert.ToDateTime(fin);
-
-            var resultado = db.Database.SqlQuery<iProductosXpunto>(
-                "EXEC productosXpunto @p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7",
-                cvDateINI, cvDateFIN, toper, pventa, categ, producto, tpago, area
-            );
-            iData = resultado.ToList();
-            return Content(JsonConvert.SerializeObject(iData), "application/json");
         }
 
         [HttpGet]
@@ -95,64 +116,6 @@ namespace vercom.Controllers
         }
 
         [HttpGet]
-        public JsonResult iResumenMayorista(string inicio, string fin, int ProductoID = 0, int ClienteID = 0, int OperacionID = 0, int FacturaID = 0, int MedioPagoID = 0, string NoFactura = null)
-        {
-
-            DateTime.TryParse(inicio, out DateTime cvDateINI);
-            DateTime.TryParse(fin, out DateTime cvDateFIN);
-            db.Database.CommandTimeout = 120;
-            var resultado = db.Database.SqlQuery<iResumenMayoristaDTO>(
-                "EXEC sp_ResumenMayorista @FechaInicio, @FechaFin, @ProductoID, @ClienteID, @OperacionID, @FacturaID, @MedioPagoID, @NoFactura",
-                new SqlParameter("@FechaInicio", cvDateINI),
-                new SqlParameter("@FechaFin", cvDateFIN),
-                new SqlParameter("@ProductoID", ProductoID),
-                new SqlParameter("@ClienteID", ClienteID),
-                new SqlParameter("@OperacionID", OperacionID),
-                new SqlParameter("@FacturaID", FacturaID),
-                new SqlParameter("@MedioPagoID", MedioPagoID),
-                new SqlParameter("@NoFactura", NoFactura)              
-            ).FirstOrDefault();
-                 
-            return Json(resultado, JsonRequestBehavior.AllowGet);            
-        }
-
-        [HttpGet]    
-        public JsonResult GetProductosRecientes(int cantidad = 20)
-        {
-            try
-            {
-                var productos = db.Database.SqlQuery<iProductoRecientes>(
-                    "EXEC sp_ObtenerProductosRecientes @Cantidad",
-                    new SqlParameter("@Cantidad", cantidad)
-                ).ToList();
-                return Json(productos, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                // 🛠️ Loguear el error si tienes sistema de logs
-                return Json(new { error = true, message = ex.Message }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
-        public JsonResult GetOperacionesRecientes(int cantidad = 20)
-        {
-            try
-            {
-                var operaciones = db.Database.SqlQuery<iOperacionesRecientes>(
-                    "EXEC sp_ObtenerOperacionesRecientes @Cantidad",
-                    new SqlParameter("@Cantidad", cantidad)
-                ).ToList();
-                return Json(operaciones, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                // 🛠️ Loguear el error si tienes sistema de logs
-                return Json(new { error = true, message = ex.Message }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
         public JsonResult ChartDxTOperacion(string inicio, string fin, int toper = 0, int pventa = 0, int categ = 0, int producto = 0, int tpago = 0, int area = 0)
         {
             DateTime.TryParse(inicio, out DateTime cvDateINI);
@@ -200,7 +163,7 @@ namespace vercom.Controllers
             double? totalImporte = datos.Sum(x => x.Importe);
             foreach (var item in datos)
             {
-                item.Porciento = (totalImporte > 0) ? (item.Importe / totalImporte) * 100 : 0;              
+                item.Porciento = (totalImporte > 0) ? (item.Importe / totalImporte) * 100 : 0;
             }
 
             string puntoVentaNombre = db.punto_venta.Where(p => p.id == pventa).Select(p => p.nombre).FirstOrDefault() ?? "";
@@ -265,61 +228,122 @@ namespace vercom.Controllers
 
             return Json(new { iData = datos }, JsonRequestBehavior.AllowGet);
         }
-
-        public ContentResult incremetoProduccion(string inicio, string fin, int producto = 0, double gastoOperativo = 0, int numTraba = 0, int prodProTrab = 0, decimal meta = 0)
+        #endregion
+        #region A-MAYORISTA
+        [RBAC]
+        public ActionResult VMayorista()
         {
-            List<iIncremento> iData = new List<iIncremento>();
-            var cvDateINI = Convert.ToDateTime(inicio);
-            var cvDateFIN = Convert.ToDateTime(fin);
+            return View();
+        }
+        [HttpGet]
+        public JsonResult iResumenMayorista(string inicio, string fin, int ProductoID = 0, int ClienteID = 0, int OperacionID = 0, int FacturaID = 0, int MedioPagoID = 0, string NoFactura = null)
+        {
 
-            var prod = (from r in db.producto where r.id == producto select r);
-            var costo = (from r in prod select r.costo).FirstOrDefault();
-            var precio = (from r in prod select r.precio).FirstOrDefault();
-            var unidad = (from r in prod select r.unidad.unidad1).FirstOrDefault();
+            DateTime.TryParse(inicio, out DateTime cvDateINI);
+            DateTime.TryParse(fin, out DateTime cvDateFIN);
+            db.Database.CommandTimeout = 120;
+            var resultado = db.Database.SqlQuery<iResumenMayoristaDTO>(
+                "EXEC sp_ResumenMayorista @FechaInicio, @FechaFin, @ProductoID, @ClienteID, @OperacionID, @FacturaID, @MedioPagoID, @NoFactura",
+                new SqlParameter("@FechaInicio", cvDateINI),
+                new SqlParameter("@FechaFin", cvDateFIN),
+                new SqlParameter("@ProductoID", ProductoID),
+                new SqlParameter("@ClienteID", ClienteID),
+                new SqlParameter("@OperacionID", OperacionID),
+                new SqlParameter("@FacturaID", FacturaID),
+                new SqlParameter("@MedioPagoID", MedioPagoID),
+                new SqlParameter("@NoFactura", NoFactura)
+            ).FirstOrDefault();
 
-            var ftdata = (from d in db.operacion where (d.fecha >= cvDateINI & d.fecha <= cvDateFIN) & (d.tipo_operacionid == 2) select d);
-            var ventActual = (from r in ftdata where (r.productoid == producto) select r.cantidad).Sum();
-
-            var ingresoActual = ventActual * precio;
-            var costoActual = ventActual * costo;
-
-            var utilidadActual = ingresoActual - costoActual;
-
-
-            var incrementoVenta = Convert.ToInt16((float?)(meta / 100) * ventActual);
-
-            var incremento = incrementoVenta;
-
-            incrementoVenta = (short)(incremento + ventActual);
-
-
-            var incrementoProdTrab = (incrementoVenta / prodProTrab);
-            incrementoProdTrab = (incrementoProdTrab) - (numTraba);
-
-            var costoTotal = (costo * (double?)incrementoVenta);
-            var ingresoTotal = (precio * (double?)incrementoVenta);
-
-            var beneficioBruto = (ingresoTotal - costoTotal);
-            var beneficio = (ingresoTotal - costoTotal) - gastoOperativo;
-
-            iIncremento iVal = new iIncremento
-            {
-                ventaActual = ventActual,
-                unidad = unidad,
-                incremento = Convert.ToDouble(String.Format("{0:#,##0.00}", incremento)),
-                aumentotrab = (int)incrementoProdTrab,
-                ingresoActual = Convert.ToDouble(String.Format("{0:#,##0.00}", ingresoActual)),
-                ingreso = Convert.ToDouble(String.Format("{0:#,##0.00}", ingresoTotal)),
-                costo = Convert.ToDouble(String.Format("{0:#,##0.00}", costoTotal)),
-                costoActual = Convert.ToDouble(String.Format("{0:#,##0.00}", costoActual)),
-                utilidadBruto = Convert.ToDouble(String.Format("{0:#,##0.00}", beneficioBruto)),
-                utilidadActual = Convert.ToDouble(String.Format("{0:#,##0.00}", utilidadActual)),
-                utilidadFinal = Convert.ToDouble(String.Format("{0:#,##0.00}", beneficio)),
-            };
-
-            iData.Add(iVal);
-            return Content(JsonConvert.SerializeObject(iData), "application/json");
+            return Json(resultado, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public JsonResult ChartDxCliente(string inicio, string fin, int ProductoID = 0, int ClienteID = 0, int OperacionID = 0, int FacturaID = 0, int MedioPagoID = 0, string NoFactura = null)
+        {
+            DateTime.TryParse(inicio, out DateTime cvDateINI);
+            DateTime.TryParse(fin, out DateTime cvDateFIN);
+            db.Database.CommandTimeout = 120;
+
+            var datos = db.Database.SqlQuery<iMayoristaXcliente>(
+                "EXEC sp_ObtenerDistribucionPorCliente @FechaInicio, @FechaFin, @ProductoID, @ClienteID, @OperacionID, @FacturaID, @MedioPagoID, @NoFactura",
+                new SqlParameter("@FechaInicio", cvDateINI),
+                new SqlParameter("@FechaFin", cvDateFIN),
+                new SqlParameter("@ProductoID", ProductoID),
+                new SqlParameter("@ClienteID", ClienteID),
+                new SqlParameter("@OperacionID", OperacionID),
+                new SqlParameter("@FacturaID", FacturaID),
+                new SqlParameter("@MedioPagoID", MedioPagoID),
+                new SqlParameter("@NoFactura", NoFactura ?? (object)DBNull.Value)
+            ).ToList();
+
+            return Json(new { iData = datos }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ChartDxTCliente(string inicio, string fin, int ProductoID = 0, int ClienteID = 0, int OperacionID = 0, int FacturaID = 0, int MedioPagoID = 0, string NoFactura = null)
+        {
+            DateTime.TryParse(inicio, out DateTime cvDateINI);
+            DateTime.TryParse(fin, out DateTime cvDateFIN);
+            db.Database.CommandTimeout = 120;
+
+            var datos = db.Database.SqlQuery<iMayoristaXTcliente>(
+                "EXEC sp_ObtenerDistribucionPorTipoCliente @FechaInicio, @FechaFin, @ProductoID, @ClienteID, @OperacionID, @FacturaID, @MedioPagoID, @NoFactura",
+                new SqlParameter("@FechaInicio", cvDateINI),
+                new SqlParameter("@FechaFin", cvDateFIN),
+                new SqlParameter("@ProductoID", ProductoID),
+                new SqlParameter("@ClienteID", ClienteID),
+                new SqlParameter("@OperacionID", OperacionID),
+                new SqlParameter("@FacturaID", FacturaID),
+                new SqlParameter("@MedioPagoID", MedioPagoID),
+                new SqlParameter("@NoFactura", NoFactura ?? (object)DBNull.Value)
+            ).ToList();
+
+            return Json(new { iData = datos }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ChartDxFOperacion(string inicio, string fin, int ProductoID = 0, int ClienteID = 0, int OperacionID = 0, int FacturaID = 0, int MedioPagoID = 0, string NoFactura = null)
+        {
+            DateTime.TryParse(inicio, out DateTime cvDateINI);
+            DateTime.TryParse(fin, out DateTime cvDateFIN);
+            db.Database.CommandTimeout = 120;
+
+            var datos = db.Database.SqlQuery<iMayoristaXFoperacion>(
+                "EXEC sp_ObtenerDistribucionPorFOperacion @FechaInicio, @FechaFin, @ProductoID, @ClienteID, @OperacionID, @FacturaID, @MedioPagoID, @NoFactura",
+                new SqlParameter("@FechaInicio", cvDateINI),
+                new SqlParameter("@FechaFin", cvDateFIN),
+                new SqlParameter("@ProductoID", ProductoID),
+                new SqlParameter("@ClienteID", ClienteID),
+                new SqlParameter("@OperacionID", OperacionID),
+                new SqlParameter("@FacturaID", FacturaID),
+                new SqlParameter("@MedioPagoID", MedioPagoID),
+                new SqlParameter("@NoFactura", NoFactura ?? (object)DBNull.Value)
+            ).ToList();
+
+            return Json(new { iData = datos }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ChartDxMpago(string inicio, string fin, int ProductoID = 0, int ClienteID = 0, int OperacionID = 0, int FacturaID = 0, int MedioPagoID = 0, string NoFactura = null)
+        {
+            DateTime.TryParse(inicio, out DateTime cvDateINI);
+            DateTime.TryParse(fin, out DateTime cvDateFIN);
+            db.Database.CommandTimeout = 120;
+
+            var datos = db.Database.SqlQuery<iMayoristaXMpago>(
+                "EXEC sp_ObtenerDistribucionPorMedioPago @FechaInicio, @FechaFin, @ProductoID, @ClienteID, @OperacionID, @FacturaID, @MedioPagoID, @NoFactura",
+                new SqlParameter("@FechaInicio", cvDateINI),
+                new SqlParameter("@FechaFin", cvDateFIN),
+                new SqlParameter("@ProductoID", ProductoID),
+                new SqlParameter("@ClienteID", ClienteID),
+                new SqlParameter("@OperacionID", OperacionID),
+                new SqlParameter("@FacturaID", FacturaID),
+                new SqlParameter("@MedioPagoID", MedioPagoID),
+                new SqlParameter("@NoFactura", NoFactura ?? (object)DBNull.Value)
+            ).ToList();
+
+            return Json(new { iData = datos }, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
     }
 }

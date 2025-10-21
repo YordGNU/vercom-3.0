@@ -176,7 +176,11 @@
     <Compile Include="Interfaces\iCierreSubMayorResumen.cs" />
     <Compile Include="Interfaces\iCliente.cs" />
     <Compile Include="Interfaces\iCodificadores.cs" />
+    <Compile Include="Interfaces\iMayoristaXcliente.cs" />
+    <Compile Include="Interfaces\iMayoristaXMpago.cs" />
+    <Compile Include="Interfaces\iMayoristaXTcliente.cs" />
     <Compile Include="Interfaces\iMovimiento.cs" />
+    <Compile Include="Interfaces\iMayoristaXFoperacion.cs" />
     <Compile Include="Interfaces\iNegocio.cs" />
     <Compile Include="Interfaces\iProducto.cs" />
     <Compile Include="Interfaces\iProductoServi.cs" />
@@ -509,6 +513,7 @@
     <Content Include="Views\Parcial\_listcajas.cshtml" />
     <Content Include="Views\Caja\Cierre.cshtml" />
     <Content Include="Views\Parcial\_listtiposclientesName.cshtml" />
+    <Content Include="Views\Analisis\VMayorista.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -565,14 +570,6 @@
     <Content Include="Views\Admin\_userDetailsEdit.cshtml" />
     <Content Include="Views\Analisis\Index.cshtml" />
     <Content Include="Views\Mayorista\Cliente.cshtml" />
-    <Content Include="Views\Mayorista\CreateCliente.cshtml" />
-    <Content Include="Views\Mayorista\CreateNegocio.cshtml" />
-    <Content Include="Views\Mayorista\CreateProductoServi.cshtml" />
-    <Content Include="Views\Mayorista\DetailsCliente.cshtml" />
-    <Content Include="Views\Mayorista\DetailsNegocio.cshtml" />
-    <Content Include="Views\Mayorista\EditCliente.cshtml" />
-    <Content Include="Views\Mayorista\EditNegocio.cshtml" />
-    <Content Include="Views\Mayorista\EditProductoServi.cshtml" />
     <Content Include="Views\Mayorista\Index.cshtml" />
     <Content Include="Views\Mayorista\Negocio.cshtml" />
     <Content Include="Views\Mayorista\ProductoServi.cshtml" />

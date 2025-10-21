@@ -495,3 +495,417 @@ class OperChartByProducto {
         this.render();
     }
 }
+
+//venta mayorista
+class MayChartByCliente {
+    constructor({ containerId, titulo, iData }) {
+        this.containerId = containerId;
+        this.titulo = titulo;
+        this.iData = iData;
+        this.chart = null;
+    }
+
+    getChartOptions() {
+        const clientes = this.iData.map(item => item.Cliente);
+        const porcentajes = this.iData.map(item => parseFloat(item.PorcentajeParticipacion.toFixed(2)));
+        return {
+            chart: {
+                height: 320,
+                type: "donut",               
+                dropShadow: {
+                    enabled: !0,
+                    color: "#111",
+                    top: -1,
+                    left: 3,
+                    blur: 3,
+                    opacity: 0.2,
+                },
+            },
+            title: {
+                text: this.titulo,
+                align: 'center',             
+            },
+            stroke: { show: false, width: 0 },
+            series: porcentajes,
+            labels: clientes,
+            dataLabels: { enabled: true },
+            theme: {
+                palette: 'palette1',
+                monochrome: {
+                    enabled: false,
+                    color: '#255aee',
+                    shadeTo: 'light',
+                    shadeIntensity: 0.65
+                },
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'dark',
+                    type: "horizontal",
+                    shadeIntensity: 0.5,
+                    gradientToColors: undefined, // optional, if not defined - uses the shades of same color in series
+                    inverseColors: true,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 50, 100],
+                    colorStops: []
+                }
+            },
+            states: { hover: { enabled: !1 } },
+            legend: {                
+                show: !0,
+                position: "bottom",
+                horizontalAlign: "center",
+                verticalAlign: "middle",
+                floating: !1,
+                fontSize: "12px",
+            }, responsive: [
+                {
+                    breakpoint: 600,
+                    options: { chart: { height: 240 }, legend: { show: !1 } },
+                },
+            ],
+        };
+    }
+
+    render() {
+        const container = document.querySelector(this.containerId);
+        if (!container) {
+            console.warn(`Contenedor ${this.containerId} no encontrado`);
+            return;
+        }
+
+        // Destruir gráfico anterior en el contenedor si quedó huérfano
+        if (container._chartInstance && typeof container._chartInstance.destroy === 'function') {
+            container._chartInstance.destroy();
+        }
+
+        this.chart = new ApexCharts(container, this.getChartOptions());
+        this.chart.render();
+        container._chartInstance = this.chart;
+    }
+
+    destroy() {
+        if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    }
+
+    update(newData, newTitle = null) {
+        this.iData = newData;
+        if (newTitle) this.titulo = newTitle;
+        this.destroy();
+        this.render();
+    }
+}
+class MayChartByTCliente {
+    constructor({ containerId, titulo, iData }) {
+        this.containerId = containerId;
+        this.titulo = titulo;
+        this.iData = iData;
+        this.chart = null;
+    }
+
+    getChartOptions() {
+        const tclientes = this.iData.map(item => item.TipoCliente);
+        const porcentajes = this.iData.map(item => parseFloat(item.PorcentajeParticipacion.toFixed(2)));
+        return {
+            chart: {
+                height: 320,
+                type: "donut",
+                dropShadow: {
+                    enabled: !0,
+                    color: "#111",
+                    top: -1,
+                    left: 3,
+                    blur: 3,
+                    opacity: 0.2,
+                },
+            },
+            title: {
+                text: this.titulo,
+                align: 'center',
+            },
+            stroke: { show: false, width: 0 },
+            series: porcentajes,
+            labels: tclientes,
+            dataLabels: { enabled: true },
+            theme: {
+                palette: 'palette1',
+                monochrome: {
+                    enabled: false,
+                    color: '#255aee',
+                    shadeTo: 'light',
+                    shadeIntensity: 0.65
+                },
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'dark',
+                    type: "horizontal",
+                    shadeIntensity: 0.5,
+                    gradientToColors: undefined, // optional, if not defined - uses the shades of same color in series
+                    inverseColors: true,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 50, 100],
+                    colorStops: []
+                }
+            },
+            states: { hover: { enabled: !1 } },
+            legend: {
+                show: !0,
+                position: "bottom",
+                horizontalAlign: "center",
+                verticalAlign: "middle",
+                floating: !1,
+                fontSize: "12px",
+            }, responsive: [
+                {
+                    breakpoint: 600,
+                    options: { chart: { height: 240 }, legend: { show: !1 } },
+                },
+            ],
+        };
+    }
+
+    render() {
+        const container = document.querySelector(this.containerId);
+        if (!container) {
+            console.warn(`Contenedor ${this.containerId} no encontrado`);
+            return;
+        }
+
+        // Destruir gráfico anterior en el contenedor si quedó huérfano
+        if (container._chartInstance && typeof container._chartInstance.destroy === 'function') {
+            container._chartInstance.destroy();
+        }
+
+        this.chart = new ApexCharts(container, this.getChartOptions());
+        this.chart.render();
+        container._chartInstance = this.chart;
+    }
+
+    destroy() {
+        if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    }
+
+    update(newData, newTitle = null) {
+        this.iData = newData;
+        if (newTitle) this.titulo = newTitle;
+        this.destroy();
+        this.render();
+    }
+}
+class MayChartByFOperacion {
+    constructor({ containerId, titulo, iData }) {
+        this.containerId = containerId;
+        this.titulo = titulo;
+        this.iData = iData;
+        this.chart = null;
+    }
+
+    getChartOptions() {
+        const foperacions = this.iData.map(item => item.FormaOperacion);
+        const porcentajes = this.iData.map(item => parseFloat(item.PorcentajeParticipacion.toFixed(2)));
+        return {
+            chart: {
+                height: 320,
+                type: "donut",
+                dropShadow: {
+                    enabled: !0,
+                    color: "#111",
+                    top: -1,
+                    left: 3,
+                    blur: 3,
+                    opacity: 0.2,
+                },
+            },
+            title: {
+                text: this.titulo,
+                align: 'center',
+            },
+            stroke: { show: false, width: 0 },
+            series: porcentajes,
+            labels: foperacions,
+            dataLabels: { enabled: true },
+            theme: {
+                palette: 'palette1',
+                monochrome: {
+                    enabled: false,
+                    color: '#255aee',
+                    shadeTo: 'light',
+                    shadeIntensity: 0.65
+                },
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'dark',
+                    type: "horizontal",
+                    shadeIntensity: 0.5,
+                    gradientToColors: undefined, // optional, if not defined - uses the shades of same color in series
+                    inverseColors: true,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 50, 100],
+                    colorStops: []
+                }
+            },
+            states: { hover: { enabled: !1 } },
+            legend: {
+                show: !0,
+                position: "bottom",
+                horizontalAlign: "center",
+                verticalAlign: "middle",
+                floating: !1,
+                fontSize: "12px",
+            }, responsive: [
+                {
+                    breakpoint: 600,
+                    options: { chart: { height: 240 }, legend: { show: !1 } },
+                },
+            ],
+        };
+    }
+
+    render() {
+        const container = document.querySelector(this.containerId);
+        if (!container) {
+            console.warn(`Contenedor ${this.containerId} no encontrado`);
+            return;
+        }
+
+        // Destruir gráfico anterior en el contenedor si quedó huérfano
+        if (container._chartInstance && typeof container._chartInstance.destroy === 'function') {
+            container._chartInstance.destroy();
+        }
+
+        this.chart = new ApexCharts(container, this.getChartOptions());
+        this.chart.render();
+        container._chartInstance = this.chart;
+    }
+
+    destroy() {
+        if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    }
+
+    update(newData, newTitle = null) {
+        this.iData = newData;
+        if (newTitle) this.titulo = newTitle;
+        this.destroy();
+        this.render();
+    }
+}
+class MayChartByMPago {
+    constructor({ containerId, titulo, iData }) {
+        this.containerId = containerId;
+        this.titulo = titulo;
+        this.iData = iData;
+        this.chart = null;
+    }
+
+    getChartOptions() {
+        const mpago = this.iData.map(item => item.MedioPago);
+        const porcentajes = this.iData.map(item => parseFloat(item.PorcentajeParticipacion.toFixed(2)));
+        return {
+            chart: {
+                height: 320,
+                type: "donut",
+                dropShadow: {
+                    enabled: !0,
+                    color: "#111",
+                    top: -1,
+                    left: 3,
+                    blur: 3,
+                    opacity: 0.2,
+                },
+            },
+            title: {
+                text: this.titulo,
+                align: 'center',
+            },
+            stroke: { show: false, width: 0 },
+            series: porcentajes,
+            labels: mpago,
+            dataLabels: { enabled: true },
+            theme: {
+                palette: 'palette1',
+                monochrome: {
+                    enabled: false,
+                    color: '#255aee',
+                    shadeTo: 'light',
+                    shadeIntensity: 0.65
+                },
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'dark',
+                    type: "horizontal",
+                    shadeIntensity: 0.5,
+                    gradientToColors: undefined, // optional, if not defined - uses the shades of same color in series
+                    inverseColors: true,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 50, 100],
+                    colorStops: []
+                }
+            },
+            states: { hover: { enabled: !1 } },
+            legend: {
+                show: !0,
+                position: "bottom",
+                horizontalAlign: "center",
+                verticalAlign: "middle",
+                floating: !1,
+                fontSize: "12px",
+            }, responsive: [
+                {
+                    breakpoint: 600,
+                    options: { chart: { height: 240 }, legend: { show: !1 } },
+                },
+            ],
+        };
+    }
+
+    render() {
+        const container = document.querySelector(this.containerId);
+        if (!container) {
+            console.warn(`Contenedor ${this.containerId} no encontrado`);
+            return;
+        }
+
+        // Destruir gráfico anterior en el contenedor si quedó huérfano
+        if (container._chartInstance && typeof container._chartInstance.destroy === 'function') {
+            container._chartInstance.destroy();
+        }
+
+        this.chart = new ApexCharts(container, this.getChartOptions());
+        this.chart.render();
+        container._chartInstance = this.chart;
+    }
+
+    destroy() {
+        if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    }
+
+    update(newData, newTitle = null) {
+        this.iData = newData;
+        if (newTitle) this.titulo = newTitle;
+        this.destroy();
+        this.render();
+    }
+}

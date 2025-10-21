@@ -1,13 +1,12 @@
-﻿@model vercom.Models.operacion
-@{
-    ViewBag.Title = "ANALISIS";
+﻿@{
+    ViewBag.Title = "ANALISIS - OPERACIONES";
     var date = DateTime.Now;
     var oPrimerDiaDelMes = new DateTime(date.Year, date.Month, 1);
     var oUltimoDiaDelMes = oPrimerDiaDelMes.AddMonths(1).AddDays(-1);
 }
 <div class="page-title-head d-flex align-items-center">
     <div class="flex-grow-1">
-        <h4 class="fs-sm text-uppercase fw-bold m-0">OPERACIONES</h4>
+        <h4 class="fs-sm text-uppercase fw-bold m-0">ANALISIS - OPERACIONES</h4>
     </div>
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
@@ -15,9 +14,9 @@
                 <a href="javascript: void(0);">VERCOM</a>
             </li>
             <li class="breadcrumb-item">
-                <a href="javascript: void(0);">OPERACIONES</a>
+                <a href="javascript: void(0);">ANALISIS</a>
             </li>
-            <li class="breadcrumb-item active">LISTA</li>
+            <li class="breadcrumb-item active">ANALISIS - OPERACIONES</li>
         </ol>
     </div>
 </div>

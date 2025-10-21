@@ -1,17 +1,24 @@
 ﻿@using Newtonsoft.Json;
 @{
-    ViewBag.Title = "VENTA MAYORISTA";
+    ViewBag.Title = "ANALISIS - MAYORISTA";
+    var date = DateTime.Now;
+    var oPrimerDiaDelMes = new DateTime(date.Year, date.Month, 1);
+    var oUltimoDiaDelMes = oPrimerDiaDelMes.AddMonths(1).AddDays(-1);
 }
 <div class="page-title-head d-flex align-items-center">
     <div class="flex-grow-1">
-        <h4 class="fs-sm text-uppercase fw-bold m-0">VENTA MAYORISTA</h4>
+        <h4 class="fs-sm text-uppercase fw-bold m-0">ANALISIS - MAYORISTA</h4>
     </div>
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item">
                 <a href="javascript: void(0);">VERCOM</a>
-            </li>           
-            <li class="breadcrumb-item active">VENTA MAYORISTA</li>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="javascript: void(0);">ANALISIS</a>
+            </li>
+
+            <li class="breadcrumb-item active">ANALISIS - MAYORISTA</li>
         </ol>
     </div>
 </div>
@@ -20,11 +27,6 @@
         <!-- Simple card -->
         <div class="card">
             <div class="card-body">
-                @{
-                    var date = DateTime.Now;
-                    var oPrimerDiaDelMes = new DateTime(date.Year, date.Month, 1);
-                    var oUltimoDiaDelMes = oPrimerDiaDelMes.AddMonths(1).AddDays(-1);
-                }
                 <form>
                     <div class="row gy-2 gx-2 justify-content-end">
                         <div class="col-3">
@@ -129,7 +131,7 @@
                             <i class="ti ti-shopping-bag-plus"></i>
                         </span>
                     </div>
-                    <h3 class="mb-0" id="label_totalCosto">0,00</h3>             
+                    <h3 class="mb-0" id="label_totalCosto">0,00</h3>
                 </div>
             </div>
         </div>
@@ -144,7 +146,7 @@
                             <i class="ti ti-currency-dollar"></i>
                         </span>
                     </div>
-                    <h3 class="mb-0" id="label_utilidades">0,00</h3>         
+                    <h3 class="mb-0" id="label_utilidades">0,00</h3>
                 </div>
             </div>
         </div>
@@ -159,7 +161,7 @@
                             <i class="ti ti-arrow-back-up-double"></i>
                         </span>
                     </div>
-                    <h3 class="mb-0" id="label_modaCliente"></h3>         
+                    <h3 class="mb-0" id="label_modaCliente"></h3>
                 </div>
             </div>
         </div>
@@ -174,7 +176,7 @@
                             <i class="ti ti-package-export"></i>
                         </span>
                     </div>
-                    <h3 class="mb-0" id="label_modaServiProducto"></h3>              
+                    <h3 class="mb-0" id="label_modaServiProducto"></h3>
                 </div>
             </div>
         </div>
@@ -189,109 +191,88 @@
                             <i class="ti ti-package-export"></i>
                         </span>
                     </div>
-                    <h3 class="mb-0" id="label_modaFormaOperacion"></h3>     
+                    <h3 class="mb-0" id="label_modaFormaOperacion"></h3>
                 </div>
             </div>
         </div>
     </div>
 </div><!-- end row -->
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card ">
-            <div class="card-header">
-                <div class="card-title">
-                    <h5>VENTAS</h5>
-                </div>
-                <div class="justify-content-end">
-                    <div class="btn-group">
-                        <button type="button" value="day" onclick="updateChar(this)" class="btn btn-xs btn-info">Hoy</button>
-                        <button type="button" value="month" onclick="updateChar(this)" class="btn btn-xs btn-info">Este Mes</button>
-                        <button type="button" value="year" onclick="updateChar(this)" class="btn btn-xs btn-info">Este Año</button>
-                    </div>
-                </div>
-            </div>
+<div class="row" id="bloque-grafico">
+    <div class="col-12">
+        <div class="card">        
             <div class="card-body">
                 <div class="row">
-                    <div class="col-lg-8">
-                        <div class="chart-container">
-                            <div id="spinner1" class="spinner-overlay" style="display:none">
-                                <div class="sk-spinner sk-spinner-wave">
-                                    <div class="sk-rect1"></div>
-                                    <div class="sk-rect2"></div>
-                                    <div class="sk-rect3"></div>
-                                    <div class="sk-rect4"></div>
-                                    <div class="sk-rect5"></div>
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div dir="ltr">
+                                    <div id="canvaForVXcliente" class="apex-charts"></div>
                                 </div>
                             </div>
-                            <canvas id="clientes"></canvas>
+                            <!-- end card body-->
                         </div>
+                        <!-- end card -->
                     </div>
-                    <div class="col-lg-4">
-                        <div class="chart-container">
-                            <div id="spinner2" class="spinner-overlay" style="display:none">
-                                <div class="sk-spinner sk-spinner-wave">
-                                    <div class="sk-rect1"></div>
-                                    <div class="sk-rect2"></div>
-                                    <div class="sk-rect3"></div>
-                                    <div class="sk-rect4"></div>
-                                    <div class="sk-rect5"></div>
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div dir="ltr">
+                                    <div id="canvaForVXTcliente" class="apex-charts"></div>
                                 </div>
                             </div>
-                            <canvas id="tcliente" height="550"></canvas>
+                            <!-- end card body-->
                         </div>
+                        <!-- end card -->
+                    </div>                                            
+                </div> <!-- end row-->
+                <div class="row">
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div dir="ltr">
+                                    <div id="canvaForVXFoperacion" class="apex-charts"></div>
+                                </div>
+                            </div>
+                            <!-- end card body-->
+                        </div>
+                        <!-- end card -->
                     </div>
-                    <div class="col-lg-12 hr-line-dashed"></div>
-                    <div class="col-lg-8">
-                        <div class="chart-container">
-                            <div id="spinner3" class="spinner-overlay" style="display:none">
-                                <div class="sk-spinner sk-spinner-wave">
-                                    <div class="sk-rect1"></div>
-                                    <div class="sk-rect2"></div>
-                                    <div class="sk-rect3"></div>
-                                    <div class="sk-rect4"></div>
-                                    <div class="sk-rect5"></div>
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div dir="ltr">
+                                    <div id="canvaForVXMpago" class="apex-charts"></div>
                                 </div>
                             </div>
-                            <canvas id="foperacion"></canvas>
+                            <!-- end card body-->
                         </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="chart-container">
-                            <div id="spinner4" class="spinner-overlay" style="display:none">
-                                <div class="sk-spinner sk-spinner-wave">
-                                    <div class="sk-rect1"></div>
-                                    <div class="sk-rect2"></div>
-                                    <div class="sk-rect3"></div>
-                                    <div class="sk-rect4"></div>
-                                    <div class="sk-rect5"></div>
-                                </div>
-                            </div>
-                            <canvas id="mpago" height="550"></canvas>
-                        </div>
+                        <!-- end card -->
                     </div>
                 </div>
-            </div>
-
-        </div>
-    </div>
-</div>
+            </div> <!-- end card-body-->
+        </div> <!-- end card-->
+    </div> <!-- end col-->
+</div> <!-- end row-->
 @section Styles {
     <link href="~/Content/plugins/toastr/toastr.min.css" rel="stylesheet" />
     <link href="~/Content/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chartist/chartist.min.css" rel="stylesheet" />
 }
-
 
 @section Scripts {
     <script src="~/Scripts/plugins/toastr/toastr.min.js"></script>
     <script src="~/Scripts/plugins/moment/moment.min.js"></script>
     <script src="~/Scripts/plugins/daterangepicker/daterangepicker.js"></script>
     <script src="~/Scripts/plugins/choices/choices.min.js"></script>
-    <script src="~/Scripts/plugins/table2excel/table2excel.js"></script>
     <script src="~/Scripts/custom-table.js"></script>
+    <script src="~/Scripts/plugins/table2excel/table2excel.js"></script>
+    <script src="~/Scripts/plugins/SheetJs/xlsx.full.min.js"></script>
+    <script src="~/Scripts/plugins/chartJs/Chart.min.js"></script>
+    <script src="~/Scripts/plugins/apexcharts/apexcharts.min.js"></script>
+    <script src="~/Scripts/charts/custom-charts.js"></script>
+    <script src="~/Scripts/plugins/jsPdf/jspdf.umd.min.js"></script>
+    <script src="~/Scripts/plugins/htmlTocanvas/html2canvas.min.js"></script>
     <script type="text/javascript">
-        window.onload = function () {
-            iniciarDashboard();
-        };
 
         let parametros = {
             inicio: $('#start').val(),
@@ -304,13 +285,10 @@
             NoFactura: $('#factura').val()
         };
 
-        function iniciarDashboard() {
-            try { cargarKPIsDashboard(); } catch (e) { console.error("Error en KPIs:", e.message); }
-            //try { cargarDistribucionPorFecha(); } catch (e) { console.error("Error en Fecha:", e.message); }
-            //try { cargarDistribucionPorPunto(); } catch (e) { console.error("Error en Punto:", e.message); }
-            //try { cargarProductosRecientes(); } catch (e) { console.error("Error en Punto:", e.message); }
-            //try { cargarOperacionesRecientes(); } catch (e) { console.error("Error en Punto:", e.message); }
-        }
+        let chartByCliente;
+        let chartByTCliente;
+        let chartByFOperacion;
+        let chartByMpago;
 
         async function cargarKPIsDashboard() {
             const url = '@Url.Action("iResumenMayorista", "Analisis")';
@@ -321,7 +299,88 @@
             }
         }
 
-       async function OptenerData(url, bloqueID, parametros = {}) {
+        //pendiente
+        async function cargarDistribucionPorClientes() {
+            const url = '@Url.Action("ChartDxCliente", "Analisis")';
+            const bloqueID = '#bloque-grafico';
+            const datos = await OptenerData(url, bloqueID, parametros);
+            if (datos) {
+                if (typeof chartByCliente?.update === "function") {
+                    chartByCliente.update(datos.iData, '');
+                } else {
+                    // Si no existe, lo creamos por primera vez
+                    chartByCliente = new MayChartByCliente({
+                        containerId: '#canvaForVXcliente',
+                        titulo: 'Gráfico.1 Distribución por cientes',
+                        iData: datos.iData
+                    });
+                    chartByCliente.render();
+                    desactivarOverlayEnContenedor(bloqueID);
+                }
+            }
+        }
+
+        async function cargarDistribucionPortTCliente() {
+            const url = '@Url.Action("ChartDxTCliente", "Analisis")';
+            const bloqueID = '#bloque-grafico';
+            const datos = await OptenerData(url, bloqueID, parametros);
+            if (datos) {
+                if (typeof chartByTCliente?.update === "function") {
+                 chartByTCliente.update(datos.iData, '');
+                } else {
+                    // Si no existe, lo creamos por primera vez
+                    chartByTCliente = new MayChartByTCliente({
+                        containerId: '#canvaForVXTcliente',
+                        titulo: 'Gráfico.2 Distribución por tipo de cientes',
+                        iData: datos.iData
+                    });
+                    chartByTCliente.render();
+                    desactivarOverlayEnContenedor(bloqueID);
+                }
+            }
+        }
+
+        async function cargarDistribucionPortFOperacion() {
+            const url = '@Url.Action("ChartDxFOperacion", "Analisis")';
+            const bloqueID = '#bloque-grafico';
+            const datos = await OptenerData(url, bloqueID, parametros);
+            if (datos) {
+                if (typeof chartByFOperacion?.update === "function") {
+                 chartByFOperacion.update(datos.iData, '');
+                } else {
+                    // Si no existe, lo creamos por primera vez
+                    chartByFOperacion = new MayChartByFOperacion({
+                        containerId: '#canvaForVXFoperacion',
+                        titulo: 'Gráfico.3 Distribución por forma de operación',
+                        iData: datos.iData
+                    });
+                    chartByFOperacion.render();
+                    desactivarOverlayEnContenedor(bloqueID);
+                }
+            }
+        }
+
+        async function cargarDistribucionPortMpago() {
+          const url = '@Url.Action("ChartDxMpago", "Analisis")';
+          const bloqueID = '#bloque-grafico';
+          const datos = await OptenerData(url, bloqueID, parametros);
+          if (datos) {
+              if (typeof chartByMpago?.update === "function") {
+               chartByMpago.update(datos.iData, '');
+              } else {
+                  // Si no existe, lo creamos por primera vez
+                  chartByMpago = new MayChartByMPago({
+                      containerId: '#canvaForVXMpago',
+                      titulo: 'Gráfico.4 Distribución por método de pago',
+                      iData: datos.iData
+                  });
+                  chartByMpago.render();
+                  desactivarOverlayEnContenedor(bloqueID);
+              }
+          }
+      }
+
+        async function OptenerData(url, bloqueID, parametros = {}) {
             const queryParams = new URLSearchParams(parametros).toString();
             const fullUrl = `${url}?${queryParams}`;
             activarOverlayEnContenedor(bloqueID);
@@ -348,7 +407,7 @@
             }
         }
 
-       function formatearNumero(valor) {
+        function formatearNumero(valor) {
             return new Intl.NumberFormat('en-US', {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 2
@@ -361,7 +420,7 @@
             $('#label_utilidades').empty();
             $('#label_modaCliente').empty();
             $('#label_modaServiProducto').empty();
-            $('#label_modaFormaOperacion').empty();    
+            $('#label_modaFormaOperacion').empty();
             $('#label_totalImporte').append(formatearNumero(data.ImporteVenta));
             $('#label_totalCosto').append(formatearNumero(data.CostoTotal));
             $('#label_utilidades').append(formatearNumero(data.Utilidad));
@@ -422,7 +481,6 @@
             });
         }
 
-        let productoChoices;
         $(document).ready(function () {
             const formato = 'DD/MM/YYYY';
             $('#datePickerRange').daterangepicker({
@@ -451,9 +509,10 @@
                 $('#start').val(start.format(formato));
                 $('#end').val(end.format(formato));
             });
+
             productoChoices = new Choices('#productoID');
 
-            $('#filterOper').on('click', function () {
+            $('#filterOper').on('click', async () => {
 
                 $('#label_totalImporte').empty();
                 $('#label_totalCosto').empty();
@@ -472,7 +531,13 @@
                     MedioPagoID: $('#medioPagoID').val(),
                     NoFactura: $('#factura').val()
                 };
-                iniciarDashboard();
+
+                try { cargarKPIsDashboard(); } catch (e) { console.error("Error en KPIs:", e.message); }
+                try { cargarDistribucionPorClientes(); } catch (e) { console.error("Error en Fecha:", e.message); }
+                try { cargarDistribucionPortTCliente(); } catch (e) { console.error("Error en tipo de cliente:", e.message); }
+                try { cargarDistribucionPortFOperacion(); } catch (e) { console.error("Error en forma de operación:", e.message); }
+                try { cargarDistribucionPortMpago(); } catch (e) { console.error("Error en Método de pago:", e.message); }
+
             });
         });
     </script>
